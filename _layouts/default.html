@@ -4,16 +4,33 @@
   {%- include head.html -%}
 
   <body>
+    
+    <main class="page">
+      
+      {% include nav.html %}
 
-    {%- include header.html -%}
+      <header class="page__header">
+        <h1 class="page__title">{{ page.title }}</h1>
+        {% if page.date %}
+        <div style="height: 1rem;"></div>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <div class="postslist__item__date">{{ page.date | date: date_format }}</div>
+        {% endif %}
+			</header>
 
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
+      <div class="page__content">
         {{ content }}
       </div>
-    </main>
 
-    {%- include footer.html -%}
+      {% if page.post_list %}
+        {% include post_list.html %}
+      {% endif %}
+      
+      <footer class="footer">
+        <div class="footer__cp">© 2024</div>
+      </footer>
+    
+    </main>
 
   </body>
 

@@ -27,11 +27,10 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "/~rgs2151/" # the subpath of your site, e.g. /blog
 url: "https://www.columbia.edu" # the base hostname & protocol for your site, e.g. http://example.com
 google_analytics: UA-NNNNNNNN-N
-
+permalink: /posts/:title/
 # Build settings
 plugins:
   - jekyll-seo-tag
-  - jekyll-feed
 
 # Exclude from processing.
 # The following items will not be processed, by default.
