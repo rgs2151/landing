@@ -20,6 +20,7 @@
 
 title: Rudramani Singha
 email: rgs2151@columbia.edu
+author: Rudramani Singha
 description: >- # this means to ignore newlines until "baseurl:"
   Hey there! I’m a researcher based in New York City. 
   I build probabilistic models and reverse engineer the brain.
@@ -30,6 +31,7 @@ google_analytics: UA-NNNNNNNN-N
 # Build settings
 plugins:
   - jekyll-seo-tag
+  - jekyll-feed
 
 # Exclude from processing.
 # The following items will not be processed, by default.
