@@ -74,7 +74,7 @@
       
       
       <footer class="footer">
-        <svg height="30" width="400" class="footer_pijazz" id="footer_pijazz"></svg>
+        <svg height="30" width="400" id="footer_pijazz"></svg>
         <div class="footer__cp">© 2025</div>
       </footer>
 
@@ -101,7 +101,7 @@
   var x = d3.scaleLinear().domain([0, n-1]).range([0, width]),
       y = d3.scaleLinear().domain([-1,1]).range([height,0]);
 
-  var line = d3.line()
+  var lineGen = d3.line()
       .x((d,i) => x(i))
       .y(d    => y(d));
 
@@ -115,9 +115,7 @@
     .attr("clip-path","url(#clip)")
    .append("path")
     .datum(data)
-    .attr("class","line")        /* or .footer_pijazz if you really want */
-    .attr("stroke","white")      /* make your line white */
-    .attr("fill","none")
+    .attr("class","footer_pijazz")        /* or .footer_pijazz if you really want */
    .transition()
     .duration(500)
     .ease(d3.easeLinear)
@@ -128,7 +126,7 @@
     i = (i+1) % n_buffer;
 
     d3.select(this)
-      .attr("d", line)
+      .attr("d", lineGen)
       .attr("transform", null);
 
     d3.active(this)
