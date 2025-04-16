@@ -3,22 +3,22 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Bayesian Modeling: Part 1 - Quantifying Variability | Rudramani Singha</title>
+<title>Hypothesis Testing vs Bayesian Modeling | Rudramani Singha</title>
 <meta name="generator" content="Jekyll v4.3.4" />
-<meta property="og:title" content="Bayesian Modeling: Part 1 - Quantifying Variability" />
+<meta property="og:title" content="Hypothesis Testing vs Bayesian Modeling" />
 <meta name="author" content="Rudramani Singha" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Hey there! I’m a researcher based in New York City. I build probabilistic models and reverse engineer the brain." />
-<meta property="og:description" content="Hey there! I’m a researcher based in New York City. I build probabilistic models and reverse engineer the brain." />
-<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/bayesian-thinking/" />
-<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/bayesian-thinking/" />
+<meta name="description" content="Hypothesis Testing vs Bayesian Modeling" />
+<meta property="og:description" content="Hypothesis Testing vs Bayesian Modeling" />
+<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/hypothesis/" />
+<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/hypothesis/" />
 <meta property="og:site_name" content="Rudramani Singha" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2024-11-23T20:27:20-05:00" />
+<meta property="article:published_time" content="2025-03-12T21:27:20-04:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Bayesian Modeling: Part 1 - Quantifying Variability" />
+<meta property="twitter:title" content="Hypothesis Testing vs Bayesian Modeling" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2024-11-23T20:27:20-05:00","datePublished":"2024-11-23T20:27:20-05:00","description":"Hey there! I’m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.","headline":"Bayesian Modeling: Part 1 - Quantifying Variability","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/bayesian-thinking/"},"url":"http://localhost:4000/~rgs2151/posts/bayesian-thinking/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2025-03-12T21:27:20-04:00","datePublished":"2025-03-12T21:27:20-04:00","description":"Hypothesis Testing vs Bayesian Modeling","headline":"Hypothesis Testing vs Bayesian Modeling","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/hypothesis/"},"url":"http://localhost:4000/~rgs2151/posts/hypothesis/"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/~rgs2151/assets/main.css">
 
@@ -60,14 +60,72 @@
 
       <header class="page__header">
         
-        <h1 class="page__title">Bayesian Modeling: Part 1 - Quantifying Variability</h1>
+        <h1 class="page__title">Hypothesis Testing vs Bayesian Modeling</h1>
         
-        <div style="height: 1rem;"></div><div class="postslist__item__date">Nov 23, 2024</div>
+        <div style="height: 1rem;"></div><div class="postslist__item__date">Mar 12, 2025</div>
         
 			</header>
 
       <div class="page__content">
-        
+        <h1 id="hypothesis-testing-vs-bayesian-modeling">Hypothesis Testing vs Bayesian Modeling</h1>
+
+<h2 id="hypothesis-testing">Hypothesis Testing</h2>
+<p>Hypothesis testing is a statistical method used to make inferences about a population based on a sample. It involves formulating a null hypothesis (H0) and an alternative hypothesis (H1), and then using statistical tests to determine whether to reject or fail to reject the null hypothesis.</p>
+
+\[H_0: \mu = \mu_0 \\
+H_1: \mu \neq \mu_0\]
+
+<p>Where:</p>
+<ul>
+  <li>\(H_0\) is the null hypothesis</li>
+  <li>\(H_1\) is the alternative hypothesis</li>
+  <li>\(\mu\) is the population mean</li>
+  <li>\(\mu_0\) is the hypothesized population mean</li>
+</ul>
+
+<p>The goal of hypothesis testing is to determine whether there is enough evidence in the sample data to reject the null hypothesis in favor of the alternative hypothesis. This is typically done by calculating a test statistic and comparing it to a critical value or p-value.</p>
+
+\[Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}
+p-value = P(Z &gt; z_{obs})\]
+
+<p>Where:</p>
+<ul>
+  <li>\(Z\) is the test statistic</li>
+  <li>\(\bar{X}\) is the sample mean</li>
+  <li>\(\mu_0\) is the hypothesized population mean</li>
+  <li>\(\sigma\) is the population standard deviation</li>
+  <li>\(n\) is the sample size</li>
+  <li>\(z_{obs}\) is the observed value of the test statistic</li>
+  <li>\(p-value\) is the probability of observing a test statistic as extreme as the one calculated, assuming the null hypothesis is true</li>
+</ul>
+
+<h2 id="bayesian-modeling">Bayesian Modeling</h2>
+<p>Bayesian modeling, on the other hand, is a statistical approach that incorporates prior beliefs or knowledge into the analysis. It uses Bayes’ theorem to update the probability of a hypothesis as more evidence becomes available. Bayesian modeling allows for the incorporation of uncertainty and provides a more flexible framework for making inferences about a population.</p>
+
+\[P(\theta|y) = \frac{P(y|\theta)P(\theta)}{P(y)} \\
+P(y) = \int P(y|\theta)P(\theta)d\theta\]
+
+<p>Where:</p>
+<ul>
+  <li>\(P(\theta)\) is the prior probability of the parameter</li>
+  <li>\(P(y)\) is the marginal likelihood of the data</li>
+  <li>\(\theta\) is the parameter of interest</li>
+  <li>\(y\) is the observed data</li>
+</ul>
+
+<p>Bayesian modeling is often seen as a more intuitive and informative approach to statistical analysis, as it allows for the incorporation of prior knowledge and provides a more comprehensive understanding of the uncertainty associated with the estimates. It also allows for the estimation of parameters and the prediction of future observations in a more coherent manner.</p>
+
+\[\theta \sim P(\theta) \\
+y \sim P(y|\theta) \\
+\theta | y \sim P(\theta|y) \\
+\theta | y \sim P(\theta|y) = \frac{P(y|\theta)P(\theta)}{P(y)}\]
+
+<p>Where:</p>
+<ul>
+  <li>\(\theta\) is the parameter of interest</li>
+  <li>\(y\) is the observed data</li>
+</ul>
+
 
       </div>
 

@@ -50,19 +50,34 @@ button:focus {
 }
 
 :root {
-    --bg: #fff;
-    /* --bg-alt: #f8f8f8; */
-    /* --bg-alt: linear-gradient(90deg, #ff00f0, #0050ff); */
-    /* --bg-alt: linear-gradient(90deg,#FDCFE9, #FFDDF0,  #FDF2F7, #FFFBFC, #F3F2F0); */
-    --bg-alt: linear-gradient(90deg, #FFDDF0,  #FDF2F7, #FFFBFC, #F3F2F0);
-    --text: #3b3d40;
-    --text-light: #676767;
-    --line: #888;
-    --line-light: #ddd;
     --container-max: 600px;
     --container-page: 90%;
     --normal: 440;
     --bold: 700;
+
+    /* Light Theme */
+    /* --bg-alt: linear-gradient(90deg, #FFDDF0,  #FDF2F7, #FFFBFC, #F3F2F0);
+    --bg-alt: linear-gradient(90deg, #ff00f0, #0050ff);
+    --bg-alt: #f8f8f8;
+    --bg: #fff;
+    --text: #3b3d40;
+    --text-light: #676767;
+    --underline: #888;
+    --footer-line: #ddd;
+    --selection: #ffff8d;
+    --nav-hover: #f1f1f1; */
+
+
+    /* Dark Theme */
+    --bg: hsl(0, 0%, 0%);
+    --bg-alt: hsl(0, 0%, 10%);
+    --nav-hover: hsl(0, 0%, 20%);
+    --text: hsl(0, 0%, 100%);
+    --text-light: hsl(0, 0%, 80%);
+    --underline: hsl(0, 0%, 50%);
+    --selection-bg: hsl(0, 0%, 100%);
+    --selection-text: hsl(0, 0%, 0%);
+    --footer-line: hsl(0, 0%, 60%);
 }
 
 body,
@@ -93,13 +108,22 @@ a {
 }
 
 ::selection {
-    background: #ffff8d;
+    background: var(--selection-bg);
+    color: var(--selection-text);
 }
 
 .page {
     width: var(--container-page);
     max-width: var(--container-max);
     margin: 4rem auto;
+}
+
+.page__hero {
+    /* 200 heigh max */
+    max-height: 150px !important;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 12px;
 }
 
 .page__header {
@@ -148,8 +172,8 @@ a {
 
 .page__content a {
     text-decoration: underline;
-    -webkit-text-decoration-color: var(--line);
-    text-decoration-color: var(--line);
+    -webkit-text-decoration-color: var(--underline);
+    text-decoration-color: var(--underline);
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     transition: opacity 0.3s;
@@ -200,7 +224,7 @@ a {
 
 @media (hover: hover) and (pointer: fine) {
     .nav__item:hover {
-        background-color: #f1f1f1;
+        background-color: var(--nav-hover);
     }
 }
 
@@ -301,13 +325,18 @@ a {
     margin-top: 4rem;
 }
 
-.footer:before {
+/* .footer:before {
     display: block;
     content: "";
-    background: var(--line-light);
+    background: var(--footer-line);
     height: 1px;
     width: 8rem;
     margin-bottom: 2rem;
+} */
+
+.footer_pijazz {
+    stroke: var(--footer-line);
+    fill: none;
 }
 
 .footer__cp {

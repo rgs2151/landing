@@ -25,37 +25,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML">
-    MathJax.Hub.Config({
-      "HTML-CSS": {
-        availableFonts: ["TeX"],
-      },
-      tex2jax: {
-        inlineMath: [['$','$'],["\\(","\\)"]]},
-        displayMath: [ ['$$','$$'], ['\[','\]'] ],
-      TeX: {
-        extensions: ["AMSmath.js", "AMSsymbols.js", "color.js"],
-        equationNumbers: {
-          autoNumber: "AMS"
-        }
-      },
-      showProcessingMessages: false,
-      messageStyle: "none",
-      imageFont: null,
-      "AssistiveMML": { disabled: true }
-    });
-</script><script>
-if(!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-NNNNNNNN-N', 'auto');
-  ga('send', 'pageview');
-}
-</script>
-  
 </head>
 <body>
     
@@ -89,6 +58,7 @@ if(!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNo
 </nav>
 
       <header class="page__header">
+        
         <h1 class="page__title">Posts</h1>
         
 			</header>
@@ -99,14 +69,130 @@ if(!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNo
       </div>
 
       
-        <div class="postslist"><a class="postslist__item" href="/~rgs2151/posts/bayesian-thinking/">
-      <h2 class="postslist__item__title">Tutorial on Bayesian Modeling</h2><div class="postslist__item__date">Nov 23, 2024</div>
+        <div class="postslist"><a class="postslist__item" href="/~rgs2151/posts/hypothesis/"><h2 class="postslist__item__title">
+        Hypothesis Testing vs Bayesian Modeling
+        <!---->
+      </h2><div class="postslist__item__date">Mar 12, 2025</div>
+    </a><a class="postslist__item" href="https://github.com/NuttidaLab/state_space_analysis/blob/exploration/tutorial.ipynb"><h2 class="postslist__item__title">
+        Bayesian Modeling: Part 1 - Quantifying Variability
+        <!---->
+      </h2><div class="postslist__item__date">Nov 23, 2024</div>
+    </a><a class="postslist__item" href="https://doi.org/10.1109/ICSSIT53264.2022.9716509"><h2 class="postslist__item__title">
+        Risk Estimates from Biological Landmarks
+        <!---->
+      </h2><div class="postslist__item__date">Jan 13, 2022</div>
+    </a><a class="postslist__item" href="https://doi.org/10.1109/ICSSIT53264.2022.9716386"><h2 class="postslist__item__title">
+        Time Branching Networks
+        <!---->
+      </h2><div class="postslist__item__date">Jan 12, 2022</div>
     </a></div>
       
       
       <footer class="footer">
-        <div class="footer__cp">© 2024</div>
+        <svg height="30" width="400" class="footer_pijazz" id="footer_pijazz"></svg>
+        <div class="footer__cp">© 2025</div>
       </footer>
+
+      <!-- 1) load D3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<!-- 2) your code -->
+<script type="text/javascript">
+  var n = 750,
+      n_buffer = 751,
+      // (or replace this with your 2‑state Markov buffer code)
+      random = d3.randomNormal(0, .3),
+      buffer = d3.range(n_buffer).map(random);
+
+  var i = n,
+      data = buffer.slice(0, n);
+
+  var svg = d3.select("#footer_pijazz"),      // make sure your <svg> has id="footer_pijazz"
+      margin = {top: 0, right: 0, bottom: 0, left: 0},
+      width  = +svg.attr("width")  - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top  - margin.bottom,
+      g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+  var x = d3.scaleLinear().domain([0, n-1]).range([0, width]),
+      y = d3.scaleLinear().domain([-1,1]).range([height,0]);
+
+  var line = d3.line()
+      .x((d,i) => x(i))
+      .y(d    => y(d));
+
+  g.append("defs").append("clipPath")
+    .attr("id","clip")
+    .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+  g.append("g")
+    .attr("clip-path","url(#clip)")
+   .append("path")
+    .datum(data)
+    .attr("class","line")        /* or .footer_pijazz if you really want */
+    .attr("stroke","white")      /* make your line white */
+    .attr("fill","none")
+   .transition()
+    .duration(500)
+    .ease(d3.easeLinear)
+    .on("start", tick);
+
+  function tick() {
+    data.push(buffer[i]);
+    i = (i+1) % n_buffer;
+
+    d3.select(this)
+      .attr("d", line)
+      .attr("transform", null);
+
+    d3.active(this)
+      .attr("transform", `translate(${x(-1)},0)`)
+     .transition()
+      .on("start", tick)
+      .duration(10);
+
+    data.shift();
+  }
+</script>
+
+
+<!-- 1) Your MathJax configuration -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']]
+    },
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","color.js"],
+      equationNumbers: { autoNumber: "AMS" }
+    },
+    showProcessingMessages: false,
+    messageStyle: "none",
+    imageFont: null,
+    "AssistiveMML": { disabled: true }
+  });
+</script>
+
+<!-- 2) Then load the MathJax engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script><script>
+  if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+    (function() {
+      var gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=UA-NNNNNNNN-N';
+      document.head.appendChild(gtagScript);
+  
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-NNNNNNNN-N');
+    })();
+  }
+</script>
+
     
     </main>
 

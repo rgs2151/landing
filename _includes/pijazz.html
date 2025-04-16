@@ -1,0 +1,62 @@
+<!-- 1) load D3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<!-- 2) your code -->
+<script type="text/javascript">
+  var n = 750,
+      n_buffer = 751,
+      // (or replace this with your 2‑state Markov buffer code)
+      random = d3.randomNormal(0, .3),
+      buffer = d3.range(n_buffer).map(random);
+
+  var i = n,
+      data = buffer.slice(0, n);
+
+  var svg = d3.select("#footer_pijazz"),      // make sure your <svg> has id="footer_pijazz"
+      margin = {top: 0, right: 0, bottom: 0, left: 0},
+      width  = +svg.attr("width")  - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top  - margin.bottom,
+      g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+  var x = d3.scaleLinear().domain([0, n-1]).range([0, width]),
+      y = d3.scaleLinear().domain([-1,1]).range([height,0]);
+
+  var line = d3.line()
+      .x((d,i) => x(i))
+      .y(d    => y(d));
+
+  g.append("defs").append("clipPath")
+    .attr("id","clip")
+    .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+  g.append("g")
+    .attr("clip-path","url(#clip)")
+   .append("path")
+    .datum(data)
+    .attr("class","line")        /* or .footer_pijazz if you really want */
+    .attr("stroke","white")      /* make your line white */
+    .attr("fill","none")
+   .transition()
+    .duration(500)
+    .ease(d3.easeLinear)
+    .on("start", tick);
+
+  function tick() {
+    data.push(buffer[i]);
+    i = (i+1) % n_buffer;
+
+    d3.select(this)
+      .attr("d", line)
+      .attr("transform", null);
+
+    d3.active(this)
+      .attr("transform", `translate(${x(-1)},0)`)
+     .transition()
+      .on("start", tick)
+      .duration(10);
+
+    data.shift();
+  }
+</script>
