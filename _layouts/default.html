@@ -33,12 +33,14 @@
           {{ content }}
         </div>
       </div>
-
-
       
       <footer class="footer">
+        {% if page.pijazz %}
         <svg height="70" width="400" class="footer__pijazz"></svg>
-        <!-- <div class="footer__cp">© 2025</div> -->
+        {% include pijazz.html %}
+        {% else %}
+        <div class="footer__cp">© 2025</div>
+        {% endif %}
       </footer>
 
       {% include scripts.html %}

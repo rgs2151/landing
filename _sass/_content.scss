@@ -331,6 +331,16 @@ a {
         &__cp {
             color: var(--text-light);
         }
+        
+        &__cp:before {
+            display: block;
+            content: "";
+            background: var(--bg-alt);
+            height: 1px;
+            width: 8rem;
+            margin-bottom: 1rem;
+        }
+
     }
 }
 

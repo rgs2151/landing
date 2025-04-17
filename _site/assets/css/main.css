@@ -282,6 +282,14 @@ a {
 .page .footer__cp {
   color: var(--text-light);
 }
+.page .footer__cp:before {
+  display: block;
+  content: "";
+  background: var(--bg-alt);
+  height: 1px;
+  width: 8rem;
+  margin-bottom: 1rem;
+}
 
 .highlight .hll {
   background-color: #ffffcc;

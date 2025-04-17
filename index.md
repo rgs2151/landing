@@ -2,6 +2,7 @@
 layout: default
 title:  "Rudramani Singha"
 hero: "/~rgs2151/assets/hero.jpg"
+pijazz: true
 ---
 Hey there! I’m a researcher based in New York City.
 
