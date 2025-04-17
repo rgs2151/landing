@@ -6,7 +6,7 @@
   // ── PARAMETERS ───────────────────────────────────────────────────────────────────
   var n         = 750,
       n_buffer  = 2000,
-      marginHMM = 20;               // reserve left 100px for the HMM
+      marginHMM = 70;               // reserve left 100px for the HMM
   // two Gaussians
   var randomLow  = d3.randomNormal(-0.5,0.3),
       randomHigh = d3.randomNormal( 0.5,0.3);
@@ -43,7 +43,7 @@
       .attr("transform", "translate(" + marginHMM + ",0)");
 
   var x = d3.scaleLinear().domain([0,n-1]).range([0,traceW]),
-      y = d3.scaleLinear().domain([-3,3]).range([height,0]);
+      y = d3.scaleLinear().domain([-1.5,1.5]).range([height,0]);
 
   var lineGen = d3.line()
     .x((d,i)=>(x(i)))
@@ -57,17 +57,15 @@
       .attr("height", height);
   
   // ── HMM DIAGRAM REPLACEMENT ─────────────────────────────────────────────────────────
-  var hmm_stroke_width = 3;
-  var hmm_color = "#1a1a1a";
 
   // container + scale
   var hmm = svg.append("g")
-      .attr("transform","translate(20,52) scale(0.6) rotate(270)");
+      .attr("transform","translate(15," + (height/2) + ") scale(0.7)");
 
   // define state positions
   var states = [
     { id: 0, cx:   0, cy: 0 },   // s1
-    { id: 1, cx:  55, cy: 0 }    // s2
+    { id: 1, cx:  60, cy: 0 }    // s2
   ];
 
   // single connection line between s1→s2
@@ -77,8 +75,8 @@
       .attr("y1", states[0].cy)
       .attr("x2", states[1].cx - 20)
       .attr("y2", states[1].cy)
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
+      .attr("stroke","#666666")
+      .attr("stroke-width",1);
 
   // per‐state group: small self‐conn + main circle + label
   var stateG = hmm.selectAll("g.state-group")
@@ -90,12 +88,12 @@
   // small circle for “self” connection, offset left for s1, right for s2
   stateG.append("circle")
       .attr("class","self-conn")
-      .attr("cx", d => d.id === 0 ? -15 : +17)
-      .attr("cy", d => d.id === 0 ? -15 : -17)
+      .attr("cx", d => d.id === 0 ? +15 : -15)
+      .attr("cy", d => d.id === 0 ? +17 : -17)
       .attr("r", 10)
       .attr("fill","none")
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
+      .attr("stroke","#666666")
+      .attr("stroke-width",1);
 
   // main state circle
   stateG.append("circle")
@@ -104,32 +102,30 @@
       .attr("cy", 0)
       .attr("r", 20)
       .attr("fill","black")                 // default inactive
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
+      .attr("stroke","#666666")
+      .attr("stroke-width",1);
 
   // label “s1” / “s2”
   stateG.append("text")
       .attr("class","state-label")
       .attr("x",   0)
       .attr("y",   5)
-      .attr("font-size", 20)
       .attr("stroke","none")
       .attr("text-anchor","middle")
-      .text(d => "s" + (d.id + 1))
-      .attr("transform", "rotate(-270)");
+      .text(d => "z" + (d.id + 1));
 
 
   // ── UPDATED updateHmm ─────────────────────────────────────────────────────────────
   function updateHmm(current, previous, i) {
     // reset fills & widths
     hmm.selectAll("circle.state-circle").attr("fill","black");
-    hmm.selectAll("circle.self-conn").attr("stroke-width",hmm_stroke_width);
-    connect.attr("stroke-width",hmm_stroke_width);
-    hmm.selectAll("text.state-label").attr("fill",hmm_color);
+    hmm.selectAll("circle.self-conn").attr("stroke-width",1);
+    connect.attr("stroke-width",1);
+    hmm.selectAll("text.state-label").attr("fill","#666666");
 
     // active state: fill white
     hmm.select(`.state-group.s${current} circle.state-circle`)
-      .attr("fill",hmm_color);
+      .attr("fill","#666666");
 
     // set the active state label to black
     hmm.select(`.state-group.s${current} text.state-label`)
@@ -137,13 +133,13 @@
 
     if (current === previous) {
       // self‐loop: thicken its small circle
-      if (i % 8 === 0) {
+      if (i % 2 === 0) {
         hmm.select(`.state-group.s${current} circle.self-conn`)
-          .attr("stroke-width",8);
+          .attr("stroke-width",1.5);
       }
     } else {
       // state switch: thicken the connector
-      connect.attr("stroke-width",14);
+      connect.attr("stroke-width",8);
     }
   }
 
@@ -153,7 +149,7 @@
     .append("path")
       .datum(data)
       .attr("d", lineGen)
-      .attr("stroke-width",1.5)
+      .attr("stroke-width",1)
       .attr("fill","none");
 
   var dx = x(1)-x(0);
@@ -161,7 +157,7 @@
   // ── ANIMATION via .on("end") ─────────────────────────────────────────────────────
   function animate(){
     line.transition()
-      .duration(10)
+      .duration(50)
       .ease(d3.easeLinear)
       .attr("transform","translate("+dx+",0)")
       .on("end",function(){

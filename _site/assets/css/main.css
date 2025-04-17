@@ -60,7 +60,7 @@ button:focus {
   --underline: hsl(0, 0%, 50%);
   --selection-bg: hsl(0, 0%, 100%);
   --selection-text: hsl(0, 0%, 0%);
-  --footer-line: hsl(0, 0%, 40%);
+  --footer-line: hsl(0, 0%, 10%);
 }
 
 body,
