@@ -32,6 +32,15 @@ permalink: /posts/:title/
 plugins:
   - jekyll-seo-tag
 
+collections:
+  publications:
+    output: true
+    permalink: /publications/:name/
+
+scss:
+  scss_dir: _sass        # default
+  style: compressed      # or nested, expanded, compact
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to

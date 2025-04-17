@@ -1,0 +1,22 @@
+{%- if site.publications.size > 0 -%}
+
+<div class="postslist">
+  {%- assign publications = site.publications | sort: 'date' | reverse -%}
+  {%- for publication in publications -%}
+
+    {%- if publication.link -%}
+    <a class="postslist__item" href="{{ publication.link }}">
+    {%- else -%}
+    <a class="postslist__item" href="{{ publication.url | relative_url }}">
+    {%- endif -%}
+    
+      <h2 class="postslist__item__title">
+        {{ publication.title | escape }}
+        <!-- {%- if post.link -%}{%- endif -%} -->
+      </h2>
+      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      <div class="postslist__item__date">{{ publication.date | date: date_format }}</div>
+    </a>
+  {%- endfor -%}
+</div>
+{%- endif -%}

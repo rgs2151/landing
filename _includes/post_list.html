@@ -1,7 +1,8 @@
 {%- if site.posts.size > 0 -%}
 
 <div class="postslist">
-  {%- for post in site.posts -%}
+  {%- assign posts = site.posts | sort: 'date' | reverse -%}
+  {%- for post in posts -%}
 
     {%- if post.link -%}
     <a class="postslist__item" href="{{ post.link }}">

@@ -2,6 +2,7 @@
 layout: default
 title: "Hypothesis Testing vs Bayesian Modeling"
 date: 2025-03-12 20:27:20 -0500
+tag: thoughts
 ---
 
 # Hypothesis Testing vs Bayesian Modeling
@@ -23,8 +24,8 @@ Where:
 The goal of hypothesis testing is to determine whether there is enough evidence in the sample data to reject the null hypothesis in favor of the alternative hypothesis. This is typically done by calculating a test statistic and comparing it to a critical value or p-value.
 
 $$
-Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}
-p-value = P(Z > z_{obs})
+Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \\
+\mathcal{p-value} = P(Z > z_{obs})
 $$
 
 Where:
@@ -34,7 +35,7 @@ Where:
 - $$\sigma$$ is the population standard deviation
 - $$n$$ is the sample size
 - $$z_{obs}$$ is the observed value of the test statistic
-- $$p-value$$ is the probability of observing a test statistic as extreme as the one calculated, assuming the null hypothesis is true
+- $$\mathcal{p-value}$$ is the probability of observing a test statistic as extreme as the one calculated, assuming the null hypothesis is true
 
 ## Bayesian Modeling
 Bayesian modeling, on the other hand, is a statistical approach that incorporates prior beliefs or knowledge into the analysis. It uses Bayes' theorem to update the probability of a hypothesis as more evidence becomes available. Bayesian modeling allows for the incorporation of uncertainty and provides a more flexible framework for making inferences about a population.

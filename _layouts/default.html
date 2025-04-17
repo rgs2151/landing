@@ -22,16 +22,23 @@
 			</header>
 
       <div class="page__content">
-        {{ content }}
+        {% if page.post_list %}
+          {% include post_list.html %}
+        {% endif %}
+
+        {% if page.pub_list %}
+          {% include pub_list.html %}
+        {% endif %}
+        <div class="postcontent">
+          {{ content }}
+        </div>
       </div>
 
-      {% if page.post_list %}
-        {% include post_list.html %}
-      {% endif %}
+
       
       <footer class="footer">
-        <svg height="30" width="400" id="footer_pijazz"></svg>
-        <div class="footer__cp">© 2025</div>
+        <svg height="40" width="400" class="footer__pijazz"></svg>
+        <!-- <div class="footer__cp">© 2025</div> -->
       </footer>
 
       {% include scripts.html %}
