@@ -1,13 +1,15 @@
 ---
 layout: default
 image: /assets/images/lab_outing.jpg
-title: "Hypothesis Testing vs Bayesian Modeling"
+title: "Announcement only"
 date: 2025-03-12 20:27:20 -0500
-story: true
-announcement: false
+story: false
+announcement: true
 hide: false
-highlight: false
+highlight: true
 ---
+
+# Hypothesis Testing vs Bayesian Modeling
 
 ## Hypothesis Testing
 Hypothesis testing is a statistical method used to make inferences about a population based on a sample. It involves formulating a null hypothesis (H0) and an alternative hypothesis (H1), and then using statistical tests to determine whether to reject or fail to reject the null hypothesis.

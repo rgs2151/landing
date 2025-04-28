@@ -1,0 +1,44 @@
+.page
+  .nav__holder
+    display: flex
+    // justify-content: flex-end
+    justify-content: space-around
+    margin-bottom: 4rem
+    
+    .nav
+      // float: right
+      background: var(--bg-alt)
+      display: inline-flex
+      border-radius: 12px
+      // margin-bottom: 4rem
+
+      &__item
+        height: 32px
+        width: 40px
+        display: flex
+        align-items: center
+        justify-content: center
+        transition: background-color .3s
+
+        &:first-child
+          border-top-left-radius: 12px
+          border-bottom-left-radius: 12px
+
+        &:last-child
+          border-top-right-radius: 12px
+          border-bottom-right-radius: 12px
+
+        &--active
+          opacity: .25
+
+          @media (hover: hover) and (pointer: fine)
+            cursor: default
+            pointer-events: none
+
+        @media (min-width: 992px)
+          height: 32px
+          width: 40px
+
+        @media (hover: hover) and (pointer: fine)
+          &:hover
+            background-color: var(--nav-hover)

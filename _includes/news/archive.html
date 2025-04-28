@@ -1,0 +1,22 @@
+{%- if site.posts.size > 0 -%}
+
+<div class="postslist">
+  {%- assign posts = site.posts | sort: 'date' | reverse -%}
+  {%- for post in posts -%}
+
+    {%- if post.link -%}
+    <a class="postslist__item" href="{{ post.link }}" target="_blank" rel="noopener">
+    {%- else -%}
+    <a class="postslist__item" href="{{ post.url | relative_url }}">
+    {%- endif -%}
+      <h2 class="postslist__item__title">
+        {{ post.title | escape }}
+      </h2>
+      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      <div class="postslist__item__date">{{ post.date | date: date_format }}</div>
+    </a>
+  {%- endfor -%}
+</div>
+
+{%- endif -%}
+
