@@ -14,7 +14,7 @@
 
     display: inline               // allow natural wrapping
     color: var(--text)
-    background-image: linear-gradient(white, white)
+    background-image: linear-gradient(var(--selection-bg), var(--selection-bg))
     background-repeat: no-repeat
     background-size: 0% 100%
     background-position: left bottom
@@ -25,7 +25,7 @@
     @media (hover: hover) and (pointer: fine)
       &:hover
         background-size: 100% 100%
-        color: black
+        color: var(--selection-text)
   
   ul
     list-style: disc inside

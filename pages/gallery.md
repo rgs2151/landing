@@ -1,6 +1,5 @@
 ---
-layout: page
+layout: gallery
 title:  "Gallery"
 permalink: /gallery/
-post_list: false
 ---

@@ -1,6 +1,5 @@
 ---
-layout: news
+layout: papers
 title:  "Publications"
 permalink: /pubs/
-post_list: false
 ---

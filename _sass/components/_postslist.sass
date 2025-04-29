@@ -1,59 +1,94 @@
 .postslist
+  list-style: none
   margin-bottom: 4rem
-
-  ::selection
-    background: var(--selection-bg)
-    color: var(--selection-text)
+  padding: 0
 
   &__item
     position: relative
-    overflow: hidden
-    z-index: 1
-    display: block
-    cursor: pointer
-    // width: calc(100% + 4rem)
-    padding: 0.75rem 2rem
-    margin-left: -2rem
-    transition: background 0.2s
-    margin-bottom: 0.5rem
-    border-radius: 12px
+    display: flex
+    align-items: center      // center all children (including the bullet)
+    padding-left: 1.8rem     // give room for the bigger bullet
+    margin-bottom: 0.75rem
+
+    // the colored bullet
+    &::before
+      content: '•'
+      position: absolute
+      left: 0
+      top: 50%                // position vertically at half…
+      transform: translateY(-50%)  // …then pull up by half its own height
+      font-size: 2rem       // increase from 1.2em to 1.5rem (or whatever you like)
+    
+    // color by type
+    &--story::before
+      color: #216976 // Teal
+
+    &--press::before
+      color: #48bea3 // Mint
+
+    &--announcement::before
+      color: #6e419a // Purple
+
+  // link or span wrapper for the sliding highlight
+  &__link
+    position: relative
+    display: inline-block
+    z-index: 0
+    color: var(--text)
+    // transition: color .3s
 
     &::before
-      content: ''
+      content: ""
       position: absolute
-      top: 0
-      left: 0
-      right: 0
-      bottom: 0
-      background: var(--bg-alt)
+      top: -0.5rem
+      bottom: -0.5rem
+      left: -0.5rem
+      right: -3rem
+      background: var(--selection-bg)
+      transform: scaleX(0)
+      transform-origin: left
+      transition: transform .3s ease
       z-index: -1
-      opacity: 0
-      transition: opacity 0.2s
-      border-radius: 12px
-
-    @media (min-width: 600px)
-      display: flex
-      justify-content: space-between
-      align-items: center
-      margin-bottom: 0.25rem
 
     @media (hover: hover) and (pointer: fine)
+      &:hover
+        color: var(--selection-text)
       &:hover::before
-        opacity: 1
+        transform: scaleX(1)
 
-    &__title
-      flex-grow: 1
-      font-weight: var(--normal)
-      line-height: 1.5
-      // letter-spacing: -0.025rem
-      margin-bottom: 0.25rem
+  &__date
+    font-weight: var(--bold)
+    margin-right: 0.25rem
 
-      @media (min-width: 600px)
-        line-height: 1.25
-        margin-right: 1rem
-        margin-bottom: 0
+  &__title
+    font-weight: var(--normal)
 
-    &__date
-      font-size: 0.9rem
-      color: var(--text-light)
-      flex-shrink: 0
+// legend wrapper
+.postslist-legend
+  display: flex
+  justify-content: center
+  align-items: center
+  gap: 2rem        // space between each “dot name”
+  margin-bottom: 2rem
+
+  .legend-item
+    display: flex
+    align-items: center
+    font-size: 0.9rem
+
+    .dot
+      display: inline-block
+      width: 0.4em
+      height: 0.4em
+      border-radius: 50%
+      margin-right: 0.4em
+
+  // match your bullet colors
+  & .legend-item--story .dot
+    background-color: #216976
+
+  & .legend-item--press .dot
+    background-color: #48bea3
+
+  & .legend-item--announcement .dot
+    background-color: #6e419a

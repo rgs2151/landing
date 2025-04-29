@@ -1,22 +1,51 @@
 {%- if site.posts.size > 0 -%}
 
-<div class="postslist">
+<ul class="postslist mf-container">
   {%- assign posts = site.posts | sort: 'date' | reverse -%}
+  {%- assign date_fmt = "%b, %Y" -%}
   {%- for post in posts -%}
+    {%- assign typ = post.type | default: "story" -%}
+    <li class="postslist__item postslist__item--{{ typ }}">
+      {%- if typ == "story" -%}
+        <a class="postslist__link"
+           href="{{ post.url | relative_url }}"
+           data-cursor-img="{{ post.image | relative_url }}">
+      {%- elsif typ == "press" -%}
+        <a class="postslist__link"
+           href="{{ post.link }}"
+           target="_blank"
+           rel="noopener"
+           data-cursor-img="{{ post.image | relative_url }}">
+      {%- else -%}
+        <span class="postslist__link">
+      {%- endif -%}
 
-    {%- if post.link -%}
-    <a class="postslist__item" href="{{ post.link }}" target="_blank" rel="noopener">
-    {%- else -%}
-    <a class="postslist__item" href="{{ post.url | relative_url }}">
-    {%- endif -%}
-      <h2 class="postslist__item__title">
-        {{ post.title | escape }}
-      </h2>
-      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-      <div class="postslist__item__date">{{ post.date | date: date_format }}</div>
-    </a>
+        <span class="postslist__date">
+          {{ post.date | date: date_fmt }}
+        </span>:&nbsp;
+        <span class="postslist__title">
+          {{ post.title | escape }}
+        </span>
+
+      {%- if typ == "story" or typ == "press" -%}
+        </a>
+      {%- else -%}
+        </span>
+      {%- endif -%}
+    </li>
   {%- endfor -%}
+</ul>
+
+<div class="postslist-legend">
+  <span class="legend-item legend-item--story">
+    <span class="dot"></span>Story
+  </span>
+  <span class="legend-item legend-item--press">
+    <span class="dot"></span>Press
+  </span>
+  <span class="legend-item legend-item--announcement">
+    <span class="dot"></span>Announcement
+  </span>
 </div>
 
 {%- endif -%}
-

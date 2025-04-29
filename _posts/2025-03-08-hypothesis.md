@@ -1,11 +1,9 @@
 ---
 layout: default
-image: /assets/images/lab_outing.jpg
+image: /assets/images/posts/hangouts/6flags.jpeg
 title: "Hypothesis Testing vs Bayesian Modeling"
 date: 2025-03-12 20:27:20 -0500
-story: true
-announcement: false
-hide: false
+type: story # announcement, story, press
 highlight: false
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: news
-title:  "Announcements"
+title:  "News"
 permalink: /news/
 post_list: true
 ---
