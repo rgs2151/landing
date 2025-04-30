@@ -31,7 +31,7 @@
     tr
       // background: var(--bg-alt)
       // round the corners
-      border-radius: 8px
+      border-radius: 12px
       // ensure the <tr> respects border-radius
       overflow: hidden
 
@@ -81,7 +81,7 @@
     bottom: 0
     left: 0
     right: 0
-    background: --selection-bg
+    background: var(--selection-bg)
     transform: scaleX(0)
     transform-origin: left
     transition: transform .3s ease
@@ -89,7 +89,7 @@
 
   @media (hover: hover) and (pointer: fine)
     &:hover
-      color: --selection-text
+      color: var(--selection-text)
     &:hover::before
       transform: scaleX(1)
 

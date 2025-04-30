@@ -4,7 +4,7 @@ image: false
 title: "Announcement only"
 date: 2024-08-12 20:27:20 -0500
 type: announcement # announcement, story, press
-highlight: true
+highlight: false
 ---
 
 # Hypothesis Testing vs Bayesian Modeling

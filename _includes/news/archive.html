@@ -1,40 +1,37 @@
 {%- if site.posts.size > 0 -%}
 
-<ul class="postslist mf-container">
+<div class="postslist mf-container">
   {%- assign posts = site.posts | sort: 'date' | reverse -%}
   {%- assign date_fmt = "%b, %Y" -%}
   {%- for post in posts -%}
     {%- assign typ = post.type | default: "story" -%}
-    <li class="postslist__item postslist__item--{{ typ }}">
-      {%- if typ == "story" -%}
-        <a class="postslist__link"
-           href="{{ post.url | relative_url }}"
-           data-cursor-img="{{ post.image | relative_url }}">
-      {%- elsif typ == "press" -%}
-        <a class="postslist__link"
-           href="{{ post.link }}"
-           target="_blank"
-           rel="noopener"
-           data-cursor-img="{{ post.image | relative_url }}">
-      {%- else -%}
+    {%- if typ == "story" -%}
+      <a class="postslist__item postslist__item--story"
+         href="{{ post.url | relative_url }}"
+         data-cursor-img="{{ post.image | relative_url }}">
+    {%- elsif typ == "press" -%}
+      <a class="postslist__item postslist__item--press"
+         href="{{ post.link }}"
+         target="_blank"
+         rel="noopener"
+         data-cursor-img="{{ post.image | relative_url }}">
+    {%- else -%}
+      <a class="postslist__item postslist__item--announcement"
+         href="javascript:void(0)">
+    {%- endif -%}
+
         <span class="postslist__link">
-      {%- endif -%}
-
-        <span class="postslist__date">
-          {{ post.date | date: date_fmt }}
-        </span>:&nbsp;
-        <span class="postslist__title">
-          {{ post.title | escape }}
+          <span class="postslist__date">
+            {{ post.date | date: date_fmt }}
+          </span>
+          <span class="postslist__title">
+            {{ post.title | escape }}
+          </span>
         </span>
-
-      {%- if typ == "story" or typ == "press" -%}
-        </a>
-      {%- else -%}
-        </span>
-      {%- endif -%}
-    </li>
+      </a>
   {%- endfor -%}
-</ul>
+</div>
+
 
 <div class="postslist-legend">
   <span class="legend-item legend-item--story">

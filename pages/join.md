@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title:  "Join us"
 permalink: /join/
 post_list: false

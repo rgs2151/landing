@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: landing
 title:  "Systems Intelligence Lab"
 ---
 We develop experimental and computational frameworks to investigate the neural computations that underlie complex cognitive functions in health and disease. 
@@ -19,3 +19,7 @@ We also investigate how these computations are disrupted in neuropsychiatric dis
 <div class="divider"></div>
 
 The Systems Intelligence Lab is part of the [Department of Biomedical Engineering](https://www.bme.columbia.edu/) in the [Fu Foundation of Engineering and Applied Science at Columbia University](https://www.engineering.columbia.edu/). The lab is also affiliated with the [Doctoral Program in Neurobiology and Behavior](https://www.neurosciencephd.columbia.edu/), the [Center of Excellence (CoE) in the Neuroscience of Decision-Making](https://liinc.bme.columbia.edu/content/center-excellence), and the [Data Science Scholars Program](https://datascience.columbia.edu/research/columbia-dsi-scholars/).
+
+<div class="divider"></div>
+
+## Highlights
