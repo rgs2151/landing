@@ -2,6 +2,7 @@
 layout: landing
 title:  "Systems Intelligence Lab"
 ---
+
 We develop experimental and computational frameworks to investigate the neural computations that underlie complex cognitive functions in health and disease. 
 
 ## Mission

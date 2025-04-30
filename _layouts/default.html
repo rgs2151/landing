@@ -13,7 +13,9 @@
         {% if page.hero %}
         <img src="{{ page.hero }}" alt="{{ page.title }}" class="page__hero">
         {% endif %}
+        {% if page.title %}
         <h1 class="page__title">{{ page.title }}</h1>
+        {% endif %}
         {% if page.date %}
         <div style="height: 1rem;"></div>
         {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}

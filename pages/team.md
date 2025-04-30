@@ -1,6 +1,6 @@
 ---
 layout: team
-title:  ""
+title:  false
 permalink: /team/
 post_list: false
 ---
