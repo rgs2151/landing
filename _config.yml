@@ -32,10 +32,7 @@ permalink: /posts/:title/
 plugins:
   - jekyll-seo-tag
 
-collections:
-  publications:
-    output: true
-    permalink: /publications/:name/
+
 
 scss:
   scss_dir: _sass        # default
