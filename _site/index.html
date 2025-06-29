@@ -19,7 +19,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"Rudramani Singha"},"description":"Hey there! I’m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.","headline":"Rudramani Singha","name":"Rudramani Singha","url":"http://localhost:4000/~rgs2151/"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
+<link rel="shortcut icon" type="image/x-icon" href="/~rgs2151//favicon.ico" >
+  <link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -78,207 +79,15 @@
 
 <p>I build probabilistic models and reverse engineer the brain.
 My work focuses on machine learning and neuroscience, particularly in creating explainable models
-that bridge the gap between artificial intelligence and biological systems.</p>
+that bridge the gap between them.</p>
 
-<p>In my free time, I enjoy turning coffee into code, playing dota 2, and dreaming about the future. Read my <a href="/~rgs2151/posts/">thoughts</a>, <a href="/~rgs2151/publications/">publications</a>, or <a href="/~rgs2151/assets/resume.pdf">resume</a> for more details. You can also find me on <a href="https://www.linkedin.com/in/rgs2151">LinkedIn</a> or <a href="https://www.github.com/rgs2151/">GitHub</a>.</p>
+<p>In my free time, I enjoy turning coffee into code, playing dota2, and dreaming about the future. Read my <a href="/~rgs2151/publications/">publications</a> or <a href="/~rgs2151/assets/resume.pdf">resume</a> for more details. You can also find me on <a href="https://www.linkedin.com/in/rgs2151">LinkedIn</a> or <a href="https://www.github.com/rgs2151/">GitHub</a>.</p>
 
         </div>
       </div>
       
       <footer class="footer">
-        
-        <svg height="70" width="400" class="footer__pijazz"></svg>
-        <!-- Load D3 v6+ -->
-<script src="https://d3js.org/d3.v6.min.js"></script>
-
-<script>
-(function(){
-  // ── PARAMETERS ───────────────────────────────────────────────────────────────────
-  var n         = 750,
-      n_buffer  = 2000,
-      marginHMM = 20;               // reserve left 100px for the HMM
-  // two Gaussians
-  var randomLow  = d3.randomNormal(-0.5,0.3),
-      randomHigh = d3.randomNormal( 0.5,0.3);
-
-  // transition matrix
-  var transition = [[0.95,0.05],[0.05,0.95]];
-  function nextState(cur){
-    var r=Math.random(),cum=0;
-    for(var k=0;k<2;k++){
-      cum += transition[cur][k];
-      if(r<cum) return k;
-    }
-    return cur;
-  }
-
-  // build buffer + states
-  var buffer=[], stateSeq=[], state=0;
-  for(var j=0;j<n_buffer;j++){
-    stateSeq.push(state);
-    buffer.push(state===0? randomLow(): randomHigh());
-    state = nextState(state);
-  }
-  var i    = n,
-      data = buffer.slice(0,n);
-
-  // ── SVG & SCALES ─────────────────────────────────────────────────────────────────
-  var svg    = d3.select(".footer__pijazz"),
-      width  = +svg.attr("width"),
-      height = +svg.attr("height"),
-      traceW = width - marginHMM;     // 300px
-
-  // group for trace (shift it right by marginHMM)
-  var traceG = svg.append("g")
-      .attr("transform", "translate(" + marginHMM + ",0)");
-
-  var x = d3.scaleLinear().domain([0,n-1]).range([0,traceW]),
-      y = d3.scaleLinear().domain([-3,3]).range([height,0]);
-
-  var lineGen = d3.line()
-    .x((d,i)=>(x(i)))
-    .y(d    => y(d));
-
-  // add clipping region inside traceG
-  traceG.append("defs").append("clipPath")
-    .attr("id","clip")
-    .append("rect")
-      .attr("width", traceW)
-      .attr("height", height);
-  
-  // ── HMM DIAGRAM REPLACEMENT ─────────────────────────────────────────────────────────
-  var hmm_stroke_width = 3;
-  var hmm_color = "#1a1a1a";
-
-  // container + scale
-  var hmm = svg.append("g")
-      .attr("transform","translate(20,52) scale(0.6) rotate(270)");
-
-  // define state positions
-  var states = [
-    { id: 0, cx:   0, cy: 0 },   // s1
-    { id: 1, cx:  55, cy: 0 }    // s2
-  ];
-
-  // single connection line between s1→s2
-  var connect = hmm.append("line")
-      .attr("class","connect")
-      .attr("x1", states[0].cx + 20)
-      .attr("y1", states[0].cy)
-      .attr("x2", states[1].cx - 20)
-      .attr("y2", states[1].cy)
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
-
-  // per‐state group: small self‐conn + main circle + label
-  var stateG = hmm.selectAll("g.state-group")
-      .data(states)
-    .enter().append("g")
-      .attr("class", d => "state-group s" + d.id)
-      .attr("transform", d => `translate(${d.cx},${d.cy})`);
-
-  // small circle for “self” connection, offset left for s1, right for s2
-  stateG.append("circle")
-      .attr("class","self-conn")
-      .attr("cx", d => d.id === 0 ? -15 : +17)
-      .attr("cy", d => d.id === 0 ? -15 : -17)
-      .attr("r", 10)
-      .attr("fill","none")
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
-
-  // main state circle
-  stateG.append("circle")
-      .attr("class","state-circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", 20)
-      .attr("fill","black")                 // default inactive
-      .attr("stroke",hmm_color)
-      .attr("stroke-width",hmm_stroke_width);
-
-  // label “s1” / “s2”
-  stateG.append("text")
-      .attr("class","state-label")
-      .attr("x",   0)
-      .attr("y",   5)
-      .attr("font-size", 20)
-      .attr("stroke","none")
-      .attr("text-anchor","middle")
-      .text(d => "s" + (d.id + 1))
-      .attr("transform", "rotate(-270)");
-
-
-  // ── UPDATED updateHmm ─────────────────────────────────────────────────────────────
-  function updateHmm(current, previous, i) {
-    // reset fills & widths
-    hmm.selectAll("circle.state-circle").attr("fill","black");
-    hmm.selectAll("circle.self-conn").attr("stroke-width",hmm_stroke_width);
-    connect.attr("stroke-width",hmm_stroke_width);
-    hmm.selectAll("text.state-label").attr("fill",hmm_color);
-
-    // active state: fill white
-    hmm.select(`.state-group.s${current} circle.state-circle`)
-      .attr("fill",hmm_color);
-
-    // set the active state label to black
-    hmm.select(`.state-group.s${current} text.state-label`)
-      .attr("fill","black");
-
-    if (current === previous) {
-      // self‐loop: thicken its small circle
-      if (i % 8 === 0) {
-        hmm.select(`.state-group.s${current} circle.self-conn`)
-          .attr("stroke-width",8);
-      }
-    } else {
-      // state switch: thicken the connector
-      connect.attr("stroke-width",14);
-    }
-  }
-
-  // ── INITIAL TRACE LINE ────────────────────────────────────────────────────────────
-  var line = traceG.append("g")
-      .attr("clip-path","url(#clip)")
-    .append("path")
-      .datum(data)
-      .attr("d", lineGen)
-      .attr("stroke-width",1.5)
-      .attr("fill","none");
-
-  var dx = x(1)-x(0);
-
-  // ── ANIMATION via .on("end") ─────────────────────────────────────────────────────
-  function animate(){
-    line.transition()
-      .duration(10)
-      .ease(d3.easeLinear)
-      .attr("transform","translate("+dx+",0)")
-      .on("end",function(){
-        // advance state & buffer
-        var prevIdx = (i-1+n_buffer)%n_buffer,
-            cur     = stateSeq[i],
-            prev    = stateSeq[prevIdx];
-
-        updateHmm(cur,prev, i);
-        data.unshift(buffer[i]); i=(i+1)%n_buffer; data.pop();
-
-        // reset & redraw
-        line.attr("transform",null).attr("d",lineGen);
-
-        // next frame
-        animate();
-      });
-  }
-
-  // init
-  updateHmm(stateSeq[n], stateSeq[n-1], n);
-  animate();
-
-})();
-</script>
-
-        
+        <div class="footer__cp">© 2025</div>
       </footer>
 
       <!-- 1) Your MathJax configuration -->

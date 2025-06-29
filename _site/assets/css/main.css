@@ -274,11 +274,6 @@ a {
   font-size: 0.9rem;
   margin-top: 4rem;
 }
-.page .footer__pijazz {
-  stroke: var(--footer-line);
-  fill: none;
-  margin-bottom: 0.5rem;
-}
 .page .footer__cp {
   color: var(--text-light);
 }
