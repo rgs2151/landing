@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bayesian Modeling - Part 1: From Balls in Bags to Probability | Rudramani Singha</title>
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="Bayesian Modeling - Part 1: From Balls in Bags to Probability" />
+<meta name="author" content="Rudramani Singha" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Welcome to the first part of our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems." />
+<meta property="og:description" content="Welcome to the first part of our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems." />
+<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part1/" />
+<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part1/" />
+<meta property="og:site_name" content="Rudramani Singha" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-01-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bayesian Modeling - Part 1: From Balls in Bags to Probability" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2025-01-15T00:00:00-05:00","datePublished":"2025-01-15T00:00:00-05:00","description":"Welcome to the first part of our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.","headline":"Bayesian Modeling - Part 1: From Balls in Bags to Probability","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part1/"},"url":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part1/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" type="image/x-icon" href="/~rgs2151//favicon.ico" >
+  <link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+
+</head>
+<body>
+    
+    <main class="page">
+      
+      <nav class="nav">
+    <!-- https://icons.getbootstrap.com -->
+    <a class="nav__item " aria-label="Home Page" href="/~rgs2151/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>    
+        </svg> 
+    </a>
+    
+    <a class="nav__item " aria-label="Writing Page" href="/~rgs2151/posts/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+        </svg>
+    </a>
+    
+    <a class="nav__item" aria-label="Resume" href="/~rgs2151/assets/resume.pdf" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>          
+        </svg>
+    </a>
+
+</nav>
+
+      <header class="page__header">
+        
+        <h1 class="page__title">Bayesian Modeling - Part 1: From Balls in Bags to Probability</h1>
+        
+        <div style="height: 1rem;"></div><div class="postslist__item__date">Jan 15, 2025</div>
+        
+			</header>
+
+      <div class="page__content">
+        
+
+        <div class="postcontent">
+          <p>Welcome to the first part of our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.</p>
+
+<h2 id="the-story-of-balls-in-bags">The Story of Balls in Bags</h2>
+
+<h3 id="11-probability-and-quantifying-variability">1.1 Probability and Quantifying Variability</h3>
+
+<p>Probability is defined as a number between 0 and 1, which describes the likelihood of the occurrence of some particular event in some range of events. 0 means an infinitely unlikely event, and 1 means the certain event. The term ‘event’ is very general, but for us can usually be thought of as one sample data point in an experiment, and the ‘range of events’ would be all the data we would get if we sampled virtually an infinite dataset on the experiment.</p>
+
+<p>Imagine a bag with red and blue balls:</p>
+
+<p><em>[Image Caption: A transparent bag containing 6 red balls and 6 blue balls, showing equal distribution]</em></p>
+
+<p>6 red balls and 6 blue balls.</p>
+
+<p>If you randomly “sample” one ball (a.k.a. event), the probability of getting a red ball is the fraction of red balls to the total.</p>
+
+\[P(Red)= \frac {\text{Number of Red Balls}​} {\text{Total Number of Balls}}\]
+
+<p>Similarly, the probability of getting a blue ball is the fraction of blue balls to the total.</p>
+
+\[P(Blue)= \frac {\text{Number of Blue Balls}​} {\text{Total Number of Balls}}\]
+
+<p>And the sum of the probabilities of all possible outcomes would be 1.</p>
+
+\[P(Red) + P(Blue) = 1\]
+
+<h3 id="the-generative-process">The Generative Process</h3>
+
+<p>If you sampled a ball and put it back in the bag, the probability of getting a red ball would be the same on the next draw. However, if you sampled a ball and didn’t put it back in the bag, the probability of getting a red ball would change for the next draw.</p>
+
+<p><strong>For the rest of this tutorial, we will assume that the generative process that makes these balls can infinitely keep making balls and we can draw as much as we want to discover the true distribution.</strong></p>
+
+<p>With sufficient draws you can be more and more confident about the variability in the probability and the true distribution in the generative process. With a large dataset, the sample probability will converge to the true probability which should be .5/.5 in this case.</p>
+
+<p>Here’s a simple demonstration of this convergence:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="c1"># Show the probability converging to .5 .5 with increasing number of samples
+</span><span class="n">n_draws</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]</span>
+<span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="sh">"</span><span class="s">#ff4c4c</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">#4c4cff</span><span class="sh">"</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">n_draws</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">choice</span><span class="p">([</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">],</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">bar</span><span class="p">([</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">],</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">errorbar</span><span class="p">([</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">],</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="sh">"</span><span class="s">none</span><span class="sh">"</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="sh">"</span><span class="s">black</span><span class="sh">"</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">n = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><strong><em>Run this code multiple times and see which graph changes most dramatically between runs!</em></strong></p>
+
+<h3 id="12-updating-beliefs-with-new-data">1.2 Updating Beliefs with New Data</h3>
+
+<p>As you intuitively understood from the above experiment, as you draw more and more samples, you can be more and more confident about the true distribution of the balls in the bag. This is the <strong>basis of Bayesian statistics</strong>.</p>
+
+<p>We can formalize this process with Bayes’ theorem:</p>
+
+\[P(\text{Red | Data}) = \frac{P(\text{Data | Red}) P(\text{Red})}{P(\text{Data})}\]
+
+<p>Where:</p>
+<ul>
+  <li>$ P(\text{Red}) $: Prior belief about the proportion of red balls.</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$ P(\text{Data</td>
+          <td>Red}) $: Likelihood of observing the data given the proportion of red balls.</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>$ P(\text{Data}) $: Total probability of observing the data.</li>
+</ul>
+
+<p>So, basically, as you acquired more data, you updated your belief about the proportion of red balls in the bag (which in this case is the same as the probability).</p>
+
+<h3 id="13-from-discrete-to-continuous-space">1.3 From Discrete to Continuous Space</h3>
+
+<p><strong>Notice</strong> how you could either get a red ball or a blue ball. This means your <strong>choices are discrete.</strong></p>
+
+<p>Sometimes, it is possible that the generative process is <strong>continuous</strong>. Such as, what if the bag had balls in a <strong>spectrum of colors</strong> between red and blue and till now you were only sampling from a specific subset of the dataset. And now for some unknown reason, the generative process has changed and you are now sampling from the whole dataset.</p>
+
+<p><em>[Image Caption: A bag showing balls in a continuous spectrum from deep blue through purple to deep red, representing continuous color variation]</em></p>
+
+<p>To discover this new true distribution of the generative process, we make histograms of the samples we draw. By making the buckets in the histograms thinner and thinner (to infinity), we can get a better idea of the <strong><em>true continuous distribution</em></strong>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="n">matplotlib.colors</span> <span class="k">as</span> <span class="n">mcolors</span>
+
+<span class="k">def</span> <span class="nf">get_color_gradient</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="n">color2</span><span class="o">=</span><span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">):</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">mcolors</span><span class="p">.</span><span class="n">LinearSegmentedColormap</span><span class="p">.</span><span class="nf">from_list</span><span class="p">(</span><span class="sh">"</span><span class="s">gradient</span><span class="sh">"</span><span class="p">,</span> <span class="p">[</span><span class="n">color1</span><span class="p">,</span> <span class="n">color2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nf">cmap</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+<span class="c1"># Normal distribution parameters
+</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+<span class="n">num_bins_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">26</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">create_pmf</span><span class="p">(</span><span class="n">num_bins</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">bin_centers</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">pmf_values</span> <span class="o">=</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_centers</span><span class="p">,</span> <span class="n">pmf_values</span>
+
+<span class="k">def</span> <span class="nf">plot_approximation</span><span class="p">(</span><span class="n">num_bins_list</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nf">len</span><span class="p">(</span><span class="n">num_bins_list</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">num_bins</span> <span class="ow">in</span> <span class="nf">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">num_bins_list</span><span class="p">):</span>
+        <span class="n">bins</span><span class="p">,</span> <span class="n">bin_centers</span><span class="p">,</span> <span class="n">pmf_values</span> <span class="o">=</span> <span class="nf">create_pmf</span><span class="p">(</span><span class="n">num_bins</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">gradient_colors</span> <span class="o">=</span> <span class="nf">get_color_gradient</span><span class="p">(</span><span class="n">num_bins</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="n">color2</span><span class="o">=</span><span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="p">.</span><span class="nf">bar</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">,</span> <span class="n">pmf_values</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+               <span class="n">color</span><span class="o">=</span><span class="n">gradient_colors</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="sh">'</span><span class="s">black</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">center</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nf">zip</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">,</span> <span class="n">pmf_values</span><span class="p">,</span> <span class="n">gradient_colors</span><span class="p">):</span>
+            <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">value</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">,</span> <span class="sh">'</span><span class="s">o</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">PMF Approximation with </span><span class="si">{</span><span class="n">num_bins</span><span class="si">}</span><span class="s"> Balls</span><span class="sh">"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Probability (Mass Density)</span><span class="sh">"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="nf">set_xticks</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="nf">set_xticklabels</span><span class="p">([</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="nf">chr</span><span class="p">(</span><span class="mi">97</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="sh">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">num_bins</span><span class="p">)])</span>
+        <span class="n">ax</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Smaller bin sizes for better Approximations</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="nf">plot_approximation</span><span class="p">(</span><span class="n">num_bins_list</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Transitioning from a discrete probability to a continuous probability involves shifting from assigning probabilities to distinct, separate outcomes to describing probabilities across a continuum of possibilities.</p>
+
+<p><strong>We need a way to model this continuous distribution!</strong></p>
+
+<p>To do this, we assume that the histogram is an approximation of a continuous function which describes a probability distribution. And we map our histogram to the “best suited” continuous function hoping that this is the true distribution of the generative process.</p>
+
+<p>Below are some examples of different continuous functions that can be used to approximate the histogram:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">poisson</span><span class="p">,</span> <span class="n">expon</span><span class="p">,</span> <span class="n">uniform</span><span class="p">,</span> <span class="n">halfnorm</span><span class="p">,</span> <span class="n">beta</span>
+
+<span class="n">x_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sh">"</span><span class="s">Normal</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Poisson</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Exponential</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Uniform</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Half-Normal</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Beta</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">pdfs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sh">"</span><span class="s">Normal</span><span class="sh">"</span><span class="p">:</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Normal</span><span class="sh">"</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Poisson</span><span class="sh">"</span><span class="p">:</span> <span class="n">poisson</span><span class="p">.</span><span class="nf">pmf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Poisson</span><span class="sh">"</span><span class="p">].</span><span class="nf">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="n">mu</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Exponential</span><span class="sh">"</span><span class="p">:</span> <span class="n">expon</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Exponential</span><span class="sh">"</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Uniform</span><span class="sh">"</span><span class="p">:</span> <span class="n">uniform</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Uniform</span><span class="sh">"</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="sh">"</span><span class="s">Half-Normal</span><span class="sh">"</span><span class="p">:</span> <span class="n">halfnorm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Half-Normal</span><span class="sh">"</span><span class="p">]),</span>
+    <span class="sh">"</span><span class="s">Beta</span><span class="sh">"</span><span class="p">:</span> <span class="n">beta</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="sh">"</span><span class="s">Beta</span><span class="sh">"</span><span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="p">.</span><span class="mi">5</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="nf">get_color_gradient</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">pdfs</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dist_name</span><span class="p">,</span> <span class="n">x_vals</span><span class="p">)</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">x_values</span><span class="p">.</span><span class="nf">items</span><span class="p">()):</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x_vals</span><span class="p">,</span> <span class="n">pdfs</span><span class="p">[</span><span class="n">dist_name</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">dist_name</span><span class="si">}</span><span class="s"> PDF/PMF</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">dist_name</span><span class="si">}</span><span class="s"> Distribution</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Value</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Density / Probability</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><strong><em>So which function should we choose?</em></strong></p>
+
+<h2 id="the-path-forward">The Path Forward</h2>
+
+<p><em>[Image Caption: A flowchart showing the progression from simple stationary models to complex dynamic models, with branches for different types of modeling approaches]</em></p>
+
+<p>In this tutorial series, we’ll explore:</p>
+
+<ol>
+  <li><strong>Stationary Models</strong> (Part 1-2):
+    <ul>
+      <li>Single distributions</li>
+      <li>Mixture models</li>
+      <li>Markov models</li>
+    </ul>
+  </li>
+  <li><strong>Dynamic Models</strong> (Part 3-4):
+    <ul>
+      <li>Input-dependent distributions (GLMs)</li>
+      <li>Input-dependent mixtures</li>
+      <li>Hidden Markov Models with covariates</li>
+    </ul>
+  </li>
+</ol>
+
+<p>Each step builds on the previous one, taking you from basic probability to sophisticated inference systems that can handle complex, real-world data.</p>
+
+<h2 id="whats-next">What’s Next?</h2>
+
+<p>In Part 2, we’ll dive into <strong>Bayesian Thinking</strong> and learn how to specify and solve our first Bayesian model. We’ll discover how to choose the right distribution and update our beliefs as we see more data.</p>
+
+<p>The journey from balls in bags to advanced Bayesian models is fascinating - let’s continue exploring together!</p>
+
+<hr />
+
+<p><em>Continue to <a href="../bayesian-tutorial-part2">Part 2: Bayesian Thinking and Model Specification</a> to learn about priors, likelihoods, and posterior inference.</em></p>
+
+        </div>
+      </div>
+      
+      <footer class="footer">
+        <div class="footer__cp">© 2025</div>
+      </footer>
+
+      <!-- 1) Your MathJax configuration -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']]
+    },
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","color.js"],
+      equationNumbers: { autoNumber: "AMS" }
+    },
+    showProcessingMessages: false,
+    messageStyle: "none",
+    imageFont: null,
+    "AssistiveMML": { disabled: true }
+  });
+</script>
+
+<!-- 2) Then load the MathJax engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script><script>
+  if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+    (function() {
+      var gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XWEJZKE72S';
+      document.head.appendChild(gtagScript);
+  
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XWEJZKE72S');
+    })();
+  }
+</script>
+
+    
+    </main>
+
+  </body>
+
+</html>

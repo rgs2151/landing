@@ -47,7 +47,7 @@ button:focus {
 }
 
 :root {
-    --container-max: 600px;
+    --container-max: 800px;
     --container-page: 90%;
     --normal: 440;
     --bold: 700;
@@ -179,6 +179,31 @@ a {
         .postcontent {
             line-height: 1.7;
 
+            // Code block styles
+            pre {
+                background: var(--bg-alt);
+                border-radius: 8px;
+                padding: 1rem;
+                margin: 1.5rem 0;
+                overflow-x: auto;
+                font-size: 0.8rem; // 2 sizes smaller
+                line-height: 1.4;
+                
+                code {
+                    background: none;
+                    padding: 0;
+                    font-size: inherit;
+                }
+            }
+
+            code {
+                background: var(--bg-alt);
+                padding: 0.2rem 0.4rem;
+                border-radius: 4px;
+                font-size: 0.85rem; // Slightly smaller for inline code
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            }
+
             h2 {
                 margin: 2rem 0 1.5rem;
             }
@@ -262,7 +287,7 @@ a {
                     opacity: 0.6;
                 }
 
-                &--reviews {
+                &--peer-reviewed {
                     background: var(--text-light);
                     opacity: 0.3;
                 }
@@ -313,7 +338,7 @@ a {
                     opacity: 0.6;
                 }
 
-                &--reviews {
+                &--peer-reviewed {
                     background: var(--text-light);
                     opacity: 0.3;
                 }

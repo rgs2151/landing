@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bayesian Modeling - Part 3: Mixture Models and Hidden Structure | Rudramani Singha</title>
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="Bayesian Modeling - Part 3: Mixture Models and Hidden Structure" />
+<meta name="author" content="Rudramani Singha" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Now suppose our generative process has changed. Previously, we assumed it generated data from a single continuous distribution. However, now the data appears to come from multiple subpopulations or components, and our goal is to model this situation. This scenario is best described by Mixture Models." />
+<meta property="og:description" content="Now suppose our generative process has changed. Previously, we assumed it generated data from a single continuous distribution. However, now the data appears to come from multiple subpopulations or components, and our goal is to model this situation. This scenario is best described by Mixture Models." />
+<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part3/" />
+<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part3/" />
+<meta property="og:site_name" content="Rudramani Singha" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-01-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bayesian Modeling - Part 3: Mixture Models and Hidden Structure" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2025-01-17T00:00:00-05:00","datePublished":"2025-01-17T00:00:00-05:00","description":"Now suppose our generative process has changed. Previously, we assumed it generated data from a single continuous distribution. However, now the data appears to come from multiple subpopulations or components, and our goal is to model this situation. This scenario is best described by Mixture Models.","headline":"Bayesian Modeling - Part 3: Mixture Models and Hidden Structure","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part3/"},"url":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part3/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" type="image/x-icon" href="/~rgs2151//favicon.ico" >
+  <link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+
+</head>
+<body>
+    
+    <main class="page">
+      
+      <nav class="nav">
+    <!-- https://icons.getbootstrap.com -->
+    <a class="nav__item " aria-label="Home Page" href="/~rgs2151/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>    
+        </svg> 
+    </a>
+    
+    <a class="nav__item " aria-label="Writing Page" href="/~rgs2151/posts/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+        </svg>
+    </a>
+    
+    <a class="nav__item" aria-label="Resume" href="/~rgs2151/assets/resume.pdf" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>          
+        </svg>
+    </a>
+
+</nav>
+
+      <header class="page__header">
+        
+        <h1 class="page__title">Bayesian Modeling - Part 3: Mixture Models and Hidden Structure</h1>
+        
+        <div style="height: 1rem;"></div><div class="postslist__item__date">Jan 17, 2025</div>
+        
+			</header>
+
+      <div class="page__content">
+        
+
+        <div class="postcontent">
+          <p>Now suppose our generative process has changed. Previously, we assumed it generated data from a single continuous distribution. However, now the data appears to come from multiple <strong>subpopulations</strong> or <strong>components</strong>, and our goal is to model this situation. This scenario is best described by <strong>Mixture Models</strong>.</p>
+
+<p>You can think of it as a bag with multiple bags inside it, each containing different preferences for balls of different colors.</p>
+
+<p><em>[Image Caption: A large transparent bag containing three smaller bags - one with predominantly red balls, one with blue balls, and one with mixed colors, illustrating the concept of mixture components]</em></p>
+
+<h2 id="what-is-a-mixture-model">What is a Mixture Model?</h2>
+
+<p>A mixture model is a probabilistic model that assumes:</p>
+<ol>
+  <li>The observed data is drawn from a combination of <strong>multiple distributions</strong>, each representing a distinct <strong>component</strong> in the data.</li>
+  <li>Each data point is generated by:
+    <ul>
+      <li>First selecting a <strong>component</strong> (randomly, based on a probability distribution over the components),</li>
+      <li>Then drawing a sample from the distribution corresponding to the chosen component.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="components-of-a-mixture-model">Components of a Mixture Model</h2>
+
+<h3 id="latent-variable-component-selection">Latent Variable (Component Selection)</h3>
+<ul>
+  <li>Let $ z_n $ represent the <strong>latent variable</strong> (hidden category) for the $ n $-th observation, indicating which component the observation belongs to.</li>
+  <li>$ z_n \in {1, 2, \dots, K} $, where $ K $ is the number of components.</li>
+</ul>
+
+<h3 id="mixing-weights-component-probabilities">Mixing Weights (Component Probabilities)</h3>
+<ul>
+  <li>Each component $ k $ is associated with a probability $ \pi_k $, called the <strong>mixing weight</strong>, representing how likely a sample belongs to this component.</li>
+  <li>Mixing weights satisfy:
+\(\sum_{k=1}^K \pi_k = 1 \quad \text{and} \quad \pi_k &gt; 0 \, \forall k.\)</li>
+</ul>
+
+<p><strong>note</strong>: $\forall$ means “for all” :)</p>
+
+<h3 id="component-distributions">Component Distributions</h3>
+<ul>
+  <li>Each component $ k $ has a distribution (e.g., Gaussian, Poisson, etc.) with its own parameters $ \theta_k $. For instance, in the case of a Gaussian Mixture Model (GMM), $ \theta_k = (\mu_k, \sigma_k) $.</li>
+</ul>
+
+<h2 id="the-probabilistic-structure">The Probabilistic Structure</h2>
+
+<p>The generative process for each data point $ y_n $ is as follows:</p>
+<ol>
+  <li>Draw a component $ z_n $ from the categorical distribution:
+\(z_n \sim \text{Categorical}(\pi_1, \pi_2, \dots, \pi_K)\)</li>
+  <li>Given $ z_n = k $, draw the observation $ y_n $ from the corresponding component distribution:
+\(y_n \sim f(y | \theta_k)\)</li>
+</ol>
+
+<h3 id="joint-and-marginal-distributions">Joint and Marginal Distributions</h3>
+
+<ol>
+  <li>
+    <p><strong>Joint Probability of Observing $ (z_n, y_n) $:</strong>
+\(P(z_n, y_n) = P(z_n) P(y_n | z_n)\)</p>
+  </li>
+  <li>
+    <p><strong>Marginal Probability of $ y_n $:</strong></p>
+    <ul>
+      <li>By marginalizing over the latent variable $ z_n $:
+\(P(y_n) = \sum_{k=1}^K P(z_n = k) P(y_n | z_n = k)\)</li>
+      <li>Substituting $ P(z_n = k) = \pi_k $:
+\(P(y_n) = \sum_{k=1}^K \pi_k f(y_n | \theta_k)\)</li>
+      <li><strong>This is the most common representation of mixture models!</strong></li>
+    </ul>
+  </li>
+</ol>
+
+<p>Intuitively, we can visualize the mixture model as follows:</p>
+
+<p><em>[Image Caption: A flow diagram showing the two-step process: 1) Select component with probability π, 2) Generate observation from selected component’s distribution]</em></p>
+
+<h2 id="probabilistic-graphical-model">Probabilistic Graphical Model</h2>
+
+<p>Below is the corresponding <strong>probabilistic graphical model (PGM)</strong> that illustrates the dependencies in a mixture model. The <strong>plate notation</strong> indicates repeated variables for $ n = 1, \dots, N $ observations and $ k = 1, \dots, K $ components.</p>
+
+<p><em>[Image Caption: A directed graphical model showing π pointing to z_n, μ_k pointing to y_n, and z_n pointing to y_n, with appropriate plate notations for N observations and K components]</em></p>
+
+<ul>
+  <li>$ \pi $: Mixing weights (shared across all data points).</li>
+  <li>$ z_n $: Latent variable (which component generated the $ n $-th observation).</li>
+  <li>$ \mu_k $: Parameters of the $ k $-th component (e.g., mean in a GMM).</li>
+  <li>$ y_n $: Observed data.</li>
+</ul>
+
+<p>This framework captures the <strong>hierarchical structure</strong>:</p>
+<ul>
+  <li>$ z_n $ determines which component $ y_n $ is drawn from.</li>
+  <li>$ \pi $ controls the probabilities of the components.</li>
+  <li>$ \mu_k $ determines the shape of each component.</li>
+</ul>
+
+<h2 id="bayesian-specification">Bayesian Specification</h2>
+
+<p>In the Bayesian framework, we consider the following components:</p>
+
+<ol>
+  <li><strong>Priors</strong>:
+    <ul>
+      <li>$ \pi \sim \text{Dirichlet}(\alpha_1, \dots, \alpha_K) $ (mixing weights),</li>
+      <li>$ \theta_k \sim \text{Prior for component parameters (e.g., Gaussian)} $.</li>
+    </ul>
+  </li>
+  <li><strong>Likelihood</strong>:
+    <ul>
+      <li>The likelihood of observing $ y_n $, given the parameters $ \pi $ and $ \theta $, is:
+\(P(y_n | \pi, \theta) = \sum_{k=1}^K \pi_k f(y_n | \theta_k)\)</li>
+    </ul>
+  </li>
+  <li><strong>Posterior</strong>:
+    <ul>
+      <li>Using Bayes’ theorem, the posterior distribution updates our beliefs about the parameters based on the observed data:
+\(P(\pi, \theta | y) \propto P(y | \pi, \theta) P(\pi) P(\theta)\)</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="inference-in-mixture-models-with-pymc">Inference in Mixture Models with PyMC</h2>
+
+<p>Now let’s simulate a mixture model and infer the parameters using MCMC. First, let’s create an interactive way to generate data:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="n">matplotlib.colors</span> <span class="k">as</span> <span class="n">mcolors</span>
+<span class="kn">from</span> <span class="n">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="n">ipywidgets</span> <span class="k">as</span> <span class="n">widgets</span>
+<span class="kn">from</span> <span class="n">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="k">def</span> <span class="nf">get_color_gradient</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="n">color2</span><span class="o">=</span><span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">):</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">mcolors</span><span class="p">.</span><span class="n">LinearSegmentedColormap</span><span class="p">.</span><span class="nf">from_list</span><span class="p">(</span><span class="sh">"</span><span class="s">gradient</span><span class="sh">"</span><span class="p">,</span> <span class="p">[</span><span class="n">color1</span><span class="p">,</span> <span class="n">color2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nf">cmap</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">plot_mixture</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">imeans</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">iweights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">show_comps</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># Plot the mixture
+</span>    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="nf">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="sh">'</span><span class="s">black</span><span class="sh">'</span><span class="p">,</span> 
+                           <span class="n">color</span><span class="o">=</span><span class="sh">"</span><span class="s">skyblue</span><span class="sh">"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">"</span><span class="s">Data</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">patch</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">patches</span><span class="p">):</span>
+        <span class="n">patch</span><span class="p">.</span><span class="nf">set_facecolor</span><span class="p">(</span><span class="nf">get_color_gradient</span><span class="p">(</span><span class="mi">26</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">imeans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">iweights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+        <span class="c1"># Plot the mixture uncertainty
+</span>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">iweights</span><span class="p">)):</span>
+            <span class="n">pdf</span> <span class="o">=</span> <span class="p">(</span><span class="n">iweights</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">imeans</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> 
+                   <span class="n">iweights</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">imeans</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pdf</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">"</span><span class="s">orange</span><span class="sh">"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.003</span><span class="p">)</span>
+
+        <span class="c1"># Plot the mixture mean
+</span>        <span class="n">mixture_density</span> <span class="o">=</span> <span class="p">(</span><span class="n">iweights</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">imeans</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+                          <span class="n">iweights</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">imeans</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mixture_density</span><span class="p">,</span> <span class="sh">"</span><span class="s">k--</span><span class="sh">"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">"</span><span class="s">Mixture Mean</span><span class="sh">"</span><span class="p">)</span>
+
+    <span class="c1"># Plot the components
+</span>    <span class="k">if</span> <span class="n">show_comps</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">mean</span> <span class="ow">in</span> <span class="nf">zip</span><span class="p">(</span><span class="n">iweights</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">imeans</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+            <span class="n">component_density</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">component_density</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="sh">"</span><span class="s">--</span><span class="sh">"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> 
+                   <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">"</span><span class="s">Component: μ=</span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+    
+    <span class="n">ax</span><span class="p">.</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">"</span><span class="s">Mixture of Gaussians</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">"</span><span class="s">y</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Density</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
+
+<span class="c1"># Interactive widget for generating mixture data
+</span><span class="n">a</span> <span class="o">=</span> <span class="n">widgets</span><span class="p">.</span><span class="nc">FloatSlider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mean_a</span> <span class="o">=</span> <span class="n">widgets</span><span class="p">.</span><span class="nc">FloatSlider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">mean_b</span> <span class="o">=</span> <span class="n">widgets</span><span class="p">.</span><span class="nc">FloatSlider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean_1</span><span class="p">,</span> <span class="n">mean_2</span><span class="p">):</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">choice</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">weight</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">weight</span><span class="p">])</span>
+    <span class="k">global</span> <span class="n">y</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">([</span><span class="n">mean_1</span><span class="p">,</span> <span class="n">mean_2</span><span class="p">][</span><span class="n">k</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">components</span><span class="p">])</span>
+    <span class="nf">plot_mixture</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">widgets</span><span class="p">.</span><span class="nf">interactive</span><span class="p">(</span><span class="n">update_plot</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">mean_1</span><span class="o">=</span><span class="n">mean_a</span><span class="p">,</span> <span class="n">mean_2</span><span class="o">=</span><span class="n">mean_b</span><span class="p">)</span>
+<span class="nf">display</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Now let’s fit a Bayesian mixture model to this data:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pymc</span> <span class="k">as</span> <span class="n">pm</span>
+
+<span class="c1"># Mixture of Normal Components
+</span><span class="k">with</span> <span class="n">pm</span><span class="p">.</span><span class="nc">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">model</span><span class="p">:</span>
+    <span class="c1"># Priors
+</span>    <span class="n">w</span> <span class="o">=</span> <span class="n">pm</span><span class="p">.</span><span class="nc">Dirichlet</span><span class="p">(</span><span class="sh">"</span><span class="s">w</span><span class="sh">"</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>  <span class="c1"># 2 mixture weights
+</span>    <span class="n">mu1</span> <span class="o">=</span> <span class="n">pm</span><span class="p">.</span><span class="nc">Normal</span><span class="p">(</span><span class="sh">"</span><span class="s">mu1</span><span class="sh">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">mu2</span> <span class="o">=</span> <span class="n">pm</span><span class="p">.</span><span class="nc">Normal</span><span class="p">(</span><span class="sh">"</span><span class="s">mu2</span><span class="sh">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">components</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pm</span><span class="p">.</span><span class="n">Normal</span><span class="p">.</span><span class="nf">dist</span><span class="p">(</span><span class="n">mu</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">pm</span><span class="p">.</span><span class="n">Normal</span><span class="p">.</span><span class="nf">dist</span><span class="p">(</span><span class="n">mu</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">like</span> <span class="o">=</span> <span class="n">pm</span><span class="p">.</span><span class="nc">Mixture</span><span class="p">(</span><span class="sh">"</span><span class="s">like</span><span class="sh">"</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">comp_dists</span><span class="o">=</span><span class="n">components</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># Sample
+</span>    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="p">.</span><span class="nf">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">chains</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Let’s examine our results:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">arviz</span> <span class="k">as</span> <span class="n">az</span>
+
+<span class="c1"># Extract posteriors
+</span><span class="n">imeans</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([</span><span class="n">trace</span><span class="p">.</span><span class="n">posterior</span><span class="p">.</span><span class="n">mu1</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">values</span><span class="p">,</span> <span class="n">trace</span><span class="p">.</span><span class="n">posterior</span><span class="p">.</span><span class="n">mu2</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">values</span><span class="p">]).</span><span class="n">T</span>
+<span class="n">iweights</span> <span class="o">=</span> <span class="n">trace</span><span class="p">.</span><span class="n">posterior</span><span class="p">.</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">values</span>
+
+<span class="nf">plot_mixture</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">imeans</span><span class="p">,</span> <span class="n">iweights</span><span class="p">,</span> <span class="n">show_comps</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">az</span><span class="p">.</span><span class="nf">plot_posterior</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">.</span><span class="nf">flatten</span><span class="p">():</span> 
+    <span class="n">a</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Density</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="understanding-the-results">Understanding the Results</h2>
+
+<p><strong>Notes:</strong></p>
+
+<ol>
+  <li><strong>Mixture Fit Results</strong>:
+    <ul>
+      <li>The observed histogram shows two distinct peaks, which are well-captured by the <strong>Mixture of Gaussians</strong>.</li>
+      <li>The dashed black line represents the <strong>mixture mean</strong>, which combines the contributions of both components.</li>
+    </ul>
+  </li>
+  <li><strong>Posterior Summaries</strong>:
+    <ul>
+      <li>For $ \mu_1 $ (mean of the first component), the posterior mean is approximately <strong>0.03</strong>, indicating the first component centers near zero.</li>
+      <li>For $ \mu_2 $ (mean of the second component), the posterior mean is approximately <strong>4.1</strong>, reflecting the second component is centered around 4.</li>
+      <li>The weights $ w_0 $ and $ w_1 $ (mixing proportions) show posterior means of <strong>0.7</strong> and <strong>0.3</strong>, respectively, indicating the first component contributes 70% and the second contributes 30% to the mixture.</li>
+    </ul>
+  </li>
+  <li><strong>Uncertainty in Estimation</strong>:
+    <ul>
+      <li>The credible intervals (94% HDI) for all parameters are narrow, showing high confidence in the estimates for means ($ \mu_1, \mu_2 $) and weights ($ w_0, w_1 $).</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Quiz</strong>: Mixture Peaks - From the plot, why does the first peak appear taller than the second? How do the weights influence this observation?</p>
+
+<h2 id="key-insights-about-mixture-models">Key Insights About Mixture Models</h2>
+
+<ol>
+  <li><strong>Hidden Structure</strong>: Mixture models help us discover hidden subgroups in our data</li>
+  <li><strong>Automatic Clustering</strong>: The model automatically assigns data points to components</li>
+  <li><strong>Flexible Modeling</strong>: We can model complex, multimodal distributions</li>
+  <li><strong>Uncertainty in Assignment</strong>: Unlike hard clustering, we get probabilities of membership</li>
+</ol>
+
+<h2 id="whats-next">What’s Next?</h2>
+
+<p>In Part 4, we’ll introduce <strong>temporal dependencies</strong> with <strong>Markov Models</strong>. What happens when the choice of which bag to sample from depends on which bag we used in the previous step? This leads us into the fascinating world of Hidden Markov Models!</p>
+
+<p>Think of it as a sequence of bags, where the probability of choosing the next bag depends on which bag you’re currently using. This temporal structure opens up entirely new modeling possibilities.</p>
+
+<hr />
+
+<p><em>Continue to <a href="../bayesian-tutorial-part4">Part 4: Markov Models and Temporal Dependencies</a> to learn about modeling sequential data with hidden states.</em></p>
+
+        </div>
+      </div>
+      
+      <footer class="footer">
+        <div class="footer__cp">© 2025</div>
+      </footer>
+
+      <!-- 1) Your MathJax configuration -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']]
+    },
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","color.js"],
+      equationNumbers: { autoNumber: "AMS" }
+    },
+    showProcessingMessages: false,
+    messageStyle: "none",
+    imageFont: null,
+    "AssistiveMML": { disabled: true }
+  });
+</script>
+
+<!-- 2) Then load the MathJax engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script><script>
+  if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+    (function() {
+      var gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XWEJZKE72S';
+      document.head.appendChild(gtagScript);
+  
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XWEJZKE72S');
+    })();
+  }
+</script>
+
+    
+    </main>
+
+  </body>
+
+</html>

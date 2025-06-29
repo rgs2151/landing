@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bayesian Modeling - Part 2: Bayesian Thinking and Model Specification | Rudramani Singha</title>
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="Bayesian Modeling - Part 2: Bayesian Thinking and Model Specification" />
+<meta name="author" content="Rudramani Singha" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Now that we understand basic probability and continuous distributions, let’s dive into the heart of Bayesian modeling. We’ll learn how to think like a Bayesian and build our first complete model." />
+<meta property="og:description" content="Now that we understand basic probability and continuous distributions, let’s dive into the heart of Bayesian modeling. We’ll learn how to think like a Bayesian and build our first complete model." />
+<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part2/" />
+<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part2/" />
+<meta property="og:site_name" content="Rudramani Singha" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-01-16T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bayesian Modeling - Part 2: Bayesian Thinking and Model Specification" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2025-01-16T00:00:00-05:00","datePublished":"2025-01-16T00:00:00-05:00","description":"Now that we understand basic probability and continuous distributions, let’s dive into the heart of Bayesian modeling. We’ll learn how to think like a Bayesian and build our first complete model.","headline":"Bayesian Modeling - Part 2: Bayesian Thinking and Model Specification","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part2/"},"url":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part2/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" type="image/x-icon" href="/~rgs2151//favicon.ico" >
+  <link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+
+</head>
+<body>
+    
+    <main class="page">
+      
+      <nav class="nav">
+    <!-- https://icons.getbootstrap.com -->
+    <a class="nav__item " aria-label="Home Page" href="/~rgs2151/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>    
+        </svg> 
+    </a>
+    
+    <a class="nav__item " aria-label="Writing Page" href="/~rgs2151/posts/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+        </svg>
+    </a>
+    
+    <a class="nav__item" aria-label="Resume" href="/~rgs2151/assets/resume.pdf" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>          
+        </svg>
+    </a>
+
+</nav>
+
+      <header class="page__header">
+        
+        <h1 class="page__title">Bayesian Modeling - Part 2: Bayesian Thinking and Model Specification</h1>
+        
+        <div style="height: 1rem;"></div><div class="postslist__item__date">Jan 16, 2025</div>
+        
+			</header>
+
+      <div class="page__content">
+        
+
+        <div class="postcontent">
+          <p>Now that we understand basic probability and continuous distributions, let’s dive into the heart of Bayesian modeling. We’ll learn how to think like a Bayesian and build our first complete model.</p>
+
+<h2 id="probability-interpretation-two-schools-of-thought">Probability Interpretation: Two Schools of Thought</h2>
+
+<p>Choosing the right distribution is a question of what fits the data best. <strong>When we are approximating the data, we are fitting a model!</strong></p>
+
+<p>There are 2 schools of thought on this:</p>
+
+<ol>
+  <li>
+    <p><strong>Frequentist</strong>: They consider the data as fixed (given the experiment) and view the model parameters as unknown but fixed quantities. They use methods like Maximum Likelihood Estimation (MLE) to estimate the parameters that maximize the likelihood of observing the data.</p>
+  </li>
+  <li>
+    <p><strong>Bayesian</strong>: They consider the data as observed, and the <strong>model parameters as random variables with prior beliefs</strong>. They use <strong>Bayes’ theorem to update their prior beliefs</strong> about the parameters into posterior distributions based on the observed data.</p>
+  </li>
+</ol>
+
+<p><strong>For the purpose of this tutorial, we will focus specifically on the Bayesian approach.</strong></p>
+
+<h2 id="bayesian-model-specification">Bayesian Model Specification</h2>
+
+<p><strong>Bayesian model specification involves 3 components:</strong></p>
+
+<ol>
+  <li><strong>Prior</strong>: The prior distribution describes the beliefs about the model parameters before observing the data. It is often assumed to be a normal distribution.</li>
+  <li><strong>Likelihood</strong>: The likelihood function describes the probability of observing the data given the model parameters. It is the foundation of the model.</li>
+  <li><strong>Posterior</strong>: The posterior distribution describes the updated beliefs about the model parameters after observing the data. It is calculated using Bayes’ theorem.</li>
+</ol>
+
+<p>We can update our beliefs about the generative process by using the posterior distribution:</p>
+
+\[Posterior = \frac{Likelihood \times Prior}{Evidence}\]
+
+<h3 id="our-first-bayesian-model">Our First Bayesian Model</h3>
+
+<p><strong>For our example of the balls in the bag, we can specify the model as follows:</strong></p>
+
+<p><strong>Prior</strong>:</p>
+
+<p>\(\mu \sim \mathcal{N}(0, 1)\) 
+\(\sigma \sim |\mathcal{N}(0, 1)|\)</p>
+
+<p><strong>Likelihood</strong>:</p>
+
+\[y \sim \mathcal{N}( \mu, \sigma^2)\]
+
+<p><strong>Posterior</strong>:</p>
+
+\[P(\mu, \sigma | y) = \frac{P(y | \mu, \sigma) P(\mu) P(\sigma)}{P(y)}\]
+
+<p><strong>Where</strong>:</p>
+<ul>
+  <li>$y$ is the data (balls drawn from the bag).</li>
+  <li>$\mu$ is the mean of the distribution.</li>
+  <li>$\sigma$ is the standard deviation of the distribution.</li>
+  <li>$\mathcal{N}$ is the normal distribution.</li>
+</ul>
+
+<p>A nice way to visualize this is through a simple graphical model:</p>
+
+<p><em>[Image Caption: A directed graphical model showing μ and σ as parent nodes pointing to y, with a plate notation indicating N observations y₁, y₂, …, yₙ]</em></p>
+
+<p>This indicates that there are $ N $ independent and identically distributed (i.i.d.) observations $ y_1, y_2, \dots, y_N $.</p>
+
+<h2 id="inference-solving-the-bayesian-model">Inference: Solving the Bayesian Model</h2>
+
+<p>Yayy, now that we have everything, <em>LETS GO AND SOLVE IT!!!!</em></p>
+
+<p>But wait, how do we solve it?</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Solving means calculating the posterior distribution $P(\mu, \sigma</td>
+      <td>y)$.</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>Analytically</strong>: We can solve the posterior distribution analytically for simple models such as this.</li>
+  <li><strong>Numerically</strong>: For complex models, it is often <strong>intractable to solve</strong> the posterior distribution analytically. In such cases, we can use numerical methods like <strong>Markov Chain Monte Carlo (MCMC)</strong> or <strong>Variational Inference (VI)</strong> to approximate the posterior distribution.</li>
+</ul>
+
+<p><strong>For the purpose of this tutorial, we will use MCMC to approximate the posterior distribution.</strong></p>
+
+<h3 id="implementing-our-first-model-with-stan">Implementing Our First Model with Stan</h3>
+
+<p>Let’s implement and solve our first Bayesian model using Stan:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">tempfile</span>
+<span class="kn">from</span> <span class="n">cmdstanpy</span> <span class="kn">import</span> <span class="n">CmdStanModel</span>
+<span class="kn">import</span> <span class="n">arviz</span> <span class="k">as</span> <span class="n">az</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="c1"># Define the Stan model
+</span><span class="n">model_specification</span> <span class="o">=</span> <span class="sh">"""</span><span class="s">
+data {
+    int&lt;lower=0&gt; N; // Number of data points
+    array[N] real y; // Data
+}
+parameters {
+    real mu; // Mean
+    real&lt;lower=0&gt; sigma; // Standard deviation
+}
+model {
+    // Priors
+    mu ~ normal(0, 1);
+    sigma ~ normal(0, 1);
+
+    // Likelihood
+    y ~ normal(mu, sigma);
+}
+</span><span class="sh">"""</span>
+
+<span class="c1"># Write the model to a temporary file
+</span><span class="k">with</span> <span class="n">tempfile</span><span class="p">.</span><span class="nc">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="sh">"</span><span class="s">.stan</span><span class="sh">"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="sh">"</span><span class="s">w</span><span class="sh">"</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp_file</span><span class="p">:</span>
+    <span class="n">tmp_file</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">model_specification</span><span class="p">)</span>
+    <span class="n">tmp_stan_path</span> <span class="o">=</span> <span class="n">tmp_file</span><span class="p">.</span><span class="n">name</span>
+
+<span class="c1"># Prepare the unknown generator data
+</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sh">"</span><span class="s">N</span><span class="sh">"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">y</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># Compile and fit the model
+</span><span class="n">model</span> <span class="o">=</span> <span class="nc">CmdStanModel</span><span class="p">(</span><span class="n">stan_file</span><span class="o">=</span><span class="n">tmp_stan_path</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">iter_sampling</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Now let’s examine our results:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">idata</span> <span class="o">=</span> <span class="n">az</span><span class="p">.</span><span class="nf">from_cmdstanpy</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+
+<span class="c1"># Plot the posterior distribution
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">az</span><span class="p">.</span><span class="nf">plot_posterior</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">textsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sh">"</span><span class="s">Posterior Distribution of Parameters</span><span class="sh">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">:</span> 
+    <span class="n">a</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Density</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><strong>Notes</strong>:</p>
+<ul>
+  <li>It seems like the model has updated its prior beliefs and landed on ~1.1 for $\mu$ and ~0.9 for $\sigma$ which is very close to the true distribution of the generative process (1 $\mu$ and 1 $\sigma$).</li>
+  <li>The model is uncertain about its estimation only to a very small degree. The range for $\mu$ is 1 to 1.1 and for $\sigma$ is 0.95 to 1. It is essentially pretty certain about these parameters.</li>
+</ul>
+
+<p>Let’s visualize how well our model fits the data:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_color_gradient</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="sh">"</span><span class="s">red</span><span class="sh">"</span><span class="p">,</span> <span class="n">color2</span><span class="o">=</span><span class="sh">"</span><span class="s">blue</span><span class="sh">"</span><span class="p">):</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">mcolors</span><span class="p">.</span><span class="n">LinearSegmentedColormap</span><span class="p">.</span><span class="nf">from_list</span><span class="p">(</span><span class="sh">"</span><span class="s">gradient</span><span class="sh">"</span><span class="p">,</span> <span class="p">[</span><span class="n">color1</span><span class="p">,</span> <span class="n">color2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nf">cmap</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+<span class="n">num_bins</span> <span class="o">=</span> <span class="mi">26</span>
+<span class="n">all_mu</span> <span class="o">=</span> <span class="n">idata</span><span class="p">.</span><span class="n">posterior</span><span class="p">.</span><span class="n">mu</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="nf">flatten</span><span class="p">()</span>
+<span class="n">all_sigma</span> <span class="o">=</span> <span class="n">idata</span><span class="p">.</span><span class="n">posterior</span><span class="p">.</span><span class="n">sigma</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="nf">flatten</span><span class="p">()</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Plot the data histogram
+</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">hist</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sh">"</span><span class="s">y</span><span class="sh">"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">num_bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                        <span class="n">edgecolor</span><span class="o">=</span><span class="sh">'</span><span class="s">black</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">"</span><span class="s">skyblue</span><span class="sh">"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">"</span><span class="s">Data</span><span class="sh">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">patches</span><span class="p">)):</span> 
+    <span class="n">patches</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_facecolor</span><span class="p">(</span><span class="nf">get_color_gradient</span><span class="p">(</span><span class="n">num_bins</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="c1"># Plot the uncertainty in the model
+</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">all_mu</span><span class="p">)):</span>
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">all_mu</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="n">all_sigma</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pdf</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">"</span><span class="s">orange</span><span class="sh">"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.003</span><span class="p">)</span>
+
+<span class="c1"># Plot the mean of the posterior predictive distribution
+</span><span class="n">mean_pdf</span> <span class="o">=</span> <span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">all_mu</span><span class="p">.</span><span class="nf">mean</span><span class="p">(),</span> <span class="n">scale</span><span class="o">=</span><span class="n">all_sigma</span><span class="p">.</span><span class="nf">mean</span><span class="p">())</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean_pdf</span><span class="p">,</span> <span class="sh">"</span><span class="s">k--</span><span class="sh">"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">"</span><span class="s">Mean Post. Predictive</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="sh">'</span><span class="s">upper left</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">"</span><span class="s">Posterior Predictive Distribution and Uncertainty</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">Density</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">"</span><span class="s">y</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="understanding-the-results">Understanding the Results</h2>
+
+<p>The orange cloud shows the uncertainty in our model predictions - each thin orange line represents one possible parameter combination from our posterior samples. The thick dashed black line shows the average prediction.</p>
+
+<p>This uncertainty quantification is one of the key advantages of Bayesian modeling. We don’t just get point estimates; we get full distributions that tell us how confident we should be in our predictions.</p>
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<ol>
+  <li><strong>Bayesian models have three components</strong>: Prior, Likelihood, and Posterior</li>
+  <li><strong>Priors encode our beliefs</strong> before seeing data</li>
+  <li><strong>Likelihoods describe</strong> how our data depends on parameters</li>
+  <li><strong>Posteriors combine</strong> priors and likelihoods using Bayes’ theorem</li>
+  <li><strong>MCMC helps us solve</strong> complex models numerically</li>
+  <li><strong>Uncertainty quantification</strong> comes naturally in Bayesian analysis</li>
+</ol>
+
+<h2 id="whats-next">What’s Next?</h2>
+
+<p>In Part 3, we’ll explore <strong>Mixture Models</strong> - what happens when our data comes from multiple subpopulations? We’ll learn how to model situations where different groups follow different distributions, all mixed together in our observed data.</p>
+
+<p>Think about it: what if our bag of balls actually contained multiple smaller bags, each with different color preferences? That’s exactly what we’ll tackle next!</p>
+
+<hr />
+
+<p><em>Continue to <a href="../bayesian-tutorial-part3">Part 3: Mixture Models and Hidden Structure</a> to learn about modeling multiple subpopulations in your data.</em></p>
+
+        </div>
+      </div>
+      
+      <footer class="footer">
+        <div class="footer__cp">© 2025</div>
+      </footer>
+
+      <!-- 1) Your MathJax configuration -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']]
+    },
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","color.js"],
+      equationNumbers: { autoNumber: "AMS" }
+    },
+    showProcessingMessages: false,
+    messageStyle: "none",
+    imageFont: null,
+    "AssistiveMML": { disabled: true }
+  });
+</script>
+
+<!-- 2) Then load the MathJax engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script><script>
+  if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+    (function() {
+      var gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XWEJZKE72S';
+      document.head.appendChild(gtagScript);
+  
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XWEJZKE72S');
+    })();
+  }
+</script>
+
+    
+    </main>
+
+  </body>
+
+</html>
