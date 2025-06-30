@@ -5,12 +5,7 @@ date: 2025-03-12 20:27:20 -0500
 tag: thoughts
 ---
 
-# Hypothesis Testing vs Bayesian Modeling
-
-*Date: 12th March 2025*  
-*Author: Rudra*
-
-After working through our comprehensive Bayesian modeling series, you might wonder: "How does this compare to the classical statistics I learned in school?" This is a fundamental question that gets to the heart of two very different philosophies about uncertainty, evidence, and decision-making.
+"How does this compare to the classical statistics I learned in school?" This is a fundamental question that gets to the heart of two very different philosophies about uncertainty, evidence, and decision-making.
 
 Let me tell you a story that illustrates the key differences...
 
