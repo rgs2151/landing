@@ -1,213 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-07-20T02:49:05-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Rudramani Singha</title><subtitle>Hey there! I&apos;m a researcher based in New York City.  I build probabilistic models and reverse engineer the brain.</subtitle><author><name>Rudramani Singha</name></author><entry><title type="html">Hypothesis Testing vs Bayesian Modeling</title><link href="http://localhost:4000/posts/hypothesis/" rel="alternate" type="text/html" title="Hypothesis Testing vs Bayesian Modeling" /><published>2025-03-12T21:27:20-04:00</published><updated>2025-03-12T21:27:20-04:00</updated><id>http://localhost:4000/posts/hypothesis</id><content type="html" xml:base="http://localhost:4000/posts/hypothesis/"><![CDATA[<p>“How does this compare to the classical statistics I learned in school?” This is a fundamental question that gets to the heart of two very different philosophies about uncertainty, evidence, and decision-making.</p>
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Page title - only the page title, no site title -->
+  <title>Bayesian Modeling Tutorial</title>
+  
+  <!-- Meta description for social sharing -->
+  <meta name="description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  
+  <!-- Author -->
+  <meta name="author" content="Rudramani Singha">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="http://localhost:4000/posts/bayesian-tutorial/">
+  
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="Bayesian Modeling Tutorial">
+  <meta property="og:description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  <meta property="og:url" content="http://localhost:4000/posts/bayesian-tutorial/">
+  <meta property="og:site_name" content="Rudramani Singha">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-01-15T00:00:00-05:00">
+  
+  
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bayesian Modeling Tutorial">
+  <meta name="twitter:description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  
+  
+  <!-- JSON-LD structured data for rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Bayesian Modeling Tutorial",
+    "description": "Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.",
+    "url": "http://localhost:4000/posts/bayesian-tutorial/",
+    "datePublished": "2025-01-15T00:00:00-05:00",
+    "author": {
+      "@type": "Person",
+      "name": "Rudramani Singha"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Rudramani Singha"
+    }
+  }
+  </script>
+  
+  <!-- RSS feed -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Rudramani Singha">
+  
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" >
+  <link rel="stylesheet" href="/assets/css/main.css">
 
-<p>Let me tell you a story that illustrates the key differences…</p>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
 
-<h2 id="the-tale-of-two-scientists">The Tale of Two Scientists</h2>
+</head>
+<body>
+    
+    <main class="page">
+      
+      <nav class="nav">
+    <!-- https://icons.getbootstrap.com -->
+    <a class="nav__item " aria-label="Home Page" href="/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>    
+        </svg> 
+    </a>
+    
+    <a class="nav__item " aria-label="Writing Page" href="/posts/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="white" stroke-width="0.5" d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+        </svg>
+    </a>
+    
+    <a class="nav__item" aria-label="Resume" href="/assets/resume.pdf" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>          
+        </svg>
+    </a>
 
-<p>Imagine two scientists studying whether a new drug is effective. They both have the same data, but they approach the problem completely differently.</p>
+</nav>
 
-<h3 id="dr-frequentists-approach">Dr. Frequentist’s Approach</h3>
+      <header class="page__header">
+        
+        <h1 class="page__title">Bayesian Modeling Tutorial</h1>
+        
+        <div style="height: 1rem;"></div><div class="postslist__item__date">Jan 15, 2025</div>
+        
+			</header>
 
-<p>Dr. Frequentist sets up her analysis like a court trial:</p>
+      <div class="page__content">
+        
 
-<p><strong>The Setup:</strong></p>
-<ul>
-  <li><strong>Null Hypothesis (H₀):</strong> “The drug has no effect” (innocent until proven guilty)</li>
-  <li><strong>Alternative Hypothesis (H₁):</strong> “The drug has an effect”</li>
-  <li><strong>Goal:</strong> Find evidence strong enough to reject H₀</li>
-</ul>
-
-<p>She calculates a test statistic and gets a p-value of 0.03.</p>
-
-<p><strong>Her Conclusion:</strong> “If the drug truly had no effect, there’s only a 3% chance I’d see data this extreme or more extreme. Since 3% &lt; 5%, I reject the null hypothesis. The drug is effective.”</p>
-
-<p><strong>What she CAN’T say:</strong> “There’s a 97% chance the drug works” (This is a common misinterpretation!)</p>
-
-<h3 id="dr-bayesians-approach">Dr. Bayesian’s Approach</h3>
-
-<p>Dr. Bayesian thinks differently:</p>
-
-<p><strong>The Setup:</strong></p>
-<ul>
-  <li><strong>Prior:</strong> Based on previous studies, she believes there’s a 30% chance the drug works</li>
-  <li><strong>Likelihood:</strong> She models how likely the observed data is under different effect sizes</li>
-  <li><strong>Posterior:</strong> She updates her beliefs using Bayes’ theorem</li>
-</ul>
-
-<p><strong>Her Process:</strong>
-\(P(\text{Drug Works | Data}) = \frac{P(\text{Data | Drug Works}) \times P(\text{Drug Works})}{P(\text{Data})}\)</p>
-
-<p>After seeing the data, her posterior shows an 85% probability that the drug works.</p>
-
-<p><strong>Her Conclusion:</strong> “Given the data and my prior knowledge, I’m now 85% confident the drug is effective. Here’s the full distribution of possible effect sizes…”</p>
-
-<h2 id="the-fundamental-philosophical-differences">The Fundamental Philosophical Differences</h2>
-
-<h3 id="1-what-is-probability">1. <strong>What is Probability?</strong></h3>
-
-<p><strong>Frequentist View:</strong> Probability is about long-run frequencies. “If I repeated this experiment infinite times under the same conditions, what fraction would give this result?”</p>
-
-<p><strong>Bayesian View:</strong> Probability is about degrees of belief or uncertainty. “Given what I know, how confident am I in this statement?”</p>
-
-<h3 id="2-what-questions-can-we-answer">2. <strong>What Questions Can We Answer?</strong></h3>
-
-<p><strong>Frequentist:</strong></p>
-<ul>
-  <li>✅ “What’s the probability of seeing this data if H₀ is true?” (p-value)</li>
-  <li>❌ “What’s the probability that H₀ is true?” (Not allowed!)</li>
-</ul>
-
-<p><strong>Bayesian:</strong></p>
-<ul>
-  <li>✅ “What’s the probability that H₀ is true given the data?” (Posterior probability)</li>
-  <li>✅ “What are all the possible parameter values and how likely are they?”</li>
-</ul>
-
-<h3 id="3-how-do-we-handle-prior-knowledge">3. <strong>How Do We Handle Prior Knowledge?</strong></h3>
-
-<p><strong>Frequentist:</strong> Prior knowledge is largely ignored in the formal analysis. Each study stands alone.</p>
-
-<p><strong>Bayesian:</strong> Prior knowledge is explicitly incorporated and updated with new evidence.</p>
-
-<h2 id="a-concrete-example-the-coin-flipping-dilemma">A Concrete Example: The Coin Flipping Dilemma</h2>
-
-<p>Let’s say you flip a coin 10 times and get 8 heads. Is this a fair coin?</p>
-
-<h3 id="frequentist-analysis">Frequentist Analysis</h3>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
-<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
-
-<span class="c1"># Observed: 8 heads out of 10 flips
-# H₀: p = 0.5 (fair coin)
-# H₁: p ≠ 0.5 (unfair coin)
-</span>
-<span class="n">observed_heads</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">n_flips</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">null_p</span> <span class="o">=</span> <span class="mf">0.5</span>
-
-<span class="c1"># Two-tailed binomial test
-</span><span class="n">p_value</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="p">.</span><span class="n">binom</span><span class="p">.</span><span class="nf">cdf</span><span class="p">(</span><span class="n">observed_heads</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_flips</span><span class="p">,</span> <span class="n">null_p</span><span class="p">))</span>
-<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">P-value: </span><span class="si">{</span><span class="n">p_value</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
-
-<span class="c1"># Result: p-value = 0.1094
-# Conclusion: Fail to reject H₀ (not enough evidence to say it's unfair)
-</span></code></pre></div></div>
-
-<p><strong>Frequentist says:</strong> “We can’t conclude the coin is unfair (p = 0.11 &gt; 0.05).”</p>
-
-<h3 id="bayesian-analysis">Bayesian Analysis</h3>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
-<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="n">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
-
-<span class="c1"># Prior: Uniform distribution (all probabilities equally likely)
-# This is equivalent to Beta(1, 1)
-</span><span class="n">alpha_prior</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">beta_prior</span> <span class="o">=</span> <span class="mi">1</span>
-
-<span class="c1"># Data: 8 heads, 2 tails
-</span><span class="n">heads</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">tails</span> <span class="o">=</span> <span class="mi">2</span>
-
-<span class="c1"># Posterior: Beta distribution (conjugate prior magic!)
-</span><span class="n">alpha_posterior</span> <span class="o">=</span> <span class="n">alpha_prior</span> <span class="o">+</span> <span class="n">heads</span>
-<span class="n">beta_posterior</span> <span class="o">=</span> <span class="n">beta_prior</span> <span class="o">+</span> <span class="n">tails</span>
-
-<span class="c1"># The posterior is Beta(9, 3)
-</span><span class="n">posterior</span> <span class="o">=</span> <span class="n">stats</span><span class="p">.</span><span class="nf">beta</span><span class="p">(</span><span class="n">alpha_posterior</span><span class="p">,</span> <span class="n">beta_posterior</span><span class="p">)</span>
-
-<span class="c1"># Plot the results
-</span><span class="n">p_values</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">prior_density</span> <span class="o">=</span> <span class="n">stats</span><span class="p">.</span><span class="nf">beta</span><span class="p">(</span><span class="n">alpha_prior</span><span class="p">,</span> <span class="n">beta_prior</span><span class="p">).</span><span class="nf">pdf</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
-<span class="n">posterior_density</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="n">prior_density</span><span class="p">,</span> <span class="sh">'</span><span class="s">b--</span><span class="sh">'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Prior belief</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="n">posterior_density</span><span class="p">,</span> <span class="sh">'</span><span class="s">r-</span><span class="sh">'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Posterior belief</span><span class="sh">'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">axvline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">black</span><span class="sh">'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Fair coin (p=0.5)</span><span class="sh">'</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Probability of Heads</span><span class="sh">'</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Density</span><span class="sh">'</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Bayesian Coin Analysis: Before and After Data</span><span class="sh">'</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
-
-<span class="c1"># Calculate probabilities
-</span><span class="n">prob_unfair</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">posterior</span><span class="p">.</span><span class="nf">cdf</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)</span> <span class="o">+</span> <span class="n">posterior</span><span class="p">.</span><span class="nf">cdf</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">prob_very_unfair</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">posterior</span><span class="p">.</span><span class="nf">cdf</span><span class="p">(</span><span class="mf">0.7</span><span class="p">)</span> <span class="o">+</span> <span class="n">posterior</span><span class="p">.</span><span class="nf">cdf</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-
-<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Probability coin is unfair (p &lt; 0.4 or p &gt; 0.6): </span><span class="si">{</span><span class="n">prob_unfair</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Probability coin is very unfair (p &lt; 0.3 or p &gt; 0.7): </span><span class="si">{</span><span class="n">prob_very_unfair</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Most likely value of p: </span><span class="si">{</span><span class="n">posterior</span><span class="p">.</span><span class="nf">mean</span><span class="p">()</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">95% credible interval: [</span><span class="si">{</span><span class="n">posterior</span><span class="p">.</span><span class="nf">ppf</span><span class="p">(</span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">, </span><span class="si">{</span><span class="n">posterior</span><span class="p">.</span><span class="nf">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">]</span><span class="sh">"</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><strong>Bayesian says:</strong> “There’s a 67% chance the coin is significantly unfair, and the most likely probability of heads is 0.75. Here’s my full uncertainty about all possible values…”</p>
-
-<h2 id="when-to-use-which-approach">When to Use Which Approach?</h2>
-
-<h3 id="use-frequentist-methods-when">Use <strong>Frequentist Methods</strong> When:</h3>
-<ul>
-  <li>You need regulatory approval (FDA, etc.) - they often require frequentist approaches</li>
-  <li>You want to control false positive rates in multiple testing scenarios</li>
-  <li>You have no meaningful prior information</li>
-  <li>You need simple, standardized procedures that others can easily replicate</li>
-  <li>You’re doing exploratory data analysis where you want to “let the data speak”</li>
-</ul>
-
-<h3 id="use-bayesian-methods-when">Use <strong>Bayesian Methods</strong> When:</h3>
-<ul>
-  <li>You have genuine prior information that should influence the analysis</li>
-  <li>You want to quantify uncertainty about parameters (not just reject/accept hypotheses)</li>
-  <li>You need to make optimal decisions under uncertainty</li>
-  <li>You want interpretable probability statements about your hypotheses</li>
-  <li>You’re building predictive models</li>
-  <li>You have complex, hierarchical data structures</li>
-  <li>Sample sizes are small and every bit of information matters</li>
-</ul>
-
-<h2 id="the-integration-perspective">The Integration Perspective</h2>
-
-<p>Here’s the thing: these approaches aren’t always mutually exclusive. Modern statistics increasingly recognizes that:</p>
-
-<ol>
-  <li><strong>Both have their place</strong>: Different questions call for different tools</li>
-  <li><strong>Bayesian methods can be more intuitive</strong>: They answer the questions we actually want to ask</li>
-  <li><strong>Frequentist methods provide important guarantees</strong>: They control error rates in repeated sampling</li>
-  <li><strong>The gap is narrowing</strong>: Modern computational methods make Bayesian analysis more accessible</li>
-</ol>
-
-<h2 id="a-personal-take">A Personal Take</h2>
-
-<p>After working extensively with both approaches, I find myself gravitating toward Bayesian methods for most real-world problems. Here’s why:</p>
-
-<p><strong>Bayesian modeling feels more honest about uncertainty.</strong> Instead of binary reject/don’t-reject decisions, you get nuanced probability distributions that capture what you actually know and don’t know.</p>
-
-<p><strong>It’s more flexible for complex problems.</strong> Once you understand the Bayesian framework, you can tackle mixture models, hierarchical structures, and missing data in ways that frequentist methods struggle with.</p>
-
-<p><strong>It answers the questions we actually care about.</strong> When someone asks “What’s the probability this treatment works?”, Bayesian analysis can give a direct answer.</p>
-
-<p>But here’s the key insight: <strong>The best approach depends on your specific problem, your audience, and your goals.</strong></p>
-
-<h2 id="moving-forward">Moving Forward</h2>
-
-<p>If you’re coming from a traditional statistics background, I encourage you to:</p>
-
-<ol>
-  <li><strong>Start with simple Bayesian analyses</strong> on problems you understand well</li>
-  <li><strong>Compare results</strong> between frequentist and Bayesian approaches</li>
-  <li><strong>Focus on interpretation</strong> - what do the results actually mean?</li>
-  <li><strong>Think about your priors</strong> - what do you actually believe before seeing the data?</li>
-</ol>
-
-<p>The future of statistics isn’t about choosing sides in some philosophical war. It’s about understanding both approaches deeply enough to choose the right tool for each specific problem.</p>
-
-<p>And honestly? Once you start thinking like a Bayesian, it’s hard to go back. The world just makes more sense when you can explicitly model your uncertainty and update your beliefs as evidence accumulates.</p>
-
-<hr />
-
-<p><em>This post builds on concepts from our <a href="../bayesian-tutorial">Bayesian Modeling series</a>. If you haven’t checked it out yet, it provides a hands-on introduction to Bayesian thinking with practical examples.</em></p>]]></content><author><name>Rudramani Singha</name></author><category term="thoughts" /><summary type="html"><![CDATA[“How does this compare to the classical statistics I learned in school?” This is a fundamental question that gets to the heart of two very different philosophies about uncertainty, evidence, and decision-making.]]></summary></entry><entry><title type="html">Bayesian Modeling Tutorial</title><link href="http://localhost:4000/posts/bayesian-tutorial/" rel="alternate" type="text/html" title="Bayesian Modeling Tutorial" /><published>2025-01-15T00:00:00-05:00</published><updated>2025-01-15T00:00:00-05:00</updated><id>http://localhost:4000/posts/bayesian-tutorial</id><content type="html" xml:base="http://localhost:4000/posts/bayesian-tutorial/"><![CDATA[<p>Welcome to our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.</p>
+        <div class="postcontent">
+          <p>Welcome to our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.</p>
 
 <h2 id="part-1-from-balls-in-bags-to-probability">Part 1: From Balls in Bags to Probability</h2>
 
@@ -2101,4 +1995,54 @@ where:
 
 <p>Bayesian modeling is both an art and a science. The art lies in choosing appropriate priors and model structures that capture the essence of your problem. The science lies in the rigorous mathematical framework that ensures coherent uncertainty quantification and principled inference.</p>
 
-<p><strong>Thank you for attending my Ted Talk! 🙇🎤</strong></p>]]></content><author><name>Rudramani Singha</name></author><category term="thoughts" /><summary type="html"><![CDATA[Welcome to our comprehensive Bayesian modeling tutorial! We’ll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.]]></summary></entry><entry><title type="html">Estimates from Behavioral Landmarks</title><link href="http://localhost:4000/posts/sdr/" rel="alternate" type="text/html" title="Estimates from Behavioral Landmarks" /><published>2022-01-13T20:27:20-05:00</published><updated>2022-01-13T20:27:20-05:00</updated><id>http://localhost:4000/posts/sdr</id><content type="html" xml:base="http://localhost:4000/posts/sdr/"><![CDATA[]]></content><author><name>Rudramani Singha</name></author><category term="peer-reviewed" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Time Branching Networks</title><link href="http://localhost:4000/posts/vsd/" rel="alternate" type="text/html" title="Time Branching Networks" /><published>2022-01-12T20:27:20-05:00</published><updated>2022-01-12T20:27:20-05:00</updated><id>http://localhost:4000/posts/vsd</id><content type="html" xml:base="http://localhost:4000/posts/vsd/"><![CDATA[]]></content><author><name>Rudramani Singha</name></author><category term="peer-reviewed" /><summary type="html"><![CDATA[]]></summary></entry></feed>
+<p><strong>Thank you for attending my Ted Talk! 🙇🎤</strong></p>
+
+        </div>
+      </div>
+      
+      <footer class="footer">
+        <div class="footer__cp">© 2025</div>
+      </footer>
+
+      <!-- 1) Your MathJax configuration -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']]
+    },
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","color.js"],
+      equationNumbers: { autoNumber: "AMS" }
+    },
+    showProcessingMessages: false,
+    messageStyle: "none",
+    imageFont: null,
+    "AssistiveMML": { disabled: true }
+  });
+</script>
+
+<!-- 2) Then load the MathJax engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script><script>
+  if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+    (function() {
+      var gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XWEJZKE72S';
+      document.head.appendChild(gtagScript);
+  
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XWEJZKE72S');
+    })();
+  }
+</script>
+
+    
+    </main>
+
+  </body>
+
+</html>
