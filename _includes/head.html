@@ -2,7 +2,58 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {%- seo -%}
+  
+  <!-- Page title - only the page title, no site title -->
+  <title>{{ page.title | escape }}</title>
+  
+  <!-- Meta description for social sharing -->
+  <meta name="description" content="{{ page.description | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+  
+  <!-- Author -->
+  <meta name="author" content="{{ site.author | escape }}">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="{{ page.title | escape }}">
+  <meta property="og:description" content="{{ page.description | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:site_name" content="{{ site.title | escape }}">
+  <meta property="og:type" content="{% if page.date %}article{% else %}website{% endif %}">
+  {% if page.date %}<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">{% endif %}
+  {% if page.hero %}<meta property="og:image" content="{{ page.hero | absolute_url }}">{% endif %}
+  
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="{% if page.hero %}summary_large_image{% else %}summary{% endif %}">
+  <meta name="twitter:title" content="{{ page.title | escape }}">
+  <meta name="twitter:description" content="{{ page.description | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+  {% if page.hero %}<meta name="twitter:image" content="{{ page.hero | absolute_url }}">{% endif %}
+  
+  <!-- JSON-LD structured data for rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "{% if page.date %}BlogPosting{% else %}WebPage{% endif %}",
+    "headline": "{{ page.title | escape }}",
+    "description": "{{ page.description | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}",
+    "url": "{{ page.url | absolute_url }}",
+    {% if page.date %}"datePublished": "{{ page.date | date_to_xmlschema }}",{% endif %}
+    "author": {
+      "@type": "Person",
+      "name": "{{ site.author | escape }}"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "{{ site.author | escape }}"
+    }{% if page.hero %},
+    "image": "{{ page.hero | absolute_url }}"{% endif %}
+  }
+  </script>
+  
+  <!-- RSS feed -->
+  <link type="application/atom+xml" rel="alternate" href="{{ "/feed.xml" | absolute_url }}" title="{{ site.title | escape }}">
+  
   <link rel="shortcut icon" type="image/x-icon" href="{{ "/favicon.ico" | prepend: site.baseurl }}" >
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
 

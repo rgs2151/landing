@@ -24,13 +24,12 @@ author: Rudramani Singha
 description: >- # this means to ignore newlines until "baseurl:"
   Hey there! I'm a researcher based in New York City. 
   I build probabilistic models and reverse engineer the brain.
-baseurl: "/~rgs2151/" # the subpath of your site, e.g. /blog
-url: "https://www.columbia.edu" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://singha.io" # the base hostname & protocol for your site, e.g. http://example.com
 google_analytics: G-XWEJZKE72S
 permalink: /posts/:title/
 # Build settings
-plugins:
-  - jekyll-seo-tag
+plugins: []
 
 
 

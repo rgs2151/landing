@@ -2,26 +2,60 @@
 <html lang="en"><head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling | Rudramani Singha</title>
-<meta name="generator" content="Jekyll v4.3.4" />
-<meta property="og:title" content="Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling" />
-<meta name="author" content="Rudramani Singha" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="Welcome to the final part of our Bayesian modeling journey! We’ve traveled from simple balls in bags to complex mixture models and temporal dependencies. Now we’ll combine everything into the most sophisticated model in our series: Input-Dependent Markov Models, also known as GLM-HMMs or Switching Linear Regression." />
-<meta property="og:description" content="Welcome to the final part of our Bayesian modeling journey! We’ve traveled from simple balls in bags to complex mixture models and temporal dependencies. Now we’ll combine everything into the most sophisticated model in our series: Input-Dependent Markov Models, also known as GLM-HMMs or Switching Linear Regression." />
-<link rel="canonical" href="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part6/" />
-<meta property="og:url" content="http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part6/" />
-<meta property="og:site_name" content="Rudramani Singha" />
-<meta property="og:type" content="article" />
-<meta property="article:published_time" content="2025-01-20T00:00:00-05:00" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Rudramani Singha"},"dateModified":"2025-01-20T00:00:00-05:00","datePublished":"2025-01-20T00:00:00-05:00","description":"Welcome to the final part of our Bayesian modeling journey! We’ve traveled from simple balls in bags to complex mixture models and temporal dependencies. Now we’ll combine everything into the most sophisticated model in our series: Input-Dependent Markov Models, also known as GLM-HMMs or Switching Linear Regression.","headline":"Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part6/"},"url":"http://localhost:4000/~rgs2151/posts/bayesian-tutorial-part6/"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="shortcut icon" type="image/x-icon" href="/~rgs2151//favicon.ico" >
-  <link rel="stylesheet" href="/~rgs2151/assets/css/main.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Page title - only the page title, no site title -->
+  <title>Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling</title>
+  
+  <!-- Meta description for social sharing -->
+  <meta name="description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  
+  <!-- Author -->
+  <meta name="author" content="Rudramani Singha">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="http://localhost:4000/posts/bayesian-tutorial-part6/">
+  
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling">
+  <meta property="og:description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  <meta property="og:url" content="http://localhost:4000/posts/bayesian-tutorial-part6/">
+  <meta property="og:site_name" content="Rudramani Singha">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-01-20T00:00:00-05:00">
+  
+  
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling">
+  <meta name="twitter:description" content="Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.">
+  
+  
+  <!-- JSON-LD structured data for rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Bayesian Modeling - Part 6: GLM-HMMs and Advanced Sequential Modeling",
+    "description": "Hey there! I&#39;m a researcher based in New York City. I build probabilistic models and reverse engineer the brain.",
+    "url": "http://localhost:4000/posts/bayesian-tutorial-part6/",
+    "datePublished": "2025-01-20T00:00:00-05:00",
+    "author": {
+      "@type": "Person",
+      "name": "Rudramani Singha"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Rudramani Singha"
+    }
+  }
+  </script>
+  
+  <!-- RSS feed -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Rudramani Singha">
+  
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" >
+  <link rel="stylesheet" href="/assets/css/main.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,19 +68,19 @@
       
       <nav class="nav">
     <!-- https://icons.getbootstrap.com -->
-    <a class="nav__item " aria-label="Home Page" href="/~rgs2151/">
+    <a class="nav__item " aria-label="Home Page" href="/">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path stroke="white" stroke-width="0.5" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>    
         </svg> 
     </a>
     
-    <a class="nav__item " aria-label="Writing Page" href="/~rgs2151/posts/">
+    <a class="nav__item " aria-label="Writing Page" href="/posts/">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path stroke="white" stroke-width="0.5" d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
         </svg>
     </a>
     
-    <a class="nav__item" aria-label="Resume" href="/~rgs2151/assets/resume.pdf" target="_blank">
+    <a class="nav__item" aria-label="Resume" href="/assets/resume.pdf" target="_blank">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
             <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
             <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>          
