@@ -244,12 +244,12 @@ a {
   border-radius: 2px;
 }
 .page__content .legend__indicator--thoughts {
-  background: var(--text-light);
-  opacity: 0.6;
+  background: var(--selection-bg);
+  opacity: 0.8;
 }
 .page__content .legend__indicator--peer-reviewed {
-  background: var(--text-light);
-  opacity: 0.3;
+  background: var(--selection-bg);
+  opacity: 0.5;
 }
 .page__content .legend__text {
   font-size: 0.9rem;
@@ -285,12 +285,12 @@ a {
   flex-shrink: 0;
 }
 .page__content .postslist__item__indicator--thoughts {
-  background: var(--text-light);
-  opacity: 0.6;
+  background: var(--selection-bg);
+  opacity: 0.8;
 }
 .page__content .postslist__item__indicator--peer-reviewed {
-  background: var(--text-light);
-  opacity: 0.3;
+  background: var(--selection-bg);
+  opacity: 0.5;
 }
 .page__content .postslist__item__content {
   flex-grow: 1;
