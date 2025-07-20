@@ -198,9 +198,7 @@ The future of statistics isn't about choosing sides in some philosophical war. I
 
 And honestly? Once you start thinking like a Bayesian, it's hard to go back. The world just makes more sense when you can explicitly model your uncertainty and update your beliefs as evidence accumulates.
 
-**What's your experience been with these different approaches? I'd love to hear your thoughts! (email me)**
-
 ---
 
-*This post builds on concepts from our [Bayesian Modeling series](../bayesian-tutorial-part1). If you haven't checked it out yet, it provides a hands-on introduction to Bayesian thinking with practical examples.*
+*This post builds on concepts from our [Bayesian Modeling series](../bayesian-tutorial). If you haven't checked it out yet, it provides a hands-on introduction to Bayesian thinking with practical examples.*
 
