@@ -1,4 +1,4 @@
-name: Fast Jekyll Build & Deploy
+name: Portfolio Build & Deploy
 
 on:
   push:
