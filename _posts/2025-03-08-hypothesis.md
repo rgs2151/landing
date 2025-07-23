@@ -9,11 +9,11 @@ tag: thoughts
 
 Let me tell you a story that illustrates the key differences...
 
-## The Tale of Two Scientists
+# The Tale of Two Scientists
 
 Imagine two scientists studying whether a new drug is effective. They both have the same data, but they approach the problem completely differently.
 
-### Dr. Frequentist's Approach
+## Frequentist's Approach
 
 Dr. Frequentist sets up her analysis like a court trial:
 
@@ -28,7 +28,7 @@ She calculates a test statistic and gets a p-value of 0.03.
 
 **What she CAN'T say:** "There's a 97% chance the drug works" (This is a common misinterpretation!)
 
-### Dr. Bayesian's Approach
+## Bayesian's Approach
 
 Dr. Bayesian thinks differently:
 
@@ -44,15 +44,15 @@ After seeing the data, her posterior shows an 85% probability that the drug work
 
 **Her Conclusion:** "Given the data and my prior knowledge, I'm now 85% confident the drug is effective. Here's the full distribution of possible effect sizes..."
 
-## The Fundamental Philosophical Differences
+# The Fundamental Philosophical Differences
 
-### 1. **What is Probability?**
+## **What is Probability?**
 
 **Frequentist View:** Probability is about long-run frequencies. "If I repeated this experiment infinite times under the same conditions, what fraction would give this result?"
 
 **Bayesian View:** Probability is about degrees of belief or uncertainty. "Given what I know, how confident am I in this statement?"
 
-### 2. **What Questions Can We Answer?**
+## **What Questions Can We Answer?**
 
 **Frequentist:** 
 - ✅ "What's the probability of seeing this data if H₀ is true?" (p-value)
@@ -62,17 +62,17 @@ After seeing the data, her posterior shows an 85% probability that the drug work
 - ✅ "What's the probability that H₀ is true given the data?" (Posterior probability)
 - ✅ "What are all the possible parameter values and how likely are they?"
 
-### 3. **How Do We Handle Prior Knowledge?**
+## **How Do We Handle Prior Knowledge?**
 
 **Frequentist:** Prior knowledge is largely ignored in the formal analysis. Each study stands alone.
 
 **Bayesian:** Prior knowledge is explicitly incorporated and updated with new evidence.
 
-## A Concrete Example: The Coin Flipping Dilemma
+# A Concrete Example: The Coin Flipping Dilemma
 
 Let's say you flip a coin 10 times and get 8 heads. Is this a fair coin?
 
-### Frequentist Analysis
+## Frequentist Analysis
 
 ```python
 from scipy import stats
@@ -96,7 +96,7 @@ print(f"P-value: {p_value:.4f}")
 
 **Frequentist says:** "We can't conclude the coin is unfair (p = 0.11 > 0.05)."
 
-### Bayesian Analysis
+## Bayesian Analysis
 
 ```python
 import numpy as np
@@ -146,16 +146,16 @@ print(f"95% credible interval: [{posterior.ppf(0.025):.3f}, {posterior.ppf(0.975
 
 **Bayesian says:** "There's a 67% chance the coin is significantly unfair, and the most likely probability of heads is 0.75. Here's my full uncertainty about all possible values..."
 
-## When to Use Which Approach?
+# When to Use Which Approach?
 
-### Use **Frequentist Methods** When:
+## Use **Frequentist Methods** When:
 - You need regulatory approval (FDA, etc.) - they often require frequentist approaches
 - You want to control false positive rates in multiple testing scenarios
 - You have no meaningful prior information
 - You need simple, standardized procedures that others can easily replicate
 - You're doing exploratory data analysis where you want to "let the data speak"
 
-### Use **Bayesian Methods** When:
+## Use **Bayesian Methods** When:
 - You have genuine prior information that should influence the analysis
 - You want to quantify uncertainty about parameters (not just reject/accept hypotheses)
 - You need to make optimal decisions under uncertainty
@@ -164,7 +164,7 @@ print(f"95% credible interval: [{posterior.ppf(0.025):.3f}, {posterior.ppf(0.975
 - You have complex, hierarchical data structures
 - Sample sizes are small and every bit of information matters
 
-## The Integration Perspective
+# The Integration Perspective
 
 Here's the thing: these approaches aren't always mutually exclusive. Modern statistics increasingly recognizes that:
 
@@ -173,7 +173,7 @@ Here's the thing: these approaches aren't always mutually exclusive. Modern stat
 3. **Frequentist methods provide important guarantees**: They control error rates in repeated sampling
 4. **The gap is narrowing**: Modern computational methods make Bayesian analysis more accessible
 
-## A Personal Take
+# A Personal Take
 
 After working extensively with both approaches, I find myself gravitating toward Bayesian methods for most real-world problems. Here's why:
 
@@ -185,7 +185,7 @@ After working extensively with both approaches, I find myself gravitating toward
 
 But here's the key insight: **The best approach depends on your specific problem, your audience, and your goals.**
 
-## Moving Forward
+# Moving Forward
 
 If you're coming from a traditional statistics background, I encourage you to:
 

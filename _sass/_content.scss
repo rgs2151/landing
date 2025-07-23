@@ -559,6 +559,94 @@ mjx-container ::selection {
         }
 
     }
+
+    // Table of Contents Styles
+    .toc {
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        max-width: 100%;
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        li {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .toc-link {
+            display: block;
+            padding: 0.4rem 0;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                color: var(--text);
+                background: var(--bg);
+                padding-left: 0.5rem;
+            }
+            
+            &.active {
+                color: var(--text);
+                font-weight: 500;
+                background: var(--bg);
+                padding-left: 0.5rem;
+                border-left: 3px solid var(--text);
+            }
+        }
+        
+        // Different indentation levels for headers
+        .toc-h1 .toc-link { padding-left: 0; }
+        .toc-h2 .toc-link { padding-left: 1rem; }
+        .toc-h3 .toc-link { padding-left: 2rem; }
+        .toc-h4 .toc-link { padding-left: 3rem; }
+        .toc-h5 .toc-link { padding-left: 4rem; }
+        .toc-h6 .toc-link { padding-left: 5rem; }
+        
+        .toc-h1 .toc-link:hover, .toc-h1 .toc-link.active { padding-left: 0.5rem; }
+        .toc-h2 .toc-link:hover, .toc-h2 .toc-link.active { padding-left: 1.5rem; }
+        .toc-h3 .toc-link:hover, .toc-h3 .toc-link.active { padding-left: 2.5rem; }
+        .toc-h4 .toc-link:hover, .toc-h4 .toc-link.active { padding-left: 3.5rem; }
+        .toc-h5 .toc-link:hover, .toc-h5 .toc-link.active { padding-left: 4.5rem; }
+        .toc-h6 .toc-link:hover, .toc-h6 .toc-link.active { padding-left: 5.5rem; }
+    }
+    
+    // Responsive TOC
+    @media (max-width: 768px) {
+        .toc {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            
+            .toc-h2 .toc-link { padding-left: 0.5rem; }
+            .toc-h3 .toc-link { padding-left: 1rem; }
+            .toc-h4 .toc-link { padding-left: 1.5rem; }
+            .toc-h5 .toc-link { padding-left: 2rem; }
+            .toc-h6 .toc-link { padding-left: 2.5rem; }
+            
+            .toc-h2 .toc-link:hover, .toc-h2 .toc-link.active { padding-left: 1rem; }
+            .toc-h3 .toc-link:hover, .toc-h3 .toc-link.active { padding-left: 1.5rem; }
+            .toc-h4 .toc-link:hover, .toc-h4 .toc-link.active { padding-left: 2rem; }
+            .toc-h5 .toc-link:hover, .toc-h5 .toc-link.active { padding-left: 2.5rem; }
+            .toc-h6 .toc-link:hover, .toc-h6 .toc-link.active { padding-left: 3rem; }
+        }
+    }
 }
 
 

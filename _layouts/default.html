@@ -26,6 +26,10 @@
           {% include post_list.html %}
         {% endif %}
 
+        {% if page.layout == 'default' and page.date and page.toc != false %}
+          {% include toc.html %}
+        {% endif %}
+
         <div class="postcontent">
           {{ content }}
         </div>

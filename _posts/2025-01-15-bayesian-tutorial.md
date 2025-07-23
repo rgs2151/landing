@@ -7,9 +7,9 @@ tag: thoughts
 
 Welcome to our comprehensive Bayesian modeling tutorial! We'll start with the fundamentals and work our way up to complex models. Think of this as your journey from understanding basic probability to building sophisticated inference systems.
 
-## Part 1: From Balls in Bags to Probability
+# Part 1: From Balls in Bags to Probability
 
-### 1.1 Probability and Quantifying Variability
+## Probability and Quantifying Variability
 
 Probability is defined as a number between 0 and 1, which describes the likelihood of the occurrence of some particular event in some range of events. 0 means an infinitely unlikely event, and 1 means the certain event. The term 'event' is very general, but for us can usually be thought of as one sample data point in an experiment, and the 'range of events' would be all the data we would get if we sampled virtually an infinite dataset on the experiment.
 
@@ -37,7 +37,7 @@ $$
 P(Red) + P(Blue) = 1
 $$
 
-### The Generative Process
+## The Generative Process
 
 If you sampled a ball and put it back in the bag, the probability of getting a red ball would be the same on the next draw. However, if you sampled a ball and didn't put it back in the bag, the probability of getting a red ball would change for the next draw.
 
@@ -68,7 +68,7 @@ for i, n in enumerate(n_draws):
 
 ***Run this code multiple times and see which graph changes most dramatically between runs!***
 
-### 1.2 Updating Beliefs with New Data
+## Updating Beliefs with New Data
 
 As you intuitively understood from the above experiment, as you draw more and more samples, you can be more and more confident about the true distribution of the balls in the bag. This is the **basis of Bayesian statistics**.
 
@@ -85,7 +85,7 @@ Where:
 
 So, basically, as you acquired more data, you updated your belief about the proportion of red balls in the bag (which in this case is the same as the probability).
 
-### 1.3 From Discrete to Continuous Space
+## From Discrete to Continuous Space
 
 **Notice** how you could either get a red ball or a blue ball. This means your **choices are discrete.**
 
