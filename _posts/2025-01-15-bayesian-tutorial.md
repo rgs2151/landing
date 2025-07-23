@@ -80,7 +80,7 @@ $$
 
 Where:
 - $ P(\text{Red}) $: Prior belief about the proportion of red balls.
-- $ P(\text{Data | Red}) $: Likelihood of observing the data given the proportion of red balls.
+- $ P(\text{Data \| Red}) $: Likelihood of observing the data given the proportion of red balls.
 - $ P(\text{Data}) $: Total probability of observing the data.
 
 So, basically, as you acquired more data, you updated your belief about the proportion of red balls in the bag (which in this case is the same as the probability).
@@ -243,7 +243,7 @@ Yayy, now that we have everything, *LETS GO AND SOLVE IT!!!!*
 
 But wait, how do we solve it?
 
-Solving means calculating the posterior distribution $P(\mu, \sigma | y)$.
+Solving means calculating the posterior distribution $P(\mu, \sigma \| y)$.
 
 - **Analytically**: We can solve the posterior distribution analytically for simple models such as this.
 - **Numerically**: For complex models, it is often **intractable to solve** the posterior distribution analytically. In such cases, we can use numerical methods like **Markov Chain Monte Carlo (MCMC)** or **Variational Inference (VI)** to approximate the posterior distribution.
@@ -637,11 +637,11 @@ Key components of an HMM:
    y_n \sim \mathcal{N}(\mu_{z_n}, \sigma_{z_n}^2)
    $$
 
-3. **Transition Probabilities ($ P(z_n | z_{n-1}) $)**:
+3. **Transition Probabilities ($ P(z_n \| z_{n-1}) $)**:
    - Govern how likely it is to move from one state to another.
    - Captures the sequential dependencies in the generative process.
 
-4. **Emission Probabilities ($ P(y_n | z_n) $)**:
+4. **Emission Probabilities ($ P(y_n \| z_n) $)**:
    - Describe the distribution of balls in each bag.
    - E.g., a "red-dominant" bag emits more red balls, but it can still emit blue ones occasionally.
 
@@ -1068,7 +1068,7 @@ P(w, c, \sigma | y, x) = \frac{P(y | x, w, c, \sigma) P(w) P(c) P(\sigma)}{P(y)}
 $$
 
 Where:
-- $P(y | x, w, c, \sigma)$ is the likelihood of observing the data given the parameters.
+- $P(y \| x, w, c, \sigma)$ is the likelihood of observing the data given the parameters.
 - $P(w)$, $P(c)$, and $P(\sigma)$ are the prior distributions of the parameters.
 - $P(y)$ is the total probability of observing the data.
 
