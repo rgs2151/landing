@@ -1,0 +1,14 @@
+# Portfolio works displayed on the homepage
+# Each entry needs: title, description, image, url
+
+- title: "Example Work 1"
+  description: "Add your description here. Keep it concise - 1-2 sentences work best."
+  image: "/assets/images/default.jpg"
+  url: "https://example.com/your-work"
+
+- title: "Example Work 2"
+  description: "Add your description here. Keep it concise - 1-2 sentences work best."
+  image: "/assets/images/default.jpg"
+  url: "https://example.com/your-work"
+
+

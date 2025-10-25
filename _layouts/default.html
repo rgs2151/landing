@@ -5,39 +5,47 @@
 
   <body>
     
-    <main class="page">
+    <main class="container">
       
-      {% include nav.html %}
+      <div class="two-column">
+        
+        <!-- Left Column: Bio -->
+        <aside class="bio-column">
+          {% if page.hero %}
+          <img src="{{ page.hero }}" alt="{{ page.title }}" class="bio__hero">
+          {% endif %}
+          
+          <h1 class="bio__title">{{ page.title }}</h1>
+          
+          <div class="bio__content">
+            {{ content }}
+          </div>
 
-      <header class="page__header">
-        {% if page.hero %}
-        <img src="{{ page.hero }}" alt="{{ page.title }}" class="page__hero">
-        {% endif %}
-        <h1 class="page__title">{{ page.title }}</h1>
-        {% if page.date %}
-        <div style="height: 1rem;"></div>
-        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-        <div class="postslist__item__date">{{ page.date | date: date_format }}</div>
-        {% endif %}
-			</header>
-
-      <div class="page__content">
-        {% if page.post_list %}
-          {% include post_list.html %}
-        {% endif %}
-
-        {% if page.layout == 'default' and page.date and page.toc != false %}
-          {% include toc.html %}
-        {% endif %}
-
-        <div class="postcontent">
-          {{ content }}
-        </div>
+          {% include bio-links.html %}
+          
+          <footer class="footer">
+            <div class="footer__cp">© 2025 Rudramani Singha.</div>
+          </footer>
+        </aside>
+        
+        <!-- Right Column: Works -->
+        <section class="works-column">
+          <div class="works-grid">
+            {%- for work in site.data.works -%}
+            <div class="work-card">
+              <img src="{{ work.image }}" alt="{{ work.title }}" loading="lazy" class="work-card__image">
+              <h3 class="work-card__title">
+                <a href="{{ work.url }}" target="_blank" rel="noopener noreferrer" class="work-card__link">
+                  {{ work.title }}
+                </a>
+              </h3>
+              <p class="work-card__description">{{ work.description }}</p>
+            </div>
+            {%- endfor -%}
+          </div>
+        </section>
+        
       </div>
-      
-      <footer class="footer">
-        <div class="footer__cp">© 2025 Rudramani Singha.</div>
-      </footer>
 
       {% include scripts.html %}
     
