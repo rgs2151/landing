@@ -4,8 +4,8 @@ author: Rudramani Singha
 description: >-
   Hey there! I'm a researcher based in New York City. 
   I build probabilistic models and reverse engineer the brain.
-baseurl: ""
-url: "https://singha.io"
+baseurl: "/~rgs2151/" # the subpath of your site, e.g. /blog/
+url: "https://www.columbia.edu" # the base hostname & protocol for your site
 google_analytics: G-XWEJZKE72S
 
 # Build settings
