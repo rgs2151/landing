@@ -2,10 +2,9 @@ title: Rudramani Singha
 email: rgs2151@columbia.edu
 author: Rudramani Singha
 description: >-
-  Hey there! I'm a researcher based in New York City. 
-  I build probabilistic models and reverse engineer the brain.
-baseurl: "/~rgs2151/" # the subpath of your site, e.g. /blog/
-url: "https://www.columbia.edu" # the base hostname & protocol for your site
+  Hey there! I build probabilistic models and reverse engineer the brain.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "https://singha.io" # the base hostname & protocol for your site
 google_analytics: G-XWEJZKE72S
 
 # Build settings
