@@ -12,6 +12,6 @@
   description: "This tutorial walks through Bayesian inference starting from the very basics (literally drawing colored balls from a bag!) and builds up to implementing sophisticated Hidden Markov Models. I've tried to make probability theory intuitive by connecting simple concepts like updating beliefs with data to more complex ideas like fitting distributions and latent state inference. Building on this foundation, I implement and demonstrate Generalized Linear Models (GLMs), input-driven Gaussian Mixture Models, and GLM-HMMs, among other probabilistic models. A key focus is illustrating the practical differences between MCMC sampling and the EM algorithm for parameter estimation. Everything is implemented across modern probabilistic programming frameworks including PyMC, Stan, NumPyro, JAX, and Dynamax, with all code and visualizations included to follow along."
   image: "/assets/images/hmm.gif"
   image_width: 0.6
-  url: "https://example.com/your-work"
+  url: "https://colab.research.google.com/github/rgs2151/landing/blob/master/notebooks/hmm.ipynb"
   author: "Rudramani Singha"
 
