@@ -1,13 +1,17 @@
 # Portfolio works displayed on the homepage
 # Each entry needs: title, description, image, url
 
-- title: "Example Work 1Example Work 1Example Work 1"
-  description: "Add your description here. Keep it concise - 1-2 sentences work best."
-  image: "/assets/images/default.jpg"
-  url: "https://example.com/your-work"
+- title: "Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior"
+  description: "In this study, we introduce a novel mouse paradigm to investigate the neural basis of cooperative behavior, where pairs of mice engage in joint spatial foraging that naturally produces stable leader-follower roles predictive of learning outcomes. Using calcium imaging and optogenetic disruption, we demonstrate that the medial prefrontal cortex (mPFC) is critical for cooperation (particularly in followers) and encodes both leadership dynamics and an egocentric social value map of the partner's position in a role-specific, asymmetric manner. I developed the forward modeling framework that, combined with multi-agent inverse reinforcement learning, identifies and decodes latent value functions from mPFC activity that guide cooperative decisions. Our findings uncover fundamental neural computations supporting social cooperation and demonstrate how distinct social roles shape real-time decision-making."
+  image: "/assets/images/marlax.gif"
+  image_width: 0.5
+  url: "https://doi.org/10.1101/2025.08.27.672249"
+  author: "Yuan Cheng, Yusi Chen, Myungji Kwak, Ross P. Kempner, <b>Rudramani Singha</b>, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu"
 
-- title: "Example Work 2"
-  description: "Add your description here. Keep it concise - 1-2 sentences work best."
-  image: "/assets/images/default.jpg"
+- title: "Bayesian Modeling Tutorial: From First Principles to Hidden Markov Models"
+  description: "This tutorial walks through Bayesian inference starting from the very basics (literally drawing colored balls from a bag!) and builds up to implementing sophisticated Hidden Markov Models. I've tried to make probability theory intuitive by connecting simple concepts like updating beliefs with data to more complex ideas like fitting distributions and latent state inference. Building on this foundation, I implement and demonstrate Generalized Linear Models (GLMs), input-driven Gaussian Mixture Models, and GLM-HMMs, among other probabilistic models. A key focus is illustrating the practical differences between MCMC sampling and the EM algorithm for parameter estimation. Everything is implemented across modern probabilistic programming frameworks including PyMC, Stan, NumPyro, JAX, and Dynamax, with all code and visualizations included to follow along."
+  image: "/assets/images/hmm.gif"
+  image_width: 0.6
   url: "https://example.com/your-work"
+  author: "Rudramani Singha"
 

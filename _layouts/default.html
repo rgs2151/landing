@@ -5,8 +5,7 @@
 
   <body>
     
-    {% include flow-field.html %}
-    
+  <!-- Flow field removed -->
     <main class="container">
       
       <div class="two-column">
@@ -31,12 +30,15 @@
           <div class="works-grid">
             {%- for work in site.data.works -%}
             <div class="work-card">
-              <img src="{{ work.image }}" alt="{{ work.title }}" loading="lazy" class="work-card__image">
               <h3 class="work-card__title">
                 <a href="{{ work.url }}" target="_blank" rel="noopener noreferrer" class="work-card__link">
                   {{ work.title }}
                 </a>
               </h3>
+              {%- if work.author -%}
+              <div class="work-card__author">{{ work.author }}</div>
+              {%- endif -%}
+              <img src="{{ work.image }}" alt="{{ work.title }}" loading="lazy" class="work-card__image" style="width: {{ work.image_width | default: 0.3 | times: 100 }}%; height: auto;">
               <p class="work-card__description">{{ work.description }}</p>
             </div>
             {%- endfor -%}
@@ -45,7 +47,7 @@
         
       </div>
 
-      {% include scripts.html %}
+  {% include scripts.html %}
     
     </main>
 

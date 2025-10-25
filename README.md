@@ -83,3 +83,5 @@ Edit the links in `_layouts/default.html` under `.bio__links`
 - No navigation bar - simple one-page portfolio
 - Images should be ~1200x630px for best results
 - Site rebuilds automatically on push to main branch
+
+
