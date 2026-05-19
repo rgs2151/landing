@@ -2,10 +2,6 @@
 
 :root {
   --font-body: 'EB Garamond', Garamond, Georgia, serif;
-  --font-dropcap-background: 'EB Garamond', Garamond, Georgia, serif;
-  --font-dropcap-foreground: 'EB Garamond', Garamond, Georgia, serif;
-  --before-color: rgba(23, 114, 208, 0.18);
-  --foreground: #6f2b1f;
 }
 
 a {
@@ -15,7 +11,7 @@ a {
 
 a:focus,
 a:hover {
-  color: #f09228;
+  color: #8b0000;
   text-decoration: none;
 }
 
@@ -26,7 +22,7 @@ tr,
 p,
 a {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 1em;
 }
 
 body {
@@ -35,7 +31,7 @@ body {
 
 strong {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 1em;
 }
 
 .page-shell {
@@ -102,19 +98,18 @@ strong {
 
 .work-image-cell {
   padding: 20px;
-  width: 25%;
+  width: 33%;
   vertical-align: middle;
 }
 
 .work-content-cell {
   padding: 20px;
-  width: 75%;
+  width: 66%;
   vertical-align: middle;
 }
 
 .paper-title {
   font-family: var(--font-body);
-  font-size: 14px;
   font-weight: 700;
 }
 
@@ -141,7 +136,7 @@ strong {
 .paper-links {
   margin: 4px 0 0;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 1em;
 }
 
 .paper-links a {
@@ -154,27 +149,6 @@ strong {
 
 .paper-links + p {
   margin-top: 8px;
-}
-
-.dropcap {
-  display: inline-block;
-  float: left;
-  margin: 0.03em 0.08em 0 0;
-  font-family: var(--font-dropcap-background);
-  font-size: 3.8em;
-  line-height: 0.76;
-  color: var(--before-color);
-  position: relative;
-  text-transform: uppercase;
-}
-
-.dropcap::before {
-  font-family: var(--font-dropcap-foreground);
-  color: var(--foreground);
-  content: attr(data-first-letter);
-  position: absolute;
-  left: 0.04em;
-  top: 0.03em;
 }
 
 .footer-cell {
