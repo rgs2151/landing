@@ -25,6 +25,7 @@ The site is a Vite-powered static website. GitHub Pages deployment is Actions-on
 
 ## Content Rules
 
+- Treat the homepage content as locked. Do not alter wording, project descriptions, author lists, titles, links, metadata, images, or ordering unless the user explicitly asks for that exact content change.
 - Do not rewrite biography, project descriptions, author lists, titles, metadata, or external links unless the user explicitly asks.
 - Keep the Art of Neuron project link pointed at `https://art-of-neuron.github.io/`.
 - Keep the custom domain as `singha.io`.
