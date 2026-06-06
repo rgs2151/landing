@@ -6,6 +6,14 @@ This repository contains Rudramani Singha's personal academic landing page for `
 
 The site is a Vite-powered static website. GitHub Pages deployment is Actions-only. Do not preserve or reintroduce GitHub Pages "Deploy from a branch" support.
 
+## Communication
+
+- Be professional, concise, and direct.
+- Prefer concrete status, exact commands, and file references over broad explanation.
+- Do not over-explain simple changes.
+- When correcting a mistake, state the correction plainly and move on.
+- Avoid speculative recommendations unless the user asks for options.
+
 ## Source of Truth
 
 - `index.html` is the main page and contains the current homepage content.
