@@ -70,4 +70,5 @@ npm run build
 - Use the `style` branch as the main development and deployment branch.
 - Keep changes scoped and review the diff before finishing.
 - Run `npm run build` before reporting success.
+- After any substantial completed step, commit the scoped changes and push `style`.
 - If local Node is missing, use a temporary Node 24 runtime or state clearly that build verification could not be run.
