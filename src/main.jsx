@@ -211,50 +211,43 @@ function drawMouse(context, x, y, angleDegrees, scale, alpha = 1) {
   context.rotate((-angleDegrees * Math.PI) / 180);
   context.strokeStyle = `rgba(255,255,255,${alpha})`;
   context.fillStyle = '#050505';
-  context.lineWidth = Math.max(1.3, scale * 0.05);
+  context.lineWidth = Math.max(1.4, scale * 0.065);
   context.lineCap = 'round';
   context.lineJoin = 'round';
 
   context.beginPath();
-  context.moveTo(0, scale * 0.5);
-  context.lineTo(0, scale * 1.2);
-  context.stroke();
-
-  context.beginPath();
   context.ellipse(0, 0, scale * 0.35, scale * 0.56, 0, 0, Math.PI * 2);
-  context.fill();
   context.stroke();
 
   context.beginPath();
-  context.arc(0, -scale * 0.6, scale * 0.36, 0, Math.PI * 2);
-  context.fill();
+  context.arc(0, -scale * 0.58, scale * 0.28, 0, Math.PI * 2);
   context.stroke();
 
   context.beginPath();
-  context.arc(-scale * 0.2, -scale * 0.88, scale * 0.18, 0, Math.PI * 2);
-  context.fill();
+  context.arc(-scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
   context.stroke();
   context.beginPath();
-  context.arc(scale * 0.2, -scale * 0.88, scale * 0.18, 0, Math.PI * 2);
-  context.fill();
+  context.arc(scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
   context.stroke();
 
   context.beginPath();
-  context.moveTo(0, -scale * 1.1);
-  context.lineTo(scale * 0.08, -scale * 0.78);
-  context.lineTo(-scale * 0.08, -scale * 0.78);
-  context.closePath();
-  context.fill();
+  context.moveTo(-scale * 0.08, -scale * 0.84);
+  context.lineTo(0, -scale * 1.02);
+  context.lineTo(scale * 0.08, -scale * 0.84);
   context.stroke();
 
+  context.beginPath();
+  context.arc(-scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
   context.fillStyle = `rgba(255,255,255,${alpha})`;
-  context.beginPath();
-  context.arc(-scale * 0.1, -scale * 0.72, scale * 0.035, 0, Math.PI * 2);
   context.fill();
   context.beginPath();
-  context.arc(scale * 0.1, -scale * 0.72, scale * 0.035, 0, Math.PI * 2);
+  context.arc(scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
   context.fill();
 
+  context.beginPath();
+  context.moveTo(0, scale * 0.52);
+  context.bezierCurveTo(-scale * 0.18, scale * 0.82, -scale * 0.42, scale * 0.9, -scale * 0.56, scale * 1.12);
+  context.stroke();
   context.restore();
 }
 
@@ -360,54 +353,138 @@ function drawArrow(context, x1, y1, x2, y2, alpha) {
   context.restore();
 }
 
+function drawCurvedArrow(context, x1, y1, controlX, controlY, x2, y2, alpha) {
+  const angle = Math.atan2(y2 - controlY, x2 - controlX);
+  context.save();
+  context.strokeStyle = `rgba(255,255,255,${alpha})`;
+  context.fillStyle = `rgba(255,255,255,${alpha})`;
+  context.lineWidth = 1.4;
+  context.beginPath();
+  context.moveTo(x1, y1);
+  context.quadraticCurveTo(controlX, controlY, x2, y2);
+  context.stroke();
+  context.beginPath();
+  context.moveTo(x2, y2);
+  context.lineTo(x2 - 9 * Math.cos(angle - 0.45), y2 - 9 * Math.sin(angle - 0.45));
+  context.lineTo(x2 - 9 * Math.cos(angle + 0.45), y2 - 9 * Math.sin(angle + 0.45));
+  context.closePath();
+  context.fill();
+  context.restore();
+}
+
+function drawRoundedRect(context, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + safeRadius, y);
+  context.lineTo(x + width - safeRadius, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  context.lineTo(x + width, y + height - safeRadius);
+  context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  context.lineTo(x + safeRadius, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  context.lineTo(x, y + safeRadius);
+  context.quadraticCurveTo(x, y, x + safeRadius, y);
+  context.closePath();
+}
+
+function drawMathLabel(context, x, y, base, subscript, alpha) {
+  const font = 'Georgia, Times New Roman, serif';
+  const baseSize = 18;
+  const subscriptSize = 11;
+  context.save();
+  context.fillStyle = `rgba(255,255,255,${alpha})`;
+  context.textBaseline = 'alphabetic';
+  context.font = `italic ${baseSize}px ${font}`;
+  const baseWidth = context.measureText(base).width;
+  context.font = `${subscriptSize}px ${font}`;
+  const subscriptWidth = context.measureText(subscript).width;
+  const startX = x - (baseWidth + subscriptWidth) / 2;
+  context.font = `italic ${baseSize}px ${font}`;
+  context.fillText(base, startX, y + baseSize * 0.34);
+  context.font = `${subscriptSize}px ${font}`;
+  context.fillText(subscript, startX + baseWidth + 1, y + baseSize * 0.55);
+  context.restore();
+}
+
 function HMMCanvas() {
-  const canvasRef = useCanvas((context, width, height, frame) => {
+  const canvasRef = useCanvas((context, width, height, frame, elapsedMs) => {
     clearCanvas(context, width, height);
-    const paddingX = width * 0.1;
+    const bounds = { xMin: 0.8, xMax: 10.2, yMin: -0.1, yMax: 5.7 };
+    const padding = 20;
+    const scale = Math.min((width - padding * 2) / (bounds.xMax - bounds.xMin), (height - padding * 2) / (bounds.yMax - bounds.yMin));
+    const plotWidth = (bounds.xMax - bounds.xMin) * scale;
+    const plotHeight = (bounds.yMax - bounds.yMin) * scale;
+    const originX = (width - plotWidth) / 2;
+    const originY = (height - plotHeight) / 2;
     const columns = 4;
-    const stepWidth = (width - paddingX * 2) / (columns - 1);
-    const yInput = height * 0.22;
-    const yHidden = height * 0.5;
-    const yObs = height * 0.78;
-    const phase = Math.floor((frame / 38) % 50);
+    const inputY = 5;
+    const hiddenY = 3;
+    const obsY = 0.6;
+    const phase = Math.floor((elapsedMs / 100) % 50);
     const visibleSteps = Math.min(Math.floor(phase / 10) + 1, columns);
-    const currentStep = Math.min(Math.floor(phase / 10), columns - 1);
+    const currentStep = Math.floor(phase / 10);
+
+    const mapPoint = (x, y) => ({
+      x: originX + (x - bounds.xMin) * scale,
+      y: originY + (bounds.yMax - y) * scale
+    });
 
     const getAlpha = (step, offset) => {
-      if (phase >= step * 10 + offset) return step === currentStep ? 1 : 0.34;
-      return 0.14;
+      if (phase >= step * 10 + offset) return step === currentStep ? 1 : 0.4;
+      return 0.3;
     };
 
-    const drawNode = (x, y, label, shape, alpha) => {
+    const drawNode = (x, y, base, subscript, shape, alpha) => {
+      const point = mapPoint(x, y);
       context.save();
       context.strokeStyle = `rgba(255,255,255,${alpha})`;
-      context.fillStyle = `rgba(255,255,255,${alpha})`;
+      context.fillStyle = '#050505';
       context.lineWidth = 1.7;
       if (shape === 'square') {
-        context.strokeRect(x - 24, y - 24, 48, 48);
+        const half = 0.5 * scale;
+        drawRoundedRect(context, point.x - half, point.y - half, half * 2, half * 2, 0.1 * scale);
+        context.fill();
+        context.stroke();
       } else {
         context.beginPath();
-        context.arc(x, y, 26, 0, Math.PI * 2);
+        context.arc(point.x, point.y, 0.6 * scale, 0, Math.PI * 2);
+        context.fill();
         context.stroke();
       }
-      context.font = `14px ${MONO_FONT}`;
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText(label, x, y);
       context.restore();
+      drawMathLabel(context, point.x, point.y, base, subscript, alpha);
     };
 
     for (let step = 0; step < visibleSteps; step += 1) {
-      const x = paddingX + step * stepWidth;
-      drawNode(x, yInput, `u_${step + 1}`, 'circle', getAlpha(step, 0));
-      drawNode(x, yHidden, `z_${step + 1}`, 'circle', getAlpha(step, 3));
-      drawNode(x, yObs, `x_${step + 1}`, 'square', getAlpha(step, 6));
-      drawArrow(context, x, yInput + 30, x, yHidden - 30, getAlpha(step, 2));
-      drawArrow(context, x, yHidden + 30, x, yObs - 30, getAlpha(step, 5));
-      drawArrow(context, x - 8, yInput + 32, x - 16, yObs - 32, getAlpha(step, 7));
-      if (step < visibleSteps - 1) {
-        drawArrow(context, x + 31, yHidden, x + stepWidth - 31, yHidden, getAlpha(step + 1, 1));
-      }
+      const x = 2 + step * 2.5;
+      const inputStart = mapPoint(x, inputY - 0.6);
+      const hiddenEnd = mapPoint(x, hiddenY + 0.6);
+      const hiddenStart = mapPoint(x, hiddenY - 0.6);
+      const obsEnd = mapPoint(x, obsY + 0.6);
+      drawArrow(context, inputStart.x, inputStart.y, hiddenEnd.x, hiddenEnd.y, getAlpha(step, 2));
+      drawArrow(context, hiddenStart.x, hiddenStart.y, obsEnd.x, obsEnd.y, getAlpha(step, 5));
+
+      const curveStart = mapPoint(x - 0.2, inputY - 0.6);
+      const curveEnd = mapPoint(x - 0.4, obsY + 0.6);
+      const curveControl = mapPoint(x - 1.1, (inputY + obsY) / 2);
+      drawCurvedArrow(context, curveStart.x, curveStart.y, curveControl.x, curveControl.y, curveEnd.x, curveEnd.y, getAlpha(step, 7));
+    }
+
+    for (let step = 0; step < visibleSteps - 1; step += 1) {
+      const x1 = 2 + step * 2.5;
+      const x2 = 2 + (step + 1) * 2.5;
+      const start = mapPoint(x1 + 0.6, hiddenY);
+      const end = mapPoint(x2 - 0.6, hiddenY);
+      const alpha = phase >= (step + 1) * 10 + 1 ? (step === currentStep || step + 1 === currentStep ? 1 : 0.4) : 0.3;
+      drawArrow(context, start.x, start.y, end.x, end.y, alpha);
+    }
+
+    for (let step = 0; step < visibleSteps; step += 1) {
+      const x = 2 + step * 2.5;
+      const subscript = String(step + 1);
+      drawNode(x, inputY, 'u', subscript, 'circle', getAlpha(step, 0));
+      drawNode(x, hiddenY, 'z', subscript, 'circle', getAlpha(step, 3));
+      drawNode(x, obsY, 'x', subscript, 'square', getAlpha(step, 6));
     }
   }, []);
 
