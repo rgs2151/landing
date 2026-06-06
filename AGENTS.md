@@ -4,7 +4,7 @@
 
 This repository contains Rudramani Singha's personal academic landing page for `singha.io`.
 
-The site is a Vite-powered static website. GitHub Pages deployment is Actions-only. Do not preserve or reintroduce GitHub Pages "Deploy from a branch" support.
+The site is a Vite + React website. GitHub Pages deployment is Actions-only. Do not preserve or reintroduce GitHub Pages "Deploy from a branch" support.
 
 ## Communication
 
@@ -16,8 +16,9 @@ The site is a Vite-powered static website. GitHub Pages deployment is Actions-on
 
 ## Source of Truth
 
-- `index.html` is the main page and contains the current homepage content.
-- `stylesheet.css` is the current styling source.
+- `src/main.jsx` is the React app and contains the locked homepage content.
+- `index.html` is the Vite HTML entrypoint and contains metadata.
+- `stylesheet.css` is the current styling source imported by React.
 - `images/` contains the profile and project imagery.
 - `scripts/` contains research notebooks and artifacts linked from the site history.
 - `tools/` contains small build helpers.
@@ -34,9 +35,9 @@ The site is a Vite-powered static website. GitHub Pages deployment is Actions-on
 
 ## Frontend Rules
 
-- Use Vite with npm and Node 24, as pinned by `.node-version`.
+- Use Vite, React, npm, and Node 24, as pinned by `.node-version`.
 - Keep dependencies minimal. The GitHub Actions path should stay well under 30 seconds whenever possible.
-- Do not add React, Svelte, Astro, Tailwind, or another framework without an explicit user decision.
+- Do not add Svelte, Astro, Tailwind, or another framework without an explicit user decision.
 - Styling work should preserve the current content and improve presentation only.
 - Prefer small, plain static-site changes over architectural churn.
 

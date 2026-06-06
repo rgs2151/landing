@@ -19,107 +19,9 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="stylesheet.css" type="text/css">
 </head>
 <body>
-  <table class="page-shell">
-    <tbody>
-      <tr class="row-reset">
-        <td class="cell-reset">
-          <table class="content-table">
-            <tbody>
-              <tr class="row-reset intro-row">
-                <td class="intro-text">
-                  <p class="text-center">
-                    <span class="site-name">Rudramani Singha</span>
-                  </p>
-                  <p>
-                    I am a Data Scientist at the <a href="https://memorylongevity.org/" target="_blank" rel="noopener noreferrer">Program in Memory Longevity</a>, UTSW.
-                    I build probabilistic models to understand the brain.
-                  </p>
-                  <p class="text-center">
-                    <a href="mailto:rgs2151@columbia.eu">rgs2151[at]columbia.eu</a> &nbsp;/&nbsp;
-                    <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">GitHub</a> &nbsp;/&nbsp;
-                    <a href="https://scholar.google.com/citations?user=nN4ARxkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>
-                  </p>
-                </td>
-                <td class="intro-photo">
-                  <img alt="Rudramani Singha profile photo" src="images/hero.jpg" class="profile-image">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table class="content-table">
-            <tbody>
-              <tr>
-                <td class="section-cell">
-                  <h2 class="section-title">Selected Projects</h2>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table class="content-table">
-            <tbody>
-              <tr class="work-row">
-                <td class="work-image-cell">
-                  <img src="images/marlax.gif" alt="Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior" class="work-thumb">
-                </td>
-                <td class="work-content-cell">
-                  <a href="https://doi.org/10.1101/2025.08.27.672249" target="_blank" rel="noopener noreferrer">
-                    <span class="paper-title">Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior</span>
-                  </a>
-                  <p class="paper-authors">
-                    Yuan Cheng, Yusi Chen, Myungji Kwak, Ross P. Kempner, <strong>Rudramani Singha</strong>, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu
-                  </p>
-                  <p class="paper-links">
-                    <em>links:</em> [<a href="https://doi.org/10.1101/2025.08.27.672249" target="_blank" rel="noopener noreferrer">bioRxiv</a>] [<a href="https://github.com/NuttidaLab/MARLAX" target="_blank" rel="noopener noreferrer">code</a>]
-                  </p>
-                  <p>
-                    We introduce a mouse paradigm to study cooperative behavior where stable leader-follower roles emerge during joint foraging. Using calcium imaging and optogenetic disruption, the study shows medial prefrontal cortex representations are role-specific and critical for cooperation. I developed the forward-modeling framework paired with multi-agent inverse reinforcement learning to decode latent value functions driving cooperative decisions.
-                  </p>
-                </td>
-              </tr>
-
-              <tr class="work-row">
-                <td class="work-image-cell">
-                  <img src="images/hmm.gif" alt="Bayesian Modeling Tutorial" class="work-thumb">
-                </td>
-                <td class="work-content-cell">
-                  <a href="https://art-of-neuron.github.io/" target="_blank" rel="noopener noreferrer">
-                    <span class="paper-title">Scaling Up Bayesian Models: Regressions, Mixtures, HMMs, and GLM-HMMs</span>
-                  </a>
-                  <p class="paper-authors">
-                    <strong>Rudramani Singha</strong>
-                  </p>
-                  <p class="paper-links">
-                    <em>links:</em> [<a href="https://art-of-neuron.github.io/" target="_blank" rel="noopener noreferrer">website</a>] [<a href="https://github.com/art-of-neuron/art-of-neuron.github.io" target="_blank" rel="noopener noreferrer">code</a>]
-                  </p>
-                  <p>
-                    This tutorial starts with intuitive Bayesian updates and builds to Hidden Markov Models and related latent-variable methods. It includes GLMs, input-driven Gaussian mixture models, and GLM-HMMs with comparisons between MCMC and EM estimation. Implementations cover PyMC, Stan, NumPyro, JAX, and Dynamax.
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table class="content-table">
-            <tbody>
-              <tr>
-                <td class="footer-cell">
-                  <br>
-                  <p class="footer-note">
-                    &copy; 2026 Rudramani Singha
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div id="root"></div>
 
   <script>
     if (!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
@@ -136,5 +38,6 @@
       })();
     }
   </script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
