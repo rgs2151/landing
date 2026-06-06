@@ -4,7 +4,7 @@
 
 This repository contains Rudramani Singha's personal academic landing page for `singha.io`.
 
-The site is a Vite + React website with a monochrome ASCII terminal interface. GitHub Pages deployment is Actions-only. Do not preserve or reintroduce GitHub Pages "Deploy from a branch" support.
+The site is a Vite + React website with a monochrome terminal interface and direct canvas animations. GitHub Pages deployment is Actions-only. Do not preserve or reintroduce GitHub Pages "Deploy from a branch" support.
 
 ## Communication
 
@@ -16,7 +16,7 @@ The site is a Vite + React website with a monochrome ASCII terminal interface. G
 
 ## Source of Truth
 
-- `src/main.jsx` is the React app, contains the locked homepage content, and renders ASCII media effects.
+- `src/main.jsx` is the React app, contains the locked homepage content, and renders direct canvas animations.
 - `index.html` is the Vite HTML entrypoint and contains metadata.
 - `stylesheet.css` is the current styling source imported by React.
 - `images/` contains the profile and project imagery.
@@ -39,7 +39,7 @@ The site is a Vite + React website with a monochrome ASCII terminal interface. G
 - Keep dependencies minimal. The GitHub Actions path should stay well under 30 seconds whenever possible.
 - Do not add Svelte, Astro, Tailwind, or another framework without an explicit user decision.
 - Styling work should preserve the current content and improve presentation only.
-- Keep the current visual direction ASCII-first unless the user asks for a different style.
+- Keep the current visual direction monochrome, minimal, terminal-like, and canvas-driven unless the user asks for a different style.
 - Prefer small, plain static-site changes over architectural churn.
 
 ## Commands

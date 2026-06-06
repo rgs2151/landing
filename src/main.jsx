@@ -1,15 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import figlet from 'figlet';
-import { decompressFrames, parseGIF } from 'gifuct-js';
-import heroImage from '../images/hero.jpg';
-import marlaxImage from '../images/marlax.gif';
-import hmmImage from '../images/hmm.gif';
 import '../stylesheet.css';
 
-const ASCII_RAMP = ' .,:;irsXA253hMHGS#9B&@';
-const GLYPHS = '01._:/\\\\|+-=*#';
-const CHAR_ASPECT = 0.58;
+const MONO_FONT = 'ui-monospace, SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace';
 
 const contacts = [
   {
@@ -28,7 +21,7 @@ const contacts = [
 
 const projects = [
   {
-    image: marlaxImage,
+    type: 'marlax',
     alt: 'Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior',
     title: 'Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior',
     href: 'https://doi.org/10.1101/2025.08.27.672249',
@@ -42,7 +35,7 @@ const projects = [
       'We introduce a mouse paradigm to study cooperative behavior where stable leader-follower roles emerge during joint foraging. Using calcium imaging and optogenetic disruption, the study shows medial prefrontal cortex representations are role-specific and critical for cooperation. I developed the forward-modeling framework paired with multi-agent inverse reinforcement learning to decode latent value functions driving cooperative decisions.'
   },
   {
-    image: hmmImage,
+    type: 'hmm',
     alt: 'Bayesian Modeling Tutorial',
     title: 'Scaling Up Bayesian Models: Regressions, Mixtures, HMMs, and GLM-HMMs',
     href: 'https://art-of-neuron.github.io/',
@@ -56,176 +49,320 @@ const projects = [
   }
 ];
 
-function useFiglet(text) {
-  const [output, setOutput] = useState(text);
+function useCanvas(draw, deps = []) {
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    let mounted = true;
-    figlet.text(text, { font: 'Slant' }, (error, result) => {
-      if (mounted) setOutput(error ? text : result);
-    });
-    return () => {
-      mounted = false;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame = 0;
+    let animationId = 0;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      draw(context, rect.width, rect.height, frame);
     };
-  }, [text]);
 
-  return output;
+    const render = () => {
+      const rect = canvas.getBoundingClientRect();
+      draw(context, rect.width, rect.height, frame);
+      frame += 1;
+      if (!prefersReducedMotion) animationId = requestAnimationFrame(render);
+    };
+
+    resize();
+    render();
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationId);
+    };
+  }, deps);
+
+  return canvasRef;
 }
 
-function getRows(width, height, columns) {
-  return Math.max(10, Math.round(columns * (height / width) * CHAR_ASPECT));
-}
-
-function luminance(red, green, blue) {
-  return 0.299 * red + 0.587 * green + 0.114 * blue;
-}
-
-function canvasToAscii(sourceCanvas, columns, rows, invert = false) {
-  const canvas = document.createElement('canvas');
-  canvas.width = columns;
-  canvas.height = rows;
-  const context = canvas.getContext('2d');
-  context.fillStyle = '#000';
-  context.fillRect(0, 0, columns, rows);
-  context.drawImage(sourceCanvas, 0, 0, columns, rows);
-
-  const { data } = context.getImageData(0, 0, columns, rows);
-  let output = '';
-
-  for (let y = 0; y < rows; y += 1) {
-    for (let x = 0; x < columns; x += 1) {
-      const index = (y * columns + x) * 4;
-      const alpha = data[index + 3] / 255;
-      const value = alpha === 0 ? 0 : luminance(data[index], data[index + 1], data[index + 2]);
-      const normalized = invert ? 1 - value / 255 : value / 255;
-      const rampIndex = Math.min(
-        ASCII_RAMP.length - 1,
-        Math.max(0, Math.floor(normalized * (ASCII_RAMP.length - 1)))
-      );
-      output += ASCII_RAMP[rampIndex];
-    }
-    output += '\n';
-  }
-
-  return output;
-}
-
-function imageToAscii(image, columns, invert = false) {
-  const rows = getRows(image.naturalWidth, image.naturalHeight, columns);
-  const sourceCanvas = document.createElement('canvas');
-  sourceCanvas.width = image.naturalWidth;
-  sourceCanvas.height = image.naturalHeight;
-  sourceCanvas.getContext('2d').drawImage(image, 0, 0);
-  return { text: canvasToAscii(sourceCanvas, columns, rows, invert), rows };
-}
-
-async function gifToAsciiFrames(src, columns, invert = false) {
-  const response = await fetch(src);
-  const buffer = await response.arrayBuffer();
-  const gif = parseGIF(buffer);
-  const frames = decompressFrames(gif, true);
-  const width = gif.lsd.width;
-  const height = gif.lsd.height;
-  const rows = getRows(width, height, columns);
-  const sourceCanvas = document.createElement('canvas');
-  sourceCanvas.width = width;
-  sourceCanvas.height = height;
-  const context = sourceCanvas.getContext('2d');
-  context.fillStyle = '#000';
+function clearCanvas(context, width, height) {
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = '#050505';
   context.fillRect(0, 0, width, height);
-
-  const usableFrames = frames.filter((_, index) => index % 2 === 0).slice(0, 90);
-
-  return usableFrames.map((frame) => {
-    const imageData = new ImageData(new Uint8ClampedArray(frame.patch), frame.dims.width, frame.dims.height);
-    context.putImageData(imageData, frame.dims.left, frame.dims.top);
-    return {
-      text: canvasToAscii(sourceCanvas, columns, rows, invert),
-      delay: Math.max(42, frame.delay || 80)
-    };
-  });
 }
 
-function AsciiMedia({ src, alt, columns = 74, cadence = 90, invert = false, animated = false }) {
-  const [frames, setFrames] = useState([]);
-  const [index, setIndex] = useState(0);
+function drawGrid(context, x, y, size, cells) {
+  context.save();
+  context.strokeStyle = 'rgba(255,255,255,0.16)';
+  context.lineWidth = 1;
+  for (let index = 0; index <= cells; index += 1) {
+    const position = x + (index / cells) * size;
+    context.beginPath();
+    context.moveTo(position, y);
+    context.lineTo(position, y + size);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(x, y + (index / cells) * size);
+    context.lineTo(x + size, y + (index / cells) * size);
+    context.stroke();
+  }
+  context.strokeStyle = 'rgba(255,255,255,0.9)';
+  context.lineWidth = 1.4;
+  context.strokeRect(x, y, size, size);
+  context.restore();
+}
 
-  useEffect(() => {
-    let cancelled = false;
+function gridPoint(originX, originY, size, gridSize, point) {
+  return {
+    x: originX + (point.x / (gridSize - 1)) * size,
+    y: originY + size - (point.y / (gridSize - 1)) * size
+  };
+}
 
-    const load = async () => {
-      if (animated) {
-        const decoded = await gifToAsciiFrames(src, columns, invert);
-        if (!cancelled) setFrames(decoded);
-        return;
-      }
+function interpolatePath(path, progress) {
+  const wrapped = progress % path.length;
+  const index = Math.floor(wrapped);
+  const next = (index + 1) % path.length;
+  const amount = wrapped - index;
+  return {
+    x: path[index].x + (path[next].x - path[index].x) * amount,
+    y: path[index].y + (path[next].y - path[index].y) * amount,
+    previous: path[index],
+    next: path[next]
+  };
+}
 
-      const image = new Image();
-      image.crossOrigin = 'anonymous';
-      image.src = src;
-      image.addEventListener('load', () => {
-        if (!cancelled) setFrames([{ ...imageToAscii(image, columns, invert), delay: cadence }]);
-      });
-    };
+function drawMouse(context, x, y, angle, scale, alpha = 1) {
+  context.save();
+  context.translate(x, y);
+  context.rotate(angle);
+  context.strokeStyle = `rgba(255,255,255,${alpha})`;
+  context.fillStyle = '#050505';
+  context.lineWidth = Math.max(1.4, scale * 0.065);
+  context.lineCap = 'round';
+  context.lineJoin = 'round';
 
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [src, columns, cadence, invert, animated]);
+  context.beginPath();
+  context.ellipse(0, 0, scale * 0.35, scale * 0.56, 0, 0, Math.PI * 2);
+  context.stroke();
 
-  useEffect(() => {
-    if (frames.length <= 1) return undefined;
-    const currentDelay = frames[index]?.delay || cadence;
-    const timeoutId = window.setTimeout(() => {
-      setIndex((value) => (value + 1) % frames.length);
-    }, currentDelay);
-    return () => clearTimeout(timeoutId);
-  }, [frames, index, cadence]);
+  context.beginPath();
+  context.arc(0, -scale * 0.58, scale * 0.28, 0, Math.PI * 2);
+  context.stroke();
 
-  const activeFrame = frames[index]?.text || 'loading ascii stream...';
+  context.beginPath();
+  context.arc(-scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
+  context.stroke();
+  context.beginPath();
+  context.arc(scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
+  context.stroke();
 
-  return (
-    <figure className="ascii-media" aria-label={alt}>
-      <pre aria-hidden="true">{activeFrame}</pre>
-      <figcaption>{alt}</figcaption>
-    </figure>
+  context.beginPath();
+  context.moveTo(-scale * 0.08, -scale * 0.84);
+  context.lineTo(0, -scale * 1.02);
+  context.lineTo(scale * 0.08, -scale * 0.84);
+  context.stroke();
+
+  context.beginPath();
+  context.arc(-scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
+  context.fillStyle = `rgba(255,255,255,${alpha})`;
+  context.fill();
+  context.beginPath();
+  context.arc(scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(0, scale * 0.52);
+  context.bezierCurveTo(-scale * 0.18, scale * 0.82, -scale * 0.42, scale * 0.9, -scale * 0.56, scale * 1.12);
+  context.stroke();
+  context.restore();
+}
+
+function MouseSketchCanvas() {
+  const pathA = useMemo(
+    () => [
+      { x: 2, y: 2 },
+      { x: 5, y: 2 },
+      { x: 8, y: 3 },
+      { x: 9, y: 6 },
+      { x: 7, y: 8 },
+      { x: 4, y: 8 },
+      { x: 2, y: 6 },
+      { x: 2, y: 2 }
+    ],
+    []
   );
+  const pathB = useMemo(
+    () => [
+      { x: 8, y: 8 },
+      { x: 5, y: 8 },
+      { x: 3, y: 7 },
+      { x: 1, y: 5 },
+      { x: 3, y: 3 },
+      { x: 6, y: 3 },
+      { x: 8, y: 5 },
+      { x: 8, y: 8 }
+    ],
+    []
+  );
+
+  const canvasRef = useCanvas((context, width, height, frame) => {
+    clearCanvas(context, width, height);
+    const size = Math.min(width, height) * 0.78;
+    const originX = (width - size) / 2;
+    const originY = (height - size) / 2;
+    const gridSize = 11;
+    drawGrid(context, originX, originY, size, gridSize - 1);
+
+    const t = frame * 0.018;
+    const positions = [interpolatePath(pathA, t), interpolatePath(pathB, t + 2.8)];
+    const cell = size / (gridSize - 1);
+
+    context.save();
+    context.strokeStyle = 'rgba(255,255,255,0.44)';
+    context.lineWidth = 1.5;
+    positions.forEach((position) => {
+      const point = gridPoint(originX, originY, size, gridSize, position);
+      context.beginPath();
+      context.arc(point.x, point.y, cell * 0.78, 0, Math.PI * 2);
+      context.stroke();
+    });
+    context.restore();
+
+    const rewardCycle = Math.floor(frame / 130) % 4;
+    const rewards = [
+      { x: 5, y: 10 },
+      { x: 10, y: 5 },
+      { x: 5, y: 0 },
+      { x: 0, y: 5 }
+    ];
+    const reward = gridPoint(originX, originY, size, gridSize, rewards[rewardCycle]);
+    context.save();
+    context.strokeStyle = 'rgba(255,255,255,0.82)';
+    context.lineWidth = 1.6;
+    context.beginPath();
+    context.moveTo(reward.x, reward.y - cell * 0.35);
+    context.lineTo(reward.x + cell * 0.35, reward.y);
+    context.lineTo(reward.x, reward.y + cell * 0.35);
+    context.lineTo(reward.x - cell * 0.35, reward.y);
+    context.closePath();
+    context.stroke();
+    context.restore();
+
+    const center = gridPoint(originX, originY, size, gridSize, { x: 5, y: 5 });
+    context.save();
+    context.strokeStyle = 'rgba(255,255,255,0.34)';
+    context.strokeRect(center.x - cell * 0.32, center.y - cell * 0.32, cell * 0.64, cell * 0.64);
+    context.restore();
+
+    positions.forEach((position, index) => {
+      const current = gridPoint(originX, originY, size, gridSize, position);
+      const next = gridPoint(originX, originY, size, gridSize, position.next);
+      const angle = Math.atan2(next.y - current.y, next.x - current.x) + Math.PI / 2;
+      drawMouse(context, current.x, current.y, angle, cell * 0.88, index === 0 ? 1 : 0.7);
+    });
+  }, [pathA, pathB]);
+
+  return <canvas ref={canvasRef} className="canvas-panel" aria-label="Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior" />;
+}
+
+function drawArrow(context, x1, y1, x2, y2, alpha) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  context.save();
+  context.strokeStyle = `rgba(255,255,255,${alpha})`;
+  context.fillStyle = `rgba(255,255,255,${alpha})`;
+  context.lineWidth = 1.4;
+  context.beginPath();
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
+  context.stroke();
+  context.beginPath();
+  context.moveTo(x2, y2);
+  context.lineTo(x2 - 9 * Math.cos(angle - 0.45), y2 - 9 * Math.sin(angle - 0.45));
+  context.lineTo(x2 - 9 * Math.cos(angle + 0.45), y2 - 9 * Math.sin(angle + 0.45));
+  context.closePath();
+  context.fill();
+  context.restore();
+}
+
+function HMMCanvas() {
+  const canvasRef = useCanvas((context, width, height, frame) => {
+    clearCanvas(context, width, height);
+    const paddingX = width * 0.1;
+    const columns = 4;
+    const stepWidth = (width - paddingX * 2) / (columns - 1);
+    const yInput = height * 0.22;
+    const yHidden = height * 0.5;
+    const yObs = height * 0.78;
+    const phase = Math.floor((frame / 38) % 50);
+    const visibleSteps = Math.min(Math.floor(phase / 10) + 1, columns);
+    const currentStep = Math.min(Math.floor(phase / 10), columns - 1);
+
+    const getAlpha = (step, offset) => {
+      if (phase >= step * 10 + offset) return step === currentStep ? 1 : 0.34;
+      return 0.14;
+    };
+
+    const drawNode = (x, y, label, shape, alpha) => {
+      context.save();
+      context.strokeStyle = `rgba(255,255,255,${alpha})`;
+      context.fillStyle = `rgba(255,255,255,${alpha})`;
+      context.lineWidth = 1.7;
+      if (shape === 'square') {
+        context.strokeRect(x - 24, y - 24, 48, 48);
+      } else {
+        context.beginPath();
+        context.arc(x, y, 26, 0, Math.PI * 2);
+        context.stroke();
+      }
+      context.font = `14px ${MONO_FONT}`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(label, x, y);
+      context.restore();
+    };
+
+    for (let step = 0; step < visibleSteps; step += 1) {
+      const x = paddingX + step * stepWidth;
+      drawNode(x, yInput, `u_${step + 1}`, 'circle', getAlpha(step, 0));
+      drawNode(x, yHidden, `z_${step + 1}`, 'circle', getAlpha(step, 3));
+      drawNode(x, yObs, `x_${step + 1}`, 'square', getAlpha(step, 6));
+      drawArrow(context, x, yInput + 30, x, yHidden - 30, getAlpha(step, 2));
+      drawArrow(context, x, yHidden + 30, x, yObs - 30, getAlpha(step, 5));
+      drawArrow(context, x - 8, yInput + 32, x - 16, yObs - 32, getAlpha(step, 7));
+      if (step < visibleSteps - 1) {
+        drawArrow(context, x + 31, yHidden, x + stepWidth - 31, yHidden, getAlpha(step + 1, 1));
+      }
+    }
+  }, []);
+
+  return <canvas ref={canvasRef} className="canvas-panel" aria-label="Bayesian Modeling Tutorial" />;
 }
 
 function SignalField() {
-  const [frame, setFrame] = useState('');
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let tick = 0;
-
-    const render = () => {
-      const lines = [];
-      for (let row = 0; row < 16; row += 1) {
-        let line = '';
-        for (let column = 0; column < 78; column += 1) {
-          const value = Math.sin((column + tick) * 0.27) + Math.cos((row * 4 - tick) * 0.19);
-          const charIndex = Math.abs(Math.floor((value + 2) * 4 + row + column + tick)) % GLYPHS.length;
-          line += GLYPHS[charIndex];
-        }
-        lines.push(line);
+  const canvasRef = useCanvas((context, width, height, frame) => {
+    clearCanvas(context, width, height);
+    context.font = `11px ${MONO_FONT}`;
+    context.fillStyle = 'rgba(255,255,255,0.7)';
+    const glyphs = '01._:/\\\\|+-=*#';
+    const cellWidth = 9;
+    const cellHeight = 12;
+    const cols = Math.ceil(width / cellWidth);
+    const rows = Math.ceil(height / cellHeight);
+    for (let y = 0; y < rows; y += 1) {
+      for (let x = 0; x < cols; x += 1) {
+        const value = Math.sin((x + frame * 0.045) * 0.65) + Math.cos((y - frame * 0.035) * 0.8);
+        const alpha = Math.max(0.12, Math.min(0.82, (value + 2) / 4));
+        context.fillStyle = `rgba(255,255,255,${alpha})`;
+        context.fillText(glyphs[(x * 7 + y * 11 + frame) % glyphs.length], x * cellWidth, y * cellHeight + 10);
       }
-      setFrame(lines.join('\n'));
-      tick += 1;
-    };
-
-    render();
-    if (prefersReducedMotion) return undefined;
-    const intervalId = window.setInterval(render, 90);
-    return () => clearInterval(intervalId);
+    }
   }, []);
 
-  return (
-    <div className="signal-field" aria-hidden="true">
-      <pre>{frame}</pre>
-    </div>
-  );
+  return <canvas ref={canvasRef} className="signal-canvas" aria-hidden="true" />;
 }
 
 function ExternalLink({ href, children, className = '' }) {
@@ -265,11 +402,16 @@ function TerminalLine({ label, children }) {
   );
 }
 
+function ProjectVisual({ type }) {
+  if (type === 'hmm') return <HMMCanvas />;
+  return <MouseSketchCanvas />;
+}
+
 function ProjectBlock({ project, index }) {
   return (
     <article className="project-block">
       <div className="project-output">
-        <AsciiMedia src={project.image} alt={project.alt} columns={index === 0 ? 66 : 76} animated />
+        <ProjectVisual type={project.type} />
       </div>
       <div className="project-terminal">
         <TerminalLine label={`PROJECT_${String(index + 1).padStart(2, '0')}`}>
@@ -293,7 +435,6 @@ function ProjectBlock({ project, index }) {
 }
 
 function App() {
-  const title = useFiglet('Rudramani Singha');
   const projectList = useMemo(() => projects, []);
 
   return (
@@ -302,7 +443,6 @@ function App() {
         <div className="hero-grid">
           <div className="hero-terminal">
             <p className="boot-line">~/singha.io $ model --probabilistic --brain</p>
-            <pre className="ascii-title">{title}</pre>
             <TerminalLine label="STATUS">
               I am a Data Scientist at the{' '}
               <ExternalLink href="https://memorylongevity.org/">Program in Memory Longevity</ExternalLink>, UTSW. I
@@ -317,23 +457,20 @@ function App() {
                   target={contact.href.startsWith('mailto:') ? undefined : '_blank'}
                   rel={contact.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
                 >
-                  [{contact.label}]
+                  {contact.label}
                 </a>
               ))}
             </nav>
           </div>
-          <div className="hero-ascii">
-            <AsciiMedia src={heroImage} alt="Rudramani Singha profile photo" columns={64} cadence={180} />
+          <div className="hero-signal">
+            <SignalField />
           </div>
-          <SignalField />
         </div>
       </section>
 
       <section className="projects" aria-labelledby="selected-projects">
         <div className="section-heading">
-          <pre aria-hidden="true">{'//------------------------------'}</pre>
           <h2 id="selected-projects">Selected Projects</h2>
-          <pre aria-hidden="true">{'------------------------------//'}</pre>
         </div>
         <div className="project-list">
           {projectList.map((project, index) => (
