@@ -17,6 +17,8 @@ html {
   color: var(--fg);
   font-family: var(--font-mono);
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 body {
@@ -57,6 +59,7 @@ pre {
 .site {
   min-height: 100vh;
   color: var(--fg);
+  filter: grayscale(1);
   background:
     linear-gradient(90deg, rgba(242, 242, 242, 0.05) 1px, transparent 1px),
     linear-gradient(0deg, rgba(242, 242, 242, 0.04) 1px, transparent 1px),
