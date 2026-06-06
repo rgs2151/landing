@@ -1,13 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import figlet from 'figlet';
+import { decompressFrames, parseGIF } from 'gifuct-js';
 import heroImage from '../images/hero.jpg';
 import marlaxImage from '../images/marlax.gif';
 import hmmImage from '../images/hmm.gif';
 import '../stylesheet.css';
 
-const ASCII_RAMP = ' .:-=+*#%@';
-const DONUT_RAMP = '.,-~:;=!*#$@';
+const ASCII_RAMP = ' .,:;irsXA253hMHGS#9B&@';
+const GLYPHS = '01._:/\\\\|+-=*#';
+const CHAR_ASPECT = 0.58;
 
 const contacts = [
   {
@@ -60,8 +62,7 @@ function useFiglet(text) {
   useEffect(() => {
     let mounted = true;
     figlet.text(text, { font: 'Slant' }, (error, result) => {
-      if (!mounted) return;
-      setOutput(error ? text : result);
+      if (mounted) setOutput(error ? text : result);
     });
     return () => {
       mounted = false;
@@ -71,16 +72,23 @@ function useFiglet(text) {
   return output;
 }
 
+function getRows(width, height, columns) {
+  return Math.max(10, Math.round(columns * (height / width) * CHAR_ASPECT));
+}
+
 function luminance(red, green, blue) {
   return 0.299 * red + 0.587 * green + 0.114 * blue;
 }
 
-function frameToAscii(image, columns, rows, invert = false) {
+function canvasToAscii(sourceCanvas, columns, rows, invert = false) {
   const canvas = document.createElement('canvas');
   canvas.width = columns;
   canvas.height = rows;
   const context = canvas.getContext('2d');
-  context.drawImage(image, 0, 0, columns, rows);
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, columns, rows);
+  context.drawImage(sourceCanvas, 0, 0, columns, rows);
+
   const { data } = context.getImageData(0, 0, columns, rows);
   let output = '';
 
@@ -90,7 +98,10 @@ function frameToAscii(image, columns, rows, invert = false) {
       const alpha = data[index + 3] / 255;
       const value = alpha === 0 ? 0 : luminance(data[index], data[index + 1], data[index + 2]);
       const normalized = invert ? 1 - value / 255 : value / 255;
-      const rampIndex = Math.min(ASCII_RAMP.length - 1, Math.max(0, Math.floor(normalized * ASCII_RAMP.length)));
+      const rampIndex = Math.min(
+        ASCII_RAMP.length - 1,
+        Math.max(0, Math.floor(normalized * (ASCII_RAMP.length - 1)))
+      );
       output += ASCII_RAMP[rampIndex];
     }
     output += '\n';
@@ -99,118 +110,119 @@ function frameToAscii(image, columns, rows, invert = false) {
   return output;
 }
 
-function AsciiMedia({ src, alt, columns = 76, rows = 34, cadence = 90, invert = false }) {
-  const [ascii, setAscii] = useState('');
-  const imageRef = useRef(null);
+function imageToAscii(image, columns, invert = false) {
+  const rows = getRows(image.naturalWidth, image.naturalHeight, columns);
+  const sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = image.naturalWidth;
+  sourceCanvas.height = image.naturalHeight;
+  sourceCanvas.getContext('2d').drawImage(image, 0, 0);
+  return { text: canvasToAscii(sourceCanvas, columns, rows, invert), rows };
+}
+
+async function gifToAsciiFrames(src, columns, invert = false) {
+  const response = await fetch(src);
+  const buffer = await response.arrayBuffer();
+  const gif = parseGIF(buffer);
+  const frames = decompressFrames(gif, true);
+  const width = gif.lsd.width;
+  const height = gif.lsd.height;
+  const rows = getRows(width, height, columns);
+  const sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = width;
+  sourceCanvas.height = height;
+  const context = sourceCanvas.getContext('2d');
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, width, height);
+
+  const usableFrames = frames.filter((_, index) => index % 2 === 0).slice(0, 90);
+
+  return usableFrames.map((frame) => {
+    const imageData = new ImageData(new Uint8ClampedArray(frame.patch), frame.dims.width, frame.dims.height);
+    context.putImageData(imageData, frame.dims.left, frame.dims.top);
+    return {
+      text: canvasToAscii(sourceCanvas, columns, rows, invert),
+      delay: Math.max(42, frame.delay || 80)
+    };
+  });
+}
+
+function AsciiMedia({ src, alt, columns = 74, cadence = 90, invert = false, animated = false }) {
+  const [frames, setFrames] = useState([]);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.src = src;
-    imageRef.current = image;
-    let frame = 0;
-    let intervalId = 0;
+    let cancelled = false;
 
-    const render = () => {
-      if (!image.complete || image.naturalWidth === 0) return;
-      try {
-        setAscii(frameToAscii(image, columns, rows, invert));
-        frame += 1;
-      } catch {
-        clearInterval(intervalId);
+    const load = async () => {
+      if (animated) {
+        const decoded = await gifToAsciiFrames(src, columns, invert);
+        if (!cancelled) setFrames(decoded);
+        return;
       }
+
+      const image = new Image();
+      image.crossOrigin = 'anonymous';
+      image.src = src;
+      image.addEventListener('load', () => {
+        if (!cancelled) setFrames([{ ...imageToAscii(image, columns, invert), delay: cadence }]);
+      });
     };
 
-    image.addEventListener('load', render);
-    intervalId = window.setInterval(render, cadence);
-
+    load();
     return () => {
-      image.removeEventListener('load', render);
-      clearInterval(intervalId);
+      cancelled = true;
     };
-  }, [src, columns, rows, cadence, invert]);
+  }, [src, columns, cadence, invert, animated]);
+
+  useEffect(() => {
+    if (frames.length <= 1) return undefined;
+    const currentDelay = frames[index]?.delay || cadence;
+    const timeoutId = window.setTimeout(() => {
+      setIndex((value) => (value + 1) % frames.length);
+    }, currentDelay);
+    return () => clearTimeout(timeoutId);
+  }, [frames, index, cadence]);
+
+  const activeFrame = frames[index]?.text || 'loading ascii stream...';
 
   return (
     <figure className="ascii-media" aria-label={alt}>
-      <pre aria-hidden="true">{ascii || 'loading ascii stream...'}</pre>
+      <pre aria-hidden="true">{activeFrame}</pre>
       <figcaption>{alt}</figcaption>
     </figure>
   );
 }
 
-function renderDonut(width, height, angleA, angleB) {
-  const output = Array(width * height).fill(' ');
-  const zBuffer = Array(width * height).fill(0);
-  const cosA = Math.cos(angleA);
-  const sinA = Math.sin(angleA);
-  const cosB = Math.cos(angleB);
-  const sinB = Math.sin(angleB);
-  const radiusOne = 1;
-  const radiusTwo = 2;
-  const distance = 5;
-  const scale = (width * distance * 3) / (8 * (radiusOne + radiusTwo));
-
-  for (let theta = 0; theta < Math.PI * 2; theta += 0.07) {
-    const costheta = Math.cos(theta);
-    const sintheta = Math.sin(theta);
-
-    for (let phi = 0; phi < Math.PI * 2; phi += 0.02) {
-      const cosphi = Math.cos(phi);
-      const sinphi = Math.sin(phi);
-      const circle = radiusTwo + radiusOne * costheta;
-
-      const x =
-        circle * (cosB * cosphi + sinA * sinB * sinphi) - radiusOne * cosA * sinB * sintheta;
-      const y =
-        circle * (sinB * cosphi - sinA * cosB * sinphi) + radiusOne * cosA * cosB * sintheta;
-      const z = distance + cosA * circle * sinphi + radiusOne * sinA * sintheta;
-      const inverseZ = 1 / z;
-      const xp = Math.floor(width / 2 + scale * inverseZ * x);
-      const yp = Math.floor(height / 2 - scale * 0.52 * inverseZ * y);
-      const luminanceValue =
-        cosphi * costheta * sinB -
-        cosA * costheta * sinphi -
-        sinA * sintheta +
-        cosB * (cosA * sintheta - costheta * sinA * sinphi);
-
-      if (luminanceValue > 0 && xp >= 0 && xp < width && yp >= 0 && yp < height) {
-        const outputIndex = xp + width * yp;
-        if (inverseZ > zBuffer[outputIndex]) {
-          zBuffer[outputIndex] = inverseZ;
-          const shade = Math.min(DONUT_RAMP.length - 1, Math.floor(luminanceValue * 7));
-          output[outputIndex] = DONUT_RAMP[shade];
-        }
-      }
-    }
-  }
-
-  let frame = '';
-  for (let row = 0; row < height; row += 1) {
-    frame += output.slice(row * width, row * width + width).join('') + '\n';
-  }
-  return frame;
-}
-
-function AsciiDonut() {
+function SignalField() {
   const [frame, setFrame] = useState('');
 
   useEffect(() => {
-    let angleA = 0;
-    let angleB = 0;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const tick = () => {
-      setFrame(renderDonut(64, 28, angleA, angleB));
-      angleA += 0.07;
-      angleB += 0.035;
+    let tick = 0;
+
+    const render = () => {
+      const lines = [];
+      for (let row = 0; row < 16; row += 1) {
+        let line = '';
+        for (let column = 0; column < 78; column += 1) {
+          const value = Math.sin((column + tick) * 0.27) + Math.cos((row * 4 - tick) * 0.19);
+          const charIndex = Math.abs(Math.floor((value + 2) * 4 + row + column + tick)) % GLYPHS.length;
+          line += GLYPHS[charIndex];
+        }
+        lines.push(line);
+      }
+      setFrame(lines.join('\n'));
+      tick += 1;
     };
-    tick();
+
+    render();
     if (prefersReducedMotion) return undefined;
-    const intervalId = window.setInterval(tick, 52);
+    const intervalId = window.setInterval(render, 90);
     return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <div className="donut-terminal" aria-hidden="true">
+    <div className="signal-field" aria-hidden="true">
       <pre>{frame}</pre>
     </div>
   );
@@ -257,7 +269,7 @@ function ProjectBlock({ project, index }) {
   return (
     <article className="project-block">
       <div className="project-output">
-        <AsciiMedia src={project.image} alt={project.alt} columns={72} rows={28} cadence={index === 0 ? 70 : 95} />
+        <AsciiMedia src={project.image} alt={project.alt} columns={index === 0 ? 66 : 76} animated />
       </div>
       <div className="project-terminal">
         <TerminalLine label={`PROJECT_${String(index + 1).padStart(2, '0')}`}>
@@ -287,10 +299,9 @@ function App() {
   return (
     <main className="site">
       <section className="hero" aria-label="Rudramani Singha">
-        <div className="scanline" aria-hidden="true" />
         <div className="hero-grid">
           <div className="hero-terminal">
-            <p className="boot-line">root@singha:~$ ./reverse_engineer_brain --mode=probabilistic</p>
+            <p className="boot-line">~/singha.io $ model --probabilistic --brain</p>
             <pre className="ascii-title">{title}</pre>
             <TerminalLine label="STATUS">
               I am a Data Scientist at the{' '}
@@ -312,17 +323,17 @@ function App() {
             </nav>
           </div>
           <div className="hero-ascii">
-            <AsciiMedia src={heroImage} alt="Rudramani Singha profile photo" columns={64} rows={36} cadence={180} />
+            <AsciiMedia src={heroImage} alt="Rudramani Singha profile photo" columns={64} cadence={180} />
           </div>
-          <AsciiDonut />
+          <SignalField />
         </div>
       </section>
 
       <section className="projects" aria-labelledby="selected-projects">
         <div className="section-heading">
-          <pre aria-hidden="true">{'//=============================================================='}</pre>
+          <pre aria-hidden="true">{'//------------------------------'}</pre>
           <h2 id="selected-projects">Selected Projects</h2>
-          <pre aria-hidden="true">{'//=============================================================='}</pre>
+          <pre aria-hidden="true">{'------------------------------//'}</pre>
         </div>
         <div className="project-list">
           {projectList.map((project, index) => (

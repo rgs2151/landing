@@ -2,17 +2,17 @@
 
 :root {
   --font-mono: 'IBM Plex Mono', 'Courier New', Courier, monospace;
-  --bg: #020403;
-  --panel: #06100c;
-  --panel-hot: #0b1f16;
-  --phosphor: #b7ff6a;
-  --green: #45ff89;
-  --dim: rgba(183, 255, 106, 0.62);
-  --faint: rgba(183, 255, 106, 0.16);
-  --danger: #ff5c5c;
-  --line: rgba(69, 255, 137, 0.36);
-  --shadow: rgba(69, 255, 137, 0.24);
-  --radius: 0;
+  --bg: #050608;
+  --panel: #0b0f14;
+  --panel-2: #101820;
+  --fg: #e7eef8;
+  --muted: rgba(231, 238, 248, 0.62);
+  --faint: rgba(231, 238, 248, 0.11);
+  --cyan: #80f7ff;
+  --blue: #7aa2ff;
+  --red: #ff5566;
+  --line: rgba(128, 247, 255, 0.28);
+  --shadow: rgba(128, 247, 255, 0.16);
 }
 
 * {
@@ -21,7 +21,7 @@
 
 html {
   background: var(--bg);
-  color: var(--phosphor);
+  color: var(--fg);
   font-family: var(--font-mono);
   scroll-behavior: smooth;
 }
@@ -33,18 +33,17 @@ body {
 }
 
 a {
-  color: var(--green);
+  color: var(--cyan);
   text-decoration: none;
 }
 
 a:hover {
-  color: #ffffff;
-  background: var(--green);
-  text-shadow: none;
+  color: var(--bg);
+  background: var(--cyan);
 }
 
 a:focus-visible {
-  outline: 1px solid var(--green);
+  outline: 1px solid var(--cyan);
   outline-offset: 3px;
 }
 
@@ -55,74 +54,65 @@ pre {
 }
 
 ::selection {
-  background: var(--green);
+  background: var(--cyan);
   color: var(--bg);
 }
 
 .site {
   min-height: 100vh;
-  position: relative;
   overflow: hidden;
+  color: var(--fg);
   background:
-    radial-gradient(circle at 50% 20%, rgba(69, 255, 137, 0.1), transparent 34%),
-    linear-gradient(rgba(183, 255, 106, 0.035) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(128, 247, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(231, 238, 248, 0.045) 1px, transparent 1px),
     var(--bg);
-  background-size: auto, 100% 4px, auto;
-  color: var(--phosphor);
-  text-shadow: 0 0 8px rgba(183, 255, 106, 0.28);
-}
-
-.site::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 10;
-  background:
-    linear-gradient(90deg, rgba(255, 0, 0, 0.035), transparent 8%, rgba(0, 255, 114, 0.04) 50%, transparent 92%, rgba(0, 120, 255, 0.035)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 7px);
-  mix-blend-mode: screen;
+  background-size: 36px 36px;
 }
 
 .hero {
   min-height: 100vh;
-  position: relative;
   display: grid;
   align-items: center;
-  padding: 24px;
-}
-
-.scanline {
-  position: fixed;
-  inset: 0;
-  z-index: 9;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent, rgba(69, 255, 137, 0.12), transparent);
-  height: 22vh;
-  animation: scan 5.6s linear infinite;
+  padding: 22px;
 }
 
 .hero-grid {
   width: min(100%, 1320px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.04fr) minmax(340px, 0.96fr);
+  gap: 16px;
   align-items: stretch;
 }
 
 .hero-terminal,
 .hero-ascii,
-.donut-terminal,
+.signal-field,
 .project-block {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(6, 16, 12, 0.96), rgba(2, 4, 3, 0.98));
-  box-shadow: 0 0 0 1px rgba(183, 255, 106, 0.04), 0 0 48px var(--shadow);
+  background: rgba(11, 15, 20, 0.96);
+  box-shadow: 0 0 0 1px rgba(231, 238, 248, 0.03), 0 22px 68px rgba(0, 0, 0, 0.42);
+}
+
+.hero-terminal::before,
+.hero-ascii::before,
+.signal-field::before,
+.project-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(128, 247, 255, 0.08), transparent),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 9px);
+  opacity: 0.55;
 }
 
 .hero-terminal {
   min-width: 0;
-  min-height: 584px;
+  min-height: 560px;
   padding: 18px;
   display: grid;
   align-content: center;
@@ -130,7 +120,7 @@ pre {
 
 .boot-line {
   margin: 0 0 18px;
-  color: var(--dim);
+  color: var(--muted);
   font-size: 13px;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -139,32 +129,31 @@ pre {
 .ascii-title {
   max-width: 100%;
   overflow: hidden;
-  color: var(--green);
+  color: var(--fg);
   font-size: 13px;
   line-height: 1;
   white-space: pre;
-  animation: flicker 3.2s steps(2, end) infinite;
 }
 
 .terminal-line {
   margin: 22px 0 0;
-  color: var(--phosphor);
+  color: var(--fg);
   font-size: 18px;
   line-height: 1.6;
 }
 
 .terminal-line > span {
-  color: var(--danger);
+  color: var(--red);
 }
 
 .terminal-line > span::before {
   content: "[";
-  color: var(--dim);
+  color: var(--muted);
 }
 
 .terminal-line > span::after {
   content: "] ";
-  color: var(--dim);
+  color: var(--muted);
 }
 
 .contact-strip {
@@ -180,7 +169,7 @@ pre {
   min-height: 32px;
   align-items: center;
   padding: 4px 0;
-  color: var(--green);
+  color: var(--cyan);
   font-size: 14px;
   line-height: 1.2;
   overflow-wrap: anywhere;
@@ -188,7 +177,7 @@ pre {
 
 .hero-ascii {
   min-width: 0;
-  min-height: 584px;
+  min-height: 560px;
   display: grid;
 }
 
@@ -204,39 +193,38 @@ pre {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
-  color: var(--phosphor);
+  color: var(--fg);
   font-size: 8px;
-  line-height: 0.82;
+  line-height: 0.88;
   white-space: pre;
-  filter: grayscale(1) contrast(1.25);
 }
 
 .ascii-media figcaption {
   margin-top: 10px;
-  color: var(--dim);
+  color: var(--muted);
   font-size: 11px;
   line-height: 1.3;
 }
 
-.donut-terminal {
+.signal-field {
   grid-column: 1 / -1;
-  min-height: 236px;
+  min-height: 188px;
   padding: 14px;
-  overflow: hidden;
 }
 
-.donut-terminal::before {
-  content: "torus_zbuffer://andy_sloane_inspired";
-  display: block;
-  margin-bottom: 8px;
-  color: var(--danger);
+.signal-field::after {
+  content: "signal.trace";
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  color: var(--red);
   font-size: 12px;
 }
 
-.donut-terminal pre {
-  color: var(--green);
-  font-size: 10px;
-  line-height: 0.85;
+.signal-field pre {
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 1;
 }
 
 .projects {
@@ -247,12 +235,12 @@ pre {
 
 .section-heading {
   margin: 0 0 18px;
-  color: var(--dim);
+  color: var(--muted);
 }
 
 .section-heading h2 {
   margin: 8px 0;
-  color: var(--green);
+  color: var(--fg);
   font-size: 26px;
   line-height: 1;
   font-weight: 700;
@@ -271,7 +259,7 @@ pre {
 
 .project-block {
   display: grid;
-  grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.08fr);
   min-height: 360px;
 }
 
@@ -294,31 +282,31 @@ pre {
 
 .paper-authors {
   margin: 18px 0 0;
-  color: var(--dim);
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.55;
 }
 
 .paper-authors strong {
-  color: var(--green);
+  color: var(--fg);
   font-weight: 700;
 }
 
 .paper-links {
   margin: 14px 0 0;
-  color: var(--dim);
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
 }
 
 .paper-links em {
-  color: var(--danger);
+  color: var(--red);
   font-style: normal;
 }
 
 .project-description {
   margin: 18px 0 0;
-  color: var(--phosphor);
+  color: var(--fg);
   font-size: 16px;
   line-height: 1.65;
 }
@@ -327,7 +315,7 @@ pre {
   width: min(100% - 48px, 1320px);
   margin: 0 auto;
   padding: 0 0 34px;
-  color: var(--dim);
+  color: var(--muted);
   font-size: 12px;
   text-align: right;
 }
@@ -339,7 +327,7 @@ pre {
 .not-found-container {
   width: min(100% - 40px, 680px);
   margin: 64px auto;
-  color: var(--phosphor);
+  color: var(--fg);
   text-align: center;
 }
 
@@ -348,31 +336,6 @@ pre {
   font-size: 56px;
   line-height: 1;
   letter-spacing: 0;
-}
-
-@keyframes scan {
-  from {
-    transform: translateY(-24vh);
-  }
-  to {
-    transform: translateY(124vh);
-  }
-}
-
-@keyframes flicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  48% {
-    opacity: 0.92;
-  }
-  50% {
-    opacity: 0.62;
-  }
-  52% {
-    opacity: 1;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -432,15 +395,15 @@ pre {
 
   .ascii-media pre {
     font-size: 5px;
-    line-height: 0.82;
+    line-height: 0.88;
   }
 
-  .donut-terminal {
-    min-height: 172px;
+  .signal-field {
+    min-height: 132px;
   }
 
-  .donut-terminal pre {
-    font-size: 5px;
+  .signal-field pre {
+    font-size: 6px;
   }
 
   .projects,
