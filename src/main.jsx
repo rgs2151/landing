@@ -49,6 +49,88 @@ const projects = [
   }
 ];
 
+const MARLAX_GRID_SIZE = 11;
+const MARLAX_FRAME_MS = 140;
+// Encoded from scripts/artifacts/logs.parquet for scripts/animate.ipynb, regime 1, frames 0-500.
+const MARLAX_POSITION_STREAM = [
+  '20323033403450356045705560456146624763486449654a554a5649574a584a595a5a5a350645055504561457155825592659275a286a295a395949',
+  '594a5a5a8865985588567857685869596a5a5a5aa455a354935383528251725162506151605150505614550454145324522351335032513150414040',
+  '50503125313530452055305440535052505150501365125513451435042505150505819a828a837a846a745a755a655a554a45493548254715461536',
+  '0535052515150505439944984597558765877586859695a6a5a5646a655a554a565a576a586959595a5a468245825583547353725262516150605050',
+  '533054205510561157215831484149424a433a443a454a465a474a484949594a5a5a55956596758685969595a5a52598359845975587658775868596',
+  '95a6a5a564a965a855a765a775a685969595a5a5a375a265a155a265a375a485a495a5a54a455a555a565a57595859595a5aaa45aa55a965a875a785',
+  'a695a5a5214a314941485147504660457055715461535152505150505796569755874577356725571547154614360426141604060505615360547055',
+  '6054605350525051505096759765985588567857685869596a5a5a5aaa3a9a4a8a497a487a477a466a455a555a564a5749584a595a5a777076717572',
+  '6573558365847585859595a5a5a5769366936593558356735774587559765977497859795a7a4a6a5a5a93199419841a742a752a653a554a45493548',
+  '254715461536053505251515050564846584558356735774587559765977497859795a7a4a6a5a5a671a662a653a554a565a576a586959595a5a9a32',
+  '8a428a437a446a455a555a564a5749584a595a5a7837684769466a455a556217521853185428553856485758585959595a5a07730774077507651755',
+  '27563757385848594949594a5a5a53135414550445053515250515060505622263235313541455045403531352235133503251315141505150502559',
+  '3559455a554a654975598569956895679577a5879586949695a6a5a5450955194518351725161515050527a937a84798469845975587658675968596',
+  '9595a5a5476548555856595749584a595a5a69336943595359545a555a565a57595859595a5aa5919591859275826582558365847585859595a5a5a5',
+  '68946795669665975587568857785868585859595a5a4146404530553154415351525051505065a155a2569246824772377338633964496559665967',
+  '5868585859595a5a355536563757385848594949594a5a5aaa409a418a428a437a446a455a555956595749584a595a5a539754975587568857785868',
+  '585859595a5a6a565a557a756a655a555a565a57595859595a5a92959185907580657055716572758275'
+].join('');
+const MARLAX_REWARD_STREAM = [
+  '000001111111111111002222222222220333333333333333330444444444400033333301111110000000555555555500044444400333333006666666',
+  '002222222222222222222220004444440022222200222222022222205555550000004444440066666666666003333330033333330000000111111000',
+  '022222200011111111111000000555555555500111111111110003333330000011111100006000022222200002222222200111111000033333333330',
+  '004444444444440555555000005555550333333000022222200000444444000011111110044444401111111111111122222222000000333333001111',
+  '111060022222200005555'
+].join('');
+const MARLAX_REWARD_TOKENS = ['', 'ul', 'ur', 'ud', 'rd', 'rl', 'dl'];
+const MARLAX_COLLECTED_FRAMES = new Set([
+  17, 31, 39, 49, 60, 69, 76, 93, 102, 110, 119, 136, 142, 151, 159, 167, 174, 181, 193, 206, 214, 223, 236, 246, 260, 276, 289,
+  298, 309, 324, 336, 344, 358, 373, 380, 391, 398, 408, 419, 430, 438, 453, 461, 473, 482, 492
+]);
+
+function calculateNotebookAngle(xNew, yNew, xOld, yOld) {
+  const dx = xNew - xOld;
+  const dy = yNew - yOld;
+  if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) return null;
+  return (Math.atan2(dy, dx) * 180) / Math.PI - 90;
+}
+
+function smoothNotebookAngle(currentAngle, nextAngle) {
+  let angleDiff = nextAngle - currentAngle;
+  while (angleDiff > 180) angleDiff -= 360;
+  while (angleDiff < -180) angleDiff += 360;
+  return currentAngle + angleDiff * 0.8;
+}
+
+function decodeMarlaxFrames() {
+  const frames = [];
+  const agentAngles = [0, 0];
+  const previous = [
+    { x: Number.parseInt(MARLAX_POSITION_STREAM[0], 36), y: Number.parseInt(MARLAX_POSITION_STREAM[1], 36) },
+    { x: Number.parseInt(MARLAX_POSITION_STREAM[2], 36), y: Number.parseInt(MARLAX_POSITION_STREAM[3], 36) }
+  ];
+
+  for (let index = 0; index < MARLAX_REWARD_STREAM.length; index += 1) {
+    const offset = index * 4;
+    const agents = [
+      { x: Number.parseInt(MARLAX_POSITION_STREAM[offset], 36), y: Number.parseInt(MARLAX_POSITION_STREAM[offset + 1], 36) },
+      { x: Number.parseInt(MARLAX_POSITION_STREAM[offset + 2], 36), y: Number.parseInt(MARLAX_POSITION_STREAM[offset + 3], 36) }
+    ];
+
+    agents.forEach((agent, agentIndex) => {
+      const nextAngle = calculateNotebookAngle(agent.x, agent.y, previous[agentIndex].x, previous[agentIndex].y);
+      if (nextAngle !== null) agentAngles[agentIndex] = smoothNotebookAngle(agentAngles[agentIndex], nextAngle);
+      previous[agentIndex] = agent;
+    });
+
+    frames.push({
+      agents: agents.map((agent, agentIndex) => ({ ...agent, angle: agentAngles[agentIndex] })),
+      reward: MARLAX_REWARD_TOKENS[Number.parseInt(MARLAX_REWARD_STREAM[index], 36)],
+      collected: MARLAX_COLLECTED_FRAMES.has(index)
+    });
+  }
+
+  return frames;
+}
+
+const MARLAX_FRAMES = decodeMarlaxFrames();
+
 function useCanvas(draw, deps = []) {
   const canvasRef = useRef(null);
 
@@ -56,6 +138,7 @@ function useCanvas(draw, deps = []) {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const startTime = performance.now();
     let frame = 0;
     let animationId = 0;
 
@@ -65,12 +148,12 @@ function useCanvas(draw, deps = []) {
       canvas.width = Math.max(1, Math.floor(rect.width * ratio));
       canvas.height = Math.max(1, Math.floor(rect.height * ratio));
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      draw(context, rect.width, rect.height, frame);
+      draw(context, rect.width, rect.height, frame, performance.now() - startTime);
     };
 
     const render = () => {
       const rect = canvas.getBoundingClientRect();
-      draw(context, rect.width, rect.height, frame);
+      draw(context, rect.width, rect.height, frame, performance.now() - startTime);
       frame += 1;
       if (!prefersReducedMotion) animationId = requestAnimationFrame(render);
     };
@@ -122,149 +205,138 @@ function gridPoint(originX, originY, size, gridSize, point) {
   };
 }
 
-function interpolatePath(path, progress) {
-  const wrapped = progress % path.length;
-  const index = Math.floor(wrapped);
-  const next = (index + 1) % path.length;
-  const amount = wrapped - index;
-  return {
-    x: path[index].x + (path[next].x - path[index].x) * amount,
-    y: path[index].y + (path[next].y - path[index].y) * amount,
-    previous: path[index],
-    next: path[next]
-  };
-}
-
-function drawMouse(context, x, y, angle, scale, alpha = 1) {
+function drawMouse(context, x, y, angleDegrees, scale, alpha = 1) {
   context.save();
   context.translate(x, y);
-  context.rotate(angle);
+  context.rotate((-angleDegrees * Math.PI) / 180);
   context.strokeStyle = `rgba(255,255,255,${alpha})`;
   context.fillStyle = '#050505';
-  context.lineWidth = Math.max(1.4, scale * 0.065);
+  context.lineWidth = Math.max(1.3, scale * 0.05);
   context.lineCap = 'round';
   context.lineJoin = 'round';
 
   context.beginPath();
+  context.moveTo(0, scale * 0.5);
+  context.lineTo(0, scale * 1.2);
+  context.stroke();
+
+  context.beginPath();
   context.ellipse(0, 0, scale * 0.35, scale * 0.56, 0, 0, Math.PI * 2);
+  context.fill();
   context.stroke();
 
   context.beginPath();
-  context.arc(0, -scale * 0.58, scale * 0.28, 0, Math.PI * 2);
+  context.arc(0, -scale * 0.6, scale * 0.36, 0, Math.PI * 2);
+  context.fill();
   context.stroke();
 
   context.beginPath();
-  context.arc(-scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
+  context.arc(-scale * 0.2, -scale * 0.88, scale * 0.18, 0, Math.PI * 2);
+  context.fill();
   context.stroke();
   context.beginPath();
-  context.arc(scale * 0.19, -scale * 0.78, scale * 0.12, 0, Math.PI * 2);
-  context.stroke();
-
-  context.beginPath();
-  context.moveTo(-scale * 0.08, -scale * 0.84);
-  context.lineTo(0, -scale * 1.02);
-  context.lineTo(scale * 0.08, -scale * 0.84);
+  context.arc(scale * 0.2, -scale * 0.88, scale * 0.18, 0, Math.PI * 2);
+  context.fill();
   context.stroke();
 
   context.beginPath();
-  context.arc(-scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
+  context.moveTo(0, -scale * 1.1);
+  context.lineTo(scale * 0.08, -scale * 0.78);
+  context.lineTo(-scale * 0.08, -scale * 0.78);
+  context.closePath();
+  context.fill();
+  context.stroke();
+
   context.fillStyle = `rgba(255,255,255,${alpha})`;
+  context.beginPath();
+  context.arc(-scale * 0.1, -scale * 0.72, scale * 0.035, 0, Math.PI * 2);
   context.fill();
   context.beginPath();
-  context.arc(scale * 0.09, -scale * 0.62, scale * 0.018, 0, Math.PI * 2);
+  context.arc(scale * 0.1, -scale * 0.72, scale * 0.035, 0, Math.PI * 2);
   context.fill();
 
+  context.restore();
+}
+
+function getNotebookRewardCoord(token) {
+  if (token === 'u') return { x: 5, y: 10 };
+  if (token === 'd') return { x: 5, y: 0 };
+  if (token === 'l') return { x: 0, y: 5 };
+  if (token === 'r') return { x: 10, y: 5 };
+  return null;
+}
+
+function drawRewardMarker(context, point, cell) {
+  context.save();
+  context.strokeStyle = 'rgba(255,255,255,0.68)';
+  context.lineWidth = 1.5;
   context.beginPath();
-  context.moveTo(0, scale * 0.52);
-  context.bezierCurveTo(-scale * 0.18, scale * 0.82, -scale * 0.42, scale * 0.9, -scale * 0.56, scale * 1.12);
+  context.arc(point.x, point.y, cell * 0.52, 0, Math.PI * 2);
+  context.stroke();
+  context.restore();
+}
+
+function drawHeart(context, originX, originY, size, gridSize, center, cell) {
+  context.save();
+  context.strokeStyle = 'rgba(255,255,255,0.92)';
+  context.fillStyle = 'rgba(255,255,255,0.08)';
+  context.lineWidth = 1.8;
+  context.beginPath();
+  for (let index = 0; index <= 90; index += 1) {
+    const t = (index / 90) * Math.PI * 2;
+    const boardPoint = {
+      x: center.x + (16 * Math.sin(t) ** 3 * size) / 20,
+      y: center.y + ((13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * size) / 20 + 0.6 * size
+    };
+    const point = gridPoint(originX, originY, cell * (gridSize - 1), gridSize, boardPoint);
+    if (index === 0) context.moveTo(point.x, point.y);
+    else context.lineTo(point.x, point.y);
+  }
+  context.closePath();
+  context.fill();
   context.stroke();
   context.restore();
 }
 
 function MouseSketchCanvas() {
-  const pathA = useMemo(
-    () => [
-      { x: 2, y: 2 },
-      { x: 5, y: 2 },
-      { x: 8, y: 3 },
-      { x: 9, y: 6 },
-      { x: 7, y: 8 },
-      { x: 4, y: 8 },
-      { x: 2, y: 6 },
-      { x: 2, y: 2 }
-    ],
-    []
-  );
-  const pathB = useMemo(
-    () => [
-      { x: 8, y: 8 },
-      { x: 5, y: 8 },
-      { x: 3, y: 7 },
-      { x: 1, y: 5 },
-      { x: 3, y: 3 },
-      { x: 6, y: 3 },
-      { x: 8, y: 5 },
-      { x: 8, y: 8 }
-    ],
-    []
-  );
-
-  const canvasRef = useCanvas((context, width, height, frame) => {
+  const canvasRef = useCanvas((context, width, height, frame, elapsedMs) => {
     clearCanvas(context, width, height);
     const size = Math.min(width, height) * 0.78;
     const originX = (width - size) / 2;
     const originY = (height - size) / 2;
-    const gridSize = 11;
+    const gridSize = MARLAX_GRID_SIZE;
     drawGrid(context, originX, originY, size, gridSize - 1);
-
-    const t = frame * 0.018;
-    const positions = [interpolatePath(pathA, t), interpolatePath(pathB, t + 2.8)];
     const cell = size / (gridSize - 1);
+    const stepIndex = Math.floor(elapsedMs / MARLAX_FRAME_MS) % MARLAX_FRAMES.length;
+    const step = MARLAX_FRAMES[stepIndex];
 
-    context.save();
-    context.strokeStyle = 'rgba(255,255,255,0.44)';
-    context.lineWidth = 1.5;
-    positions.forEach((position) => {
-      const point = gridPoint(originX, originY, size, gridSize, position);
-      context.beginPath();
-      context.arc(point.x, point.y, cell * 0.78, 0, Math.PI * 2);
-      context.stroke();
+    const rewardItems = step.reward ? [step.reward] : [];
+    const rewardCoords = rewardItems.map((token) => getNotebookRewardCoord(token)).filter(Boolean);
+    rewardCoords.forEach((reward) => {
+      drawRewardMarker(context, gridPoint(originX, originY, size, gridSize, reward), cell);
     });
-    context.restore();
 
-    const rewardCycle = Math.floor(frame / 130) % 4;
-    const rewards = [
-      { x: 5, y: 10 },
-      { x: 10, y: 5 },
-      { x: 5, y: 0 },
-      { x: 0, y: 5 }
-    ];
-    const reward = gridPoint(originX, originY, size, gridSize, rewards[rewardCycle]);
-    context.save();
-    context.strokeStyle = 'rgba(255,255,255,0.82)';
-    context.lineWidth = 1.6;
-    context.beginPath();
-    context.moveTo(reward.x, reward.y - cell * 0.35);
-    context.lineTo(reward.x + cell * 0.35, reward.y);
-    context.lineTo(reward.x, reward.y + cell * 0.35);
-    context.lineTo(reward.x - cell * 0.35, reward.y);
-    context.closePath();
-    context.stroke();
-    context.restore();
+    if (rewardItems.length === 0) {
+      const center = gridPoint(originX, originY, size, gridSize, { x: 5, y: 5 });
+      context.save();
+      context.strokeStyle = 'rgba(255,255,255,0.34)';
+      context.strokeRect(center.x - cell * 0.32, center.y - cell * 0.32, cell * 0.64, cell * 0.64);
+      context.restore();
+    }
 
-    const center = gridPoint(originX, originY, size, gridSize, { x: 5, y: 5 });
-    context.save();
-    context.strokeStyle = 'rgba(255,255,255,0.34)';
-    context.strokeRect(center.x - cell * 0.32, center.y - cell * 0.32, cell * 0.64, cell * 0.64);
-    context.restore();
-
-    positions.forEach((position, index) => {
-      const current = gridPoint(originX, originY, size, gridSize, position);
-      const next = gridPoint(originX, originY, size, gridSize, position.next);
-      const angle = Math.atan2(next.y - current.y, next.x - current.x) + Math.PI / 2;
-      drawMouse(context, current.x, current.y, angle, cell * 0.88, index === 0 ? 1 : 0.7);
+    step.agents.forEach((agent, index) => {
+      const point = gridPoint(originX, originY, size, gridSize, agent);
+      drawMouse(context, point.x, point.y, agent.angle, cell, index === 0 ? 1 : 0.72);
     });
-  }, [pathA, pathB]);
+
+    if (step.collected) {
+      const center = {
+        x: (step.agents[0].x + step.agents[1].x) / 2,
+        y: (step.agents[0].y + step.agents[1].y) / 2
+      };
+      drawHeart(context, originX, originY, 1, gridSize, center, cell);
+    }
+  }, []);
 
   return <canvas ref={canvasRef} className="canvas-panel" aria-label="Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior" />;
 }
