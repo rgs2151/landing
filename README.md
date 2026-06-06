@@ -4,7 +4,7 @@
 
 Personal website for [singha.io](https://singha.io/).
 
-The site is a Vite + React project. Source files live in the repository; GitHub Actions builds them into `dist/` and deploys that artifact to GitHub Pages.
+The site is a Vite + React project with a monochrome ASCII terminal interface. Source files live in the repository; GitHub Actions builds them into `dist/` and deploys that artifact to GitHub Pages.
 
 ## How Publishing Works
 
@@ -72,7 +72,7 @@ After the push, check the deployment here:
 ## Important Files
 
 - `index.html`: homepage content and metadata
-- `src/main.jsx`: React app and locked homepage content
+- `src/main.jsx`: React app, ASCII media rendering, and locked homepage content
 - `stylesheet.css`: site styling imported by the React app
 - `images/`: profile and project images
 - `404.html`: custom not-found page

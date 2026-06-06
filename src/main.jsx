@@ -1,33 +1,26 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import {
-  ArrowUpRight,
-  BookOpen,
-  Code2,
-  Mail,
-  Orbit,
-  Sparkles
-} from 'lucide-react';
+import figlet from 'figlet';
 import heroImage from '../images/hero.jpg';
 import marlaxImage from '../images/marlax.gif';
 import hmmImage from '../images/hmm.gif';
 import '../stylesheet.css';
 
+const ASCII_RAMP = ' .:-=+*#%@';
+const DONUT_RAMP = '.,-~:;=!*#$@';
+
 const contacts = [
   {
     label: 'rgs2151[at]columbia.eu',
-    href: 'mailto:rgs2151@columbia.eu',
-    icon: Mail
+    href: 'mailto:rgs2151@columbia.eu'
   },
   {
     label: 'GitHub',
-    href: 'https://github.com/rgs2151',
-    icon: Code2
+    href: 'https://github.com/rgs2151'
   },
   {
     label: 'Google Scholar',
-    href: 'https://scholar.google.com/citations?user=nN4ARxkAAAAJ&hl=en',
-    icon: BookOpen
+    href: 'https://scholar.google.com/citations?user=nN4ARxkAAAAJ&hl=en'
   }
 ];
 
@@ -61,141 +54,172 @@ const projects = [
   }
 ];
 
-function NeuralField() {
-  const canvasRef = useRef(null);
+function useFiglet(text) {
+  const [output, setOutput] = useState(text);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let width = 0;
-    let height = 0;
+    let mounted = true;
+    figlet.text(text, { font: 'Slant' }, (error, result) => {
+      if (!mounted) return;
+      setOutput(error ? text : result);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [text]);
+
+  return output;
+}
+
+function luminance(red, green, blue) {
+  return 0.299 * red + 0.587 * green + 0.114 * blue;
+}
+
+function frameToAscii(image, columns, rows, invert = false) {
+  const canvas = document.createElement('canvas');
+  canvas.width = columns;
+  canvas.height = rows;
+  const context = canvas.getContext('2d');
+  context.drawImage(image, 0, 0, columns, rows);
+  const { data } = context.getImageData(0, 0, columns, rows);
+  let output = '';
+
+  for (let y = 0; y < rows; y += 1) {
+    for (let x = 0; x < columns; x += 1) {
+      const index = (y * columns + x) * 4;
+      const alpha = data[index + 3] / 255;
+      const value = alpha === 0 ? 0 : luminance(data[index], data[index + 1], data[index + 2]);
+      const normalized = invert ? 1 - value / 255 : value / 255;
+      const rampIndex = Math.min(ASCII_RAMP.length - 1, Math.max(0, Math.floor(normalized * ASCII_RAMP.length)));
+      output += ASCII_RAMP[rampIndex];
+    }
+    output += '\n';
+  }
+
+  return output;
+}
+
+function AsciiMedia({ src, alt, columns = 76, rows = 34, cadence = 90, invert = false }) {
+  const [ascii, setAscii] = useState('');
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.src = src;
+    imageRef.current = image;
     let frame = 0;
-    let animationId = 0;
-    let points = [];
-    const pointer = { x: 0, y: 0, active: false };
+    let intervalId = 0;
 
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      width = rect.width;
-      height = rect.height;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = Math.max(44, Math.floor((width * height) / 15500));
-      points = Array.from({ length: count }, (_, index) => ({
-        x: ((index * 97) % Math.max(width, 1)) + Math.random() * 12,
-        y: ((index * 53) % Math.max(height, 1)) + Math.random() * 12,
-        vx: (Math.random() - 0.5) * 0.34,
-        vy: (Math.random() - 0.5) * 0.34,
-        pulse: Math.random() * Math.PI * 2
-      }));
-      if (prefersReducedMotion) {
-        draw();
+    const render = () => {
+      if (!image.complete || image.naturalWidth === 0) return;
+      try {
+        setAscii(frameToAscii(image, columns, rows, invert));
+        frame += 1;
+      } catch {
+        clearInterval(intervalId);
       }
     };
 
-    const draw = () => {
-      frame += 1;
-      context.clearRect(0, 0, width, height);
-      context.fillStyle = 'rgba(16, 16, 15, 0.82)';
-      context.fillRect(0, 0, width, height);
-
-      points.forEach((point) => {
-        if (!prefersReducedMotion) {
-          point.x += point.vx;
-          point.y += point.vy;
-          if (point.x < 0 || point.x > width) point.vx *= -1;
-          if (point.y < 0 || point.y > height) point.vy *= -1;
-        }
-
-        if (pointer.active) {
-          const dx = point.x - pointer.x;
-          const dy = point.y - pointer.y;
-          const distance = Math.hypot(dx, dy);
-          if (distance < 160 && distance > 1) {
-            point.x += (dx / distance) * 0.34;
-            point.y += (dy / distance) * 0.34;
-          }
-        }
-      });
-
-      for (let i = 0; i < points.length; i += 1) {
-        for (let j = i + 1; j < points.length; j += 1) {
-          const a = points[i];
-          const b = points[j];
-          const distance = Math.hypot(a.x - b.x, a.y - b.y);
-          if (distance < 126) {
-            const alpha = (1 - distance / 126) * 0.46;
-            context.strokeStyle = `rgba(38, 240, 207, ${alpha})`;
-            context.lineWidth = 1;
-            context.beginPath();
-            context.moveTo(a.x, a.y);
-            context.lineTo(b.x, b.y);
-            context.stroke();
-          }
-        }
-      }
-
-      points.forEach((point, index) => {
-        const pulse = 1.5 + Math.sin(frame * 0.025 + point.pulse) * 0.7;
-        context.fillStyle = index % 3 === 0 ? '#d7ff3f' : index % 3 === 1 ? '#26f0cf' : '#ff4d2e';
-        context.beginPath();
-        context.arc(point.x, point.y, Math.max(1.2, pulse), 0, Math.PI * 2);
-        context.fill();
-      });
-
-      if (!prefersReducedMotion) {
-        animationId = requestAnimationFrame(draw);
-      }
-    };
-
-    const handlePointerMove = (event) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = event.clientX - rect.left;
-      pointer.y = event.clientY - rect.top;
-      pointer.active = true;
-    };
-
-    const handlePointerLeave = () => {
-      pointer.active = false;
-    };
-
-    resize();
-    draw();
-    window.addEventListener('resize', resize);
-    canvas.addEventListener('pointermove', handlePointerMove);
-    canvas.addEventListener('pointerleave', handlePointerLeave);
+    image.addEventListener('load', render);
+    intervalId = window.setInterval(render, cadence);
 
     return () => {
-      window.removeEventListener('resize', resize);
-      canvas.removeEventListener('pointermove', handlePointerMove);
-      canvas.removeEventListener('pointerleave', handlePointerLeave);
-      cancelAnimationFrame(animationId);
+      image.removeEventListener('load', render);
+      clearInterval(intervalId);
     };
+  }, [src, columns, rows, cadence, invert]);
+
+  return (
+    <figure className="ascii-media" aria-label={alt}>
+      <pre aria-hidden="true">{ascii || 'loading ascii stream...'}</pre>
+      <figcaption>{alt}</figcaption>
+    </figure>
+  );
+}
+
+function renderDonut(width, height, angleA, angleB) {
+  const output = Array(width * height).fill(' ');
+  const zBuffer = Array(width * height).fill(0);
+  const cosA = Math.cos(angleA);
+  const sinA = Math.sin(angleA);
+  const cosB = Math.cos(angleB);
+  const sinB = Math.sin(angleB);
+  const radiusOne = 1;
+  const radiusTwo = 2;
+  const distance = 5;
+  const scale = (width * distance * 3) / (8 * (radiusOne + radiusTwo));
+
+  for (let theta = 0; theta < Math.PI * 2; theta += 0.07) {
+    const costheta = Math.cos(theta);
+    const sintheta = Math.sin(theta);
+
+    for (let phi = 0; phi < Math.PI * 2; phi += 0.02) {
+      const cosphi = Math.cos(phi);
+      const sinphi = Math.sin(phi);
+      const circle = radiusTwo + radiusOne * costheta;
+
+      const x =
+        circle * (cosB * cosphi + sinA * sinB * sinphi) - radiusOne * cosA * sinB * sintheta;
+      const y =
+        circle * (sinB * cosphi - sinA * cosB * sinphi) + radiusOne * cosA * cosB * sintheta;
+      const z = distance + cosA * circle * sinphi + radiusOne * sinA * sintheta;
+      const inverseZ = 1 / z;
+      const xp = Math.floor(width / 2 + scale * inverseZ * x);
+      const yp = Math.floor(height / 2 - scale * 0.52 * inverseZ * y);
+      const luminanceValue =
+        cosphi * costheta * sinB -
+        cosA * costheta * sinphi -
+        sinA * sintheta +
+        cosB * (cosA * sintheta - costheta * sinA * sinphi);
+
+      if (luminanceValue > 0 && xp >= 0 && xp < width && yp >= 0 && yp < height) {
+        const outputIndex = xp + width * yp;
+        if (inverseZ > zBuffer[outputIndex]) {
+          zBuffer[outputIndex] = inverseZ;
+          const shade = Math.min(DONUT_RAMP.length - 1, Math.floor(luminanceValue * 7));
+          output[outputIndex] = DONUT_RAMP[shade];
+        }
+      }
+    }
+  }
+
+  let frame = '';
+  for (let row = 0; row < height; row += 1) {
+    frame += output.slice(row * width, row * width + width).join('') + '\n';
+  }
+  return frame;
+}
+
+function AsciiDonut() {
+  const [frame, setFrame] = useState('');
+
+  useEffect(() => {
+    let angleA = 0;
+    let angleB = 0;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tick = () => {
+      setFrame(renderDonut(64, 28, angleA, angleB));
+      angleA += 0.07;
+      angleB += 0.035;
+    };
+    tick();
+    if (prefersReducedMotion) return undefined;
+    const intervalId = window.setInterval(tick, 52);
+    return () => clearInterval(intervalId);
   }, []);
 
-  return <canvas ref={canvasRef} className="neural-field" aria-hidden="true" />;
+  return (
+    <div className="donut-terminal" aria-hidden="true">
+      <pre>{frame}</pre>
+    </div>
+  );
 }
 
 function ExternalLink({ href, children, className = '' }) {
   return (
     <a className={className} href={href} target="_blank" rel="noopener noreferrer">
       {children}
-    </a>
-  );
-}
-
-function ContactLink({ contact }) {
-  const Icon = contact.icon;
-  const external = !contact.href.startsWith('mailto:');
-  const props = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
-
-  return (
-    <a className="contact-link" href={contact.href} title={contact.label} aria-label={contact.label} {...props}>
-      <Icon aria-hidden="true" size={18} strokeWidth={1.8} />
-      <span>{contact.label}</span>
     </a>
   );
 }
@@ -220,23 +244,25 @@ function AuthorLine({ text }) {
   );
 }
 
-function ProjectCard({ project, index }) {
-  const projectNumber = String(index + 1).padStart(2, '0');
-  const accents = ['#26f0cf', '#ff4d2e'];
-
+function TerminalLine({ label, children }) {
   return (
-    <article className="project-card" style={{ '--project-accent': accents[index % accents.length] }}>
-      <div className="project-media">
-        <img src={project.image} alt={project.alt} />
+    <p className="terminal-line">
+      <span>{label}</span>
+      {children}
+    </p>
+  );
+}
+
+function ProjectBlock({ project, index }) {
+  return (
+    <article className="project-block">
+      <div className="project-output">
+        <AsciiMedia src={project.image} alt={project.alt} columns={72} rows={28} cadence={index === 0 ? 70 : 95} />
       </div>
-      <div className="project-copy">
-        <span className="project-number" aria-hidden="true">
-          {projectNumber}
-        </span>
-        <ExternalLink href={project.href} className="project-title">
-          <span>{project.title}</span>
-          <ArrowUpRight aria-hidden="true" size={22} strokeWidth={1.8} />
-        </ExternalLink>
+      <div className="project-terminal">
+        <TerminalLine label={`PROJECT_${String(index + 1).padStart(2, '0')}`}>
+          <ExternalLink href={project.href}>{project.title}</ExternalLink>
+        </TerminalLine>
         <AuthorLine text={project.authors} />
         <p className="paper-links">
           <em>links:</em>{' '}
@@ -255,46 +281,58 @@ function ProjectCard({ project, index }) {
 }
 
 function App() {
+  const title = useFiglet('Rudramani Singha');
   const projectList = useMemo(() => projects, []);
 
   return (
     <main className="site">
       <section className="hero" aria-label="Rudramani Singha">
-        <NeuralField />
-        <img className="hero-image" alt="Rudramani Singha profile photo" src={heroImage} />
-        <div className="hero-scrim" aria-hidden="true" />
-        <div className="hero-content">
-          <div className="hero-mark" aria-hidden="true">
-            <Orbit size={28} strokeWidth={1.6} />
+        <div className="scanline" aria-hidden="true" />
+        <div className="hero-grid">
+          <div className="hero-terminal">
+            <p className="boot-line">root@singha:~$ ./reverse_engineer_brain --mode=probabilistic</p>
+            <pre className="ascii-title">{title}</pre>
+            <TerminalLine label="STATUS">
+              I am a Data Scientist at the{' '}
+              <ExternalLink href="https://memorylongevity.org/">Program in Memory Longevity</ExternalLink>, UTSW. I
+              build probabilistic models to understand the brain.
+            </TerminalLine>
+            <nav className="contact-strip" aria-label="Contact links">
+              {contacts.map((contact) => (
+                <a
+                  className="contact-link"
+                  href={contact.href}
+                  key={contact.href}
+                  target={contact.href.startsWith('mailto:') ? undefined : '_blank'}
+                  rel={contact.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                >
+                  [{contact.label}]
+                </a>
+              ))}
+            </nav>
           </div>
-          <h1>Rudramani Singha</h1>
-          <p className="intro-copy">
-            I am a Data Scientist at the{' '}
-            <ExternalLink href="https://memorylongevity.org/">Program in Memory Longevity</ExternalLink>, UTSW. I
-            build probabilistic models to understand the brain.
-          </p>
-          <nav className="contact-strip" aria-label="Contact links">
-            {contacts.map((contact) => (
-              <ContactLink contact={contact} key={contact.href} />
-            ))}
-          </nav>
+          <div className="hero-ascii">
+            <AsciiMedia src={heroImage} alt="Rudramani Singha profile photo" columns={64} rows={36} cadence={180} />
+          </div>
+          <AsciiDonut />
         </div>
       </section>
 
       <section className="projects" aria-labelledby="selected-projects">
         <div className="section-heading">
-          <Sparkles aria-hidden="true" size={20} strokeWidth={1.8} />
+          <pre aria-hidden="true">{'//=============================================================='}</pre>
           <h2 id="selected-projects">Selected Projects</h2>
+          <pre aria-hidden="true">{'//=============================================================='}</pre>
         </div>
         <div className="project-list">
           {projectList.map((project, index) => (
-            <ProjectCard project={project} index={index} key={project.title} />
+            <ProjectBlock project={project} index={index} key={project.title} />
           ))}
         </div>
       </section>
 
       <footer className="site-footer">
-        <p>&copy; 2026 Rudramani Singha</p>
+        <p>(c) 2026 Rudramani Singha</p>
       </footer>
     </main>
   );
