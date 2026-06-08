@@ -259,34 +259,24 @@ function getNotebookRewardCoord(token) {
   return null;
 }
 
-function drawRewardMarker(context, point, cell) {
-  context.save();
-  context.strokeStyle = 'rgba(255,255,255,0.68)';
-  context.lineWidth = 1.5;
-  context.beginPath();
-  context.arc(point.x, point.y, cell * 0.52, 0, Math.PI * 2);
-  context.stroke();
-  context.restore();
+function getNotebookRewardCoords(reward) {
+  if (!reward) return [];
+  return reward
+    .split('')
+    .map((token) => getNotebookRewardCoord(token))
+    .filter(Boolean);
 }
 
-function drawHeart(context, originX, originY, size, gridSize, center, cell) {
+function drawRewardMarker(context, point, cell) {
   context.save();
-  context.strokeStyle = 'rgba(255,255,255,0.92)';
-  context.fillStyle = 'rgba(255,255,255,0.08)';
-  context.lineWidth = 1.8;
+  context.strokeStyle = 'rgba(255,255,255,0.82)';
+  context.lineWidth = 1.6;
   context.beginPath();
-  for (let index = 0; index <= 90; index += 1) {
-    const t = (index / 90) * Math.PI * 2;
-    const boardPoint = {
-      x: center.x + (16 * Math.sin(t) ** 3 * size) / 20,
-      y: center.y + ((13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * size) / 20 + 0.6 * size
-    };
-    const point = gridPoint(originX, originY, cell * (gridSize - 1), gridSize, boardPoint);
-    if (index === 0) context.moveTo(point.x, point.y);
-    else context.lineTo(point.x, point.y);
-  }
+  context.moveTo(point.x, point.y - cell * 0.35);
+  context.lineTo(point.x + cell * 0.35, point.y);
+  context.lineTo(point.x, point.y + cell * 0.35);
+  context.lineTo(point.x - cell * 0.35, point.y);
   context.closePath();
-  context.fill();
   context.stroke();
   context.restore();
 }
@@ -303,32 +293,21 @@ function MouseSketchCanvas() {
     const stepIndex = Math.floor(elapsedMs / MARLAX_FRAME_MS) % MARLAX_FRAMES.length;
     const step = MARLAX_FRAMES[stepIndex];
 
-    const rewardItems = step.reward ? [step.reward] : [];
-    const rewardCoords = rewardItems.map((token) => getNotebookRewardCoord(token)).filter(Boolean);
+    const rewardCoords = getNotebookRewardCoords(step.reward);
     rewardCoords.forEach((reward) => {
       drawRewardMarker(context, gridPoint(originX, originY, size, gridSize, reward), cell);
     });
 
-    if (rewardItems.length === 0) {
-      const center = gridPoint(originX, originY, size, gridSize, { x: 5, y: 5 });
-      context.save();
-      context.strokeStyle = 'rgba(255,255,255,0.34)';
-      context.strokeRect(center.x - cell * 0.32, center.y - cell * 0.32, cell * 0.64, cell * 0.64);
-      context.restore();
-    }
+    const center = gridPoint(originX, originY, size, gridSize, { x: 5, y: 5 });
+    context.save();
+    context.strokeStyle = 'rgba(255,255,255,0.34)';
+    context.strokeRect(center.x - cell * 0.32, center.y - cell * 0.32, cell * 0.64, cell * 0.64);
+    context.restore();
 
     step.agents.forEach((agent, index) => {
       const point = gridPoint(originX, originY, size, gridSize, agent);
       drawMouse(context, point.x, point.y, agent.angle, cell, index === 0 ? 1 : 0.72);
     });
-
-    if (step.collected) {
-      const center = {
-        x: (step.agents[0].x + step.agents[1].x) / 2,
-        y: (step.agents[0].y + step.agents[1].y) / 2
-      };
-      drawHeart(context, originX, originY, 1, gridSize, center, cell);
-    }
   }, []);
 
   return <canvas ref={canvasRef} className="canvas-panel" aria-label="Asymmetric Social Representations in the Prefrontal Cortex for Cooperative Behavior" />;
