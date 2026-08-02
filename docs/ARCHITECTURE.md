@@ -14,20 +14,11 @@ This repository is the control plane for a personal web platform.
 
 ## Request Flow
 
-Production:
-
 ```text
 Internet
   -> server ports 80/443
   -> Traefik
   -> container selected by Host(...) label
-```
-
-Local preview:
-
-```text
-http://127.0.0.1:5173 -> landing Vite dev server
-http://127.0.0.1:6767 -> Draw/ExcaliDash frontend container
 ```
 
 ## Service Types
