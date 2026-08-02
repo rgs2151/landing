@@ -27,6 +27,7 @@ a {
 
 body {
   margin: 0;
+  line-height: 1.35;
 }
 
 strong {
@@ -80,11 +81,24 @@ strong {
 
 .site-name {
   font-family: var(--font-body);
-  font-size: 32px;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.contact-block {
+  margin-top: 16px;
+  line-height: 1.25;
+}
+
+.contact-block span,
+.contact-block a {
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .section-cell {
-  padding: 20px;
+  padding: 24px 20px 10px;
   width: 100%;
   vertical-align: middle;
 }
@@ -92,8 +106,10 @@ strong {
 .section-title {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 23px;
+  font-weight: 700;
+  border-bottom: 1px solid #d8d8d8;
+  padding-bottom: 4px;
 }
 
 .work-image-cell {
@@ -111,6 +127,7 @@ strong {
 .paper-title {
   font-family: var(--font-body);
   font-weight: 700;
+  font-size: 1.03em;
 }
 
 .profile-image {
@@ -131,12 +148,14 @@ strong {
 
 .paper-authors {
   margin: 8px 0 0;
+  line-height: 1.28;
 }
 
 .paper-links {
   margin: 4px 0 0;
   font-family: var(--font-body);
   font-size: 1em;
+  line-height: 1.28;
 }
 
 .paper-links a {
@@ -178,6 +197,7 @@ strong {
 @media (max-width: 740px) {
   .intro-row td,
   .work-row td {
+    box-sizing: border-box;
     display: block;
     width: 100% !important;
     max-width: 100% !important;

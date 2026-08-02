@@ -18,10 +18,10 @@ function LandingPage() {
                       I am a Data Scientist at the <a href="https://memorylongevity.org/" target="_blank" rel="noopener noreferrer">Program in Memory Longevity</a>, UTSW.
                       I build probabilistic models to understand the brain.
                     </p>
-                    <p className="text-center">
-                      <a href="mailto:rgs2151@columbia.eu">rgs2151[at]columbia.eu</a> &nbsp;/&nbsp;
-                      <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">GitHub</a> &nbsp;/&nbsp;
-                      <a href="https://scholar.google.com/citations?user=nN4ARxkAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>
+                    <p className="contact-block text-center">
+                      <span>rgs2151@columbia.eu</span>
+                      <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">github.com/rgs2151</a>
+                      <a href="https://scholar.google.com/citations?user=nN4ARxkAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">scholar.google.com/citations?user=nN4ARxkAAAAJ</a>
                     </p>
                   </td>
                   <td className="intro-photo">
@@ -35,7 +35,7 @@ function LandingPage() {
               <tbody>
                 <tr>
                   <td className="section-cell">
-                    <h2 className="section-title">Selected Projects</h2>
+                    <h2 className="section-title">Selected Works</h2>
                   </td>
                 </tr>
               </tbody>
