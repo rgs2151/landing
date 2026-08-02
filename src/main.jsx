@@ -16,7 +16,7 @@ function LandingPage() {
                     </p>
                     <p>
                       I am a Data Scientist at the <a href="https://memorylongevity.org/" target="_blank" rel="noopener noreferrer">Program in Memory Longevity</a>, UTSW.
-                      I build model transitions in the brain.
+                      I build models to understand the brain.
                     </p>
                     <p className="contact-block text-center">
                       <span>rgs2151@columbia.eu</span>
