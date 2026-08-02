@@ -1,33 +1,42 @@
 # Rudramani Singha Website
 
-This repository contains the static landing page for `singha.io` plus a single Docker image that serves it with nginx.
+This repository contains the React landing page for `singha.io` plus a single Docker image that serves the built Vite output with nginx.
 
 ## Files
 
-- `index.html`: Main homepage
-- `stylesheet.css`: Main stylesheet
-- `images/`: Hero and work images
-- `scripts/`: Notebook artifacts referenced by the site
+- `index.html`: Vite HTML entrypoint and metadata
+- `src/main.jsx`: React homepage
+- `public/stylesheet.css`: Main stylesheet
+- `public/images/`: Hero and work images
+- `public/scripts/`: Notebook artifacts referenced by the site
 - `Dockerfile`: nginx container for the landing page
 - `nginx.conf`: static nginx config with custom 404 support
-- `favicon.ico`: Site favicon at the repository root
-- `CNAME`: Custom domain mapping (`singha.io`)
+- `public/favicon.ico`: Site favicon
+- `public/CNAME`: Custom domain mapping (`singha.io`)
 
 ## Local Preview
 
-Fast local preview does not need Docker:
+Fast local preview:
 
 ```bash
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
 
-Open `http://localhost:8000`.
+Open the local URL printed by Vite, usually `http://localhost:5173`.
+
+Build locally:
+
+```bash
+npm run build
+```
 
 ## Docker
 
-Build:
+Build the site, then build the container:
 
 ```bash
+npm run build
 docker build -t singha-landing .
 ```
 
@@ -48,4 +57,3 @@ Custom domain is configured via `CNAME`:
 ```text
 singha.io
 ```
-

@@ -1,8 +1,8 @@
 .git
 .github
 _site
-dist
 node_modules
+.cache
 .DS_Store
 .env
 .env.*
