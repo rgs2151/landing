@@ -19,6 +19,19 @@ npm run dev
 npm run build
 ```
 
+## Local Preview
+
+```bash
+ops/preview.sh
+```
+
+Local preview uses ports:
+
+- `http://127.0.0.1:5173`: landing
+- `http://127.0.0.1:6767`: draw, when Docker is available
+
+Production does not expose app-specific ports publicly. Traefik receives `80` and `443`, then routes by subdomain.
+
 ## Server Deployment
 
 ```bash
@@ -31,4 +44,3 @@ The server stack is Docker Compose based. Traefik receives ports `80` and `443`,
 ## Current Services
 
 See `docs/SERVICES.md`.
-

@@ -56,6 +56,12 @@ cp infra/.env.example infra/.env
 ops/deploy.sh
 ```
 
+Local preview:
+
+```bash
+ops/preview.sh
+```
+
 Backup:
 
 ```bash
