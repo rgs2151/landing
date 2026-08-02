@@ -1,25 +1,2 @@
 _site
 .DS_Store
-
-# Node and build output
-node_modules/
-dist/
-apps/*/node_modules/
-apps/*/dist/
-
-# Local environment files
-.env
-.env.*
-!.env.example
-infra/.env
-infra/backup/restic.env
-services/*/.env
-
-# Runtime state must live on the server, not in git
-state/
-data/
-backups/
-
-# Tool caches
-.cache/
-.vite/

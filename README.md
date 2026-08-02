@@ -1,34 +1,38 @@
-# Singha Web Platform
+# Rudramani Singha Website
 
-This repository is the monorepo for `singha.io` and self-hosted subdomains.
+[![Deploy Static Site](https://github.com/rgs2151/landing/actions/workflows/pages.yml/badge.svg)](https://github.com/rgs2151/landing/actions/workflows/pages.yml)
 
-## Layout
+This repository is now a plain static website with no Jekyll dependency.
 
-- `apps/landing/`: owned React/Vite app for `singha.io`
-- `services/draw/`: ExcaliDash deployment wrapper for `draw.singha.io`
-- `infra/`: Docker Compose, Traefik, and backup configuration
-- `ops/`: deploy and backup scripts
-- `docs/`: architecture and service map
+## Files
 
-## Landing Development
+- `index.html`: Main homepage
+- `stylesheet.css`: Main stylesheet
+- `images/`: Hero and work images
+- `favicon.ico`: Site favicon at the repository root
+- `CNAME`: Custom domain mapping (`singha.io`)
 
-```bash
-cd apps/landing
-npm install
-npm run dev
-npm run build
-```
+## Local Preview
 
-## Server Deployment
+Run from repository root:
 
 ```bash
-cp infra/.env.example infra/.env
-ops/deploy.sh
+python3 -m http.server 8000
 ```
 
-The server stack is Docker Compose based. Traefik receives ports `80` and `443`, then routes subdomains to individual containers by Docker labels.
+Then open http://localhost:8000.
 
-## Current Services
+## Deployment
 
-See `docs/SERVICES.md`.
+GitHub Pages deploys automatically from GitHub Actions using `.github/workflows/pages.yml`.
+The workflow publishes a static artifact and includes `.nojekyll`.
+
+## Domain
+
+Custom domain is configured via `CNAME`:
+
+```text
+singha.io
+```
+
 
