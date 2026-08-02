@@ -16,12 +16,11 @@ function LandingPage() {
                     </p>
                     <p>
                       I am a Data Scientist at the <a href="https://memorylongevity.org/" target="_blank" rel="noopener noreferrer">Program in Memory Longevity</a>, UTSW.
-                      I build probabilistic models to understand the brain.
+                      I build model transitions in the brain.
                     </p>
                     <p className="contact-block text-center">
                       <span>rgs2151@columbia.eu</span>
                       <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">github.com/rgs2151</a>
-                      <a href="https://scholar.google.com/citations?user=nN4ARxkAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">scholar.google.com/citations?user=nN4ARxkAAAAJ</a>
                     </p>
                   </td>
                   <td className="intro-photo">

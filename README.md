@@ -1,6 +1,6 @@
 # Rudramani Singha Website
 
-This repository contains the React landing page for `singha.io` plus a single Docker image that serves the built Vite output with nginx.
+This repository contains the React landing page for `singha.io` plus a single Docker image that builds the Vite site and serves it with nginx.
 
 ## Files
 
@@ -10,6 +10,7 @@ This repository contains the React landing page for `singha.io` plus a single Do
 - `public/images/`: Hero and work images
 - `public/scripts/`: Notebook artifacts referenced by the site
 - `Dockerfile`: nginx container for the landing page
+- `compose.yml`: local/server Compose entrypoint for the landing container
 - `nginx.conf`: static nginx config with custom 404 support
 - `public/favicon.ico`: Site favicon
 - `public/CNAME`: Custom domain mapping (`singha.io`)
@@ -31,24 +32,25 @@ Build locally:
 npm run build
 ```
 
-## Docker
+## Docker / Compose
 
-Build the site, then build the container:
-
-```bash
-npm run build
-docker build -t singha-landing .
-```
-
-Run locally on a machine where Docker can run containers:
+Build and run the production container locally:
 
 ```bash
-docker run --rm -p 8080:80 singha-landing
+docker compose up --build
 ```
 
 Open `http://localhost:8080`.
 
-For a server, the infrastructure repo can build this image or pull a published image and route `singha.io` to container port `80`.
+Detached mode:
+
+```bash
+docker compose up --build -d
+docker compose logs -f
+docker compose down
+```
+
+For a server, either build this repo directly with Compose or publish the image to a registry such as GitHub Container Registry. Docker Hub is optional; GHCR is usually cleaner here because the code already lives on GitHub. A separate server/infrastructure repo can later pull the published image and route `singha.io` to container port `80`.
 
 ## Domain
 

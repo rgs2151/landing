@@ -1,0 +1,8 @@
+services:
+  landing:
+    build:
+      context: .
+    image: singha-landing:local
+    ports:
+      - "8080:80"
+    restart: unless-stopped
