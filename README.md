@@ -50,7 +50,26 @@ docker compose logs -f
 docker compose down
 ```
 
-For a server, either build this repo directly with Compose or publish the image to a registry such as GitHub Container Registry. Docker Hub is optional; GHCR is usually cleaner here because the code already lives on GitHub. A separate server/infrastructure repo can later pull the published image and route `singha.io` to container port `80`.
+On every push to `expansion`, GitHub Actions publishes:
+
+```text
+ghcr.io/rgs2151/landing:expansion
+ghcr.io/rgs2151/landing:latest
+ghcr.io/rgs2151/landing:sha-<commit>
+```
+
+A server/infrastructure repository should pull the image instead of copying this source code:
+
+```yaml
+services:
+  landing:
+    image: ghcr.io/rgs2151/landing:expansion
+    restart: unless-stopped
+    expose:
+      - "80"
+```
+
+Route `singha.io` to container port `80`. Docker Hub is optional; GHCR is the default because the code and Actions pipeline already live on GitHub.
 
 ## Domain
 
