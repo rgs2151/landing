@@ -3,8 +3,12 @@ name: Publish Container
 on:
   push:
     branches:
-      - expansion
+      - main
   workflow_dispatch:
+
+concurrency:
+  group: landing-production
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -41,9 +45,10 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha,prefix=sha-
-            type=raw,value=latest,enable=${{ github.ref_name == 'expansion' }}
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
 
       - name: Build and push image
+        id: build
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -53,3 +58,30 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Configure restricted deployment key
+        env:
+          VPS_DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
+          VPS_HOST_KEY: ${{ secrets.VPS_HOST_KEY }}
+        run: |
+          install -d -m 0700 ~/.ssh
+          printf '%s\n' "$VPS_DEPLOY_KEY" > ~/.ssh/landing_deploy
+          printf '%s\n' "$VPS_HOST_KEY" > ~/.ssh/known_hosts
+          chmod 0600 ~/.ssh/landing_deploy ~/.ssh/known_hosts
+
+      - name: Deploy landing only
+        env:
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          started_ms=$(date +%s%3N)
+          image="ghcr.io/${GITHUB_REPOSITORY}@${IMAGE_DIGEST}"
+          printf 'TIMING deploy_request_started_at=%s\n' "$(date --iso-8601=milliseconds)"
+          ssh \
+            -i ~/.ssh/landing_deploy \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            "${VPS_USER}@${VPS_HOST}" \
+            "deploy-landing ${image} ${GITHUB_SHA} ${GITHUB_RUN_ID}"
+          printf 'TIMING deploy_request_ms=%s\n' "$(( $(date +%s%3N) - started_ms ))"

@@ -50,10 +50,10 @@ docker compose logs -f
 docker compose down
 ```
 
-On every push to `expansion`, GitHub Actions publishes:
+On every push to `main`, GitHub Actions publishes:
 
 ```text
-ghcr.io/rgs2151/landing:expansion
+ghcr.io/rgs2151/landing:main
 ghcr.io/rgs2151/landing:latest
 ghcr.io/rgs2151/landing:sha-<commit>
 ```
@@ -63,7 +63,7 @@ A server/infrastructure repository should pull the image instead of copying this
 ```yaml
 services:
   landing:
-    image: ghcr.io/rgs2151/landing:expansion
+    image: ghcr.io/rgs2151/landing:main
     restart: unless-stopped
     expose:
       - "80"

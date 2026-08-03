@@ -19,7 +19,7 @@ function LandingPage() {
                       I build models to understand the brain.
                     </p>
                     <p className="contact-block text-center">
-                      <span>rgs2151@columbia.eu</span>
+                      <span>rgs2151@columbia.edu</span>
                       <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">github.com/rgs2151</a>
                     </p>
                   </td>
