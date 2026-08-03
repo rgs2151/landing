@@ -77,7 +77,7 @@ jobs:
         run: |
           started_ms=$(date +%s%3N)
           image="ghcr.io/${GITHUB_REPOSITORY}@${IMAGE_DIGEST}"
-          printf 'TIMING deploy_request_started_at=%s\n' "$(date --iso-8601=milliseconds)"
+          printf 'TIMING deploy_request_started_at=%s\n' "$(date --iso-8601=ns)"
           ssh \
             -i ~/.ssh/landing_deploy \
             -o BatchMode=yes \
