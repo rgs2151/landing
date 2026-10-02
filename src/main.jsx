@@ -1,6 +1,78 @@
-import { StrictMode, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { StrictMode, useEffect, useRef, useState } from 'react';
+import { Moon, Sun, Pause, Play } from 'lucide-react';
 import { createRoot } from 'react-dom/client';
+
+function PaperVideo() {
+  const videoRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const mobile = matchMedia('(max-width: 740px)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let nearby = false;
+    let visible = false;
+    let pausedByUser = reducedMotion.matches;
+    const syncPlayback = () => {
+      if (visible && !document.hidden && !pausedByUser) video.play().catch(() => {});
+      else video.pause();
+    };
+    const setSource = () => {
+      const layout = mobile.matches ? 'grid' : 'wide';
+      video.poster = `/assets/videos/paper-${layout}.jpg`;
+      if (nearby) {
+        video.src = `/assets/videos/paper-${layout}.mp4`;
+        video.load();
+        syncPlayback();
+      }
+    };
+    const loader = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !nearby) {
+        nearby = true;
+        setSource();
+      }
+    }, { rootMargin: '200px' });
+    const playback = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      syncPlayback();
+    });
+    const onToggle = () => {
+      pausedByUser = !video.paused;
+      if (pausedByUser) video.pause();
+      else video.play().catch(() => {});
+    };
+    video.addEventListener('toggle-playback', onToggle);
+    document.addEventListener('visibilitychange', syncPlayback);
+    mobile.addEventListener('change', setSource);
+    setSource();
+    loader.observe(video);
+    playback.observe(video);
+    return () => {
+      loader.disconnect();
+      playback.disconnect();
+      mobile.removeEventListener('change', setSource);
+      document.removeEventListener('visibilitychange', syncPlayback);
+      video.removeEventListener('toggle-playback', onToggle);
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    };
+  }, []);
+
+  return (
+    <div className="paper-video">
+      <video ref={videoRef} muted loop playsInline preload="none"
+        aria-label="Four panels of cooperative behavior from the paper's supplementary videos"
+        onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+      <button type="button" className="video-toggle"
+        aria-label={playing ? 'Pause video' : 'Play video'}
+        title={playing ? 'Pause video' : 'Play video'}
+        onClick={() => videoRef.current.dispatchEvent(new Event('toggle-playback'))}>
+        {playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} aria-hidden="true" />}
+      </button>
+    </div>
+  );
+}
 
 function LandingPage() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark');
@@ -68,19 +140,20 @@ function LandingPage() {
             <table className="content-table">
               <tbody>
                 <tr className="work-row">
-                  <td className="work-image-cell">
-                    <img src="images/marlax.gif" alt="Cooperative mouse behavior" className="work-thumb" />
-                  </td>
                   <td className="work-content-cell">
-                    <p className="paper-venue"><strong><em>Nature</em></strong> <span>2026</span></p>
-                    <a href="https://www.nature.com/articles/s41586-026-10900-1" target="_blank" rel="noopener noreferrer">
-                      <span className="paper-title">Asymmetric prefrontal representations for leader&ndash;follower dynamics</span>
-                    </a>
-                    <p className="paper-authors">
-                      Yuan Cheng, Yusi Chen, Myungji Kwak, Ross P. Kempner, <strong>Rudramani Singha</strong>, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu
-                    </p>
+                    <h3 className="paper-title">Asymmetric prefrontal representations for leader&ndash;follower dynamics</h3>
+                    <PaperVideo />
                     <p className="paper-links">
-                      <em>links:</em> [<a href="https://www.nature.com/articles/s41586-026-10900-1" target="_blank" rel="noopener noreferrer">paper</a>] [<a href="https://github.com/NuttidaLab/MARLAX" target="_blank" rel="noopener noreferrer">code</a>]
+                      <span>links:</span>
+                      <a href="https://www.nature.com/articles/s41586-026-10900-1" target="_blank" rel="noopener noreferrer">
+                        <img className="nature-logo" src="/assets/logos/nature.svg" alt="Nature" /> <span>2026</span>
+                      </a>
+                      <a href="https://github.com/NuttidaLab/MARLAX" target="_blank" rel="noopener noreferrer">
+                        <img className="github-logo" src="/assets/logos/github.svg" alt="GitHub" /> <span>code</span>
+                      </a>
+                    </p>
+                    <p className="paper-authors">
+                      Yuan Cheng, Yusi Chen, Myungji Kwak, Ross P. Kempner, <span className="author-self">Rudramani Singha</span>, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu
                     </p>
                     <p>
                       We introduce a mouse paradigm to study cooperative behavior where stable leader-follower roles emerge during joint foraging. Using calcium imaging and optogenetic disruption, the study shows medial prefrontal cortex representations are role-specific and critical for cooperation. I developed the forward-modeling framework paired with multi-agent inverse reinforcement learning to decode latent value functions driving cooperative decisions.

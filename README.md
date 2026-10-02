@@ -32,6 +32,17 @@ Build locally:
 npm run build
 ```
 
+## Paper Media
+
+Original supplementary videos are in `public/assets/videos/`. Run
+`bash scripts/build-paper-videos.sh` with FFmpeg installed to regenerate the
+desktop strip, mobile grid, and posters. Shorter clips hold their final frame
+until the longest clip finishes. The page loads only the matching layout near
+the viewport, pauses offscreen, and respects reduced-motion preferences.
+
+The Nature logo comes from the journal's website header; the GitHub mark comes
+from [Primer Octicons](https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg).
+
 ## Docker / Compose
 
 Build and run the production container locally:

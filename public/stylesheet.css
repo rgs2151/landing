@@ -76,17 +76,6 @@ body {
   outline-offset: 2px;
 }
 
-.paper-venue {
-  margin: 0 0 8px;
-  font-size: 25px;
-}
-
-.paper-venue span {
-  margin-left: 8px;
-  font-size: 16px;
-  color: var(--muted);
-}
-
 strong {
   font-family: var(--font-body);
   font-size: 1em;
@@ -169,22 +158,19 @@ strong {
   padding-bottom: 4px;
 }
 
-.work-image-cell {
-  padding: 20px;
-  width: 33%;
-  vertical-align: middle;
-}
-
 .work-content-cell {
   padding: 20px;
-  width: 66%;
+  width: 100%;
   vertical-align: middle;
 }
 
 .paper-title {
+  margin: 0 0 16px;
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1.03em;
+  font-size: 25px;
+  font-style: normal;
+  line-height: 1.2;
 }
 
 .profile-image {
@@ -196,11 +182,43 @@ strong {
   border-radius: 4px;
 }
 
-.work-thumb {
+.paper-video {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.paper-video video {
+  display: block;
   width: 100%;
-  max-width: 100%;
-  height: auto;
+  aspect-ratio: 4 / 1;
+  object-fit: contain;
+  background: #fff;
+}
+
+.video-toggle {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #777;
   border-radius: 4px;
+  color: #111;
+  background: #fff;
+  cursor: pointer;
+}
+
+.video-toggle:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.author-self {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .paper-authors {
@@ -209,18 +227,42 @@ strong {
 }
 
 .paper-links {
-  margin: 4px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 12px;
   font-family: var(--font-body);
   font-size: 1em;
   line-height: 1.28;
 }
 
 .paper-links a {
-  display: inline;
-  margin-right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: inherit;
   font-size: inherit;
   white-space: nowrap;
+}
+
+.paper-links img {
+  filter: invert(1);
+  object-fit: contain;
+}
+
+:root[data-theme='light'] .paper-links img {
+  filter: none;
+}
+
+.nature-logo {
+  width: 82px;
+  height: 20px;
+}
+
+.github-logo {
+  width: 20px;
+  height: 20px;
 }
 
 .paper-links + p {
@@ -261,15 +303,12 @@ strong {
     padding: 12px 20px !important;
   }
 
-  .work-image-cell,
   .intro-photo {
     text-align: center;
   }
 
-  .work-thumb {
-    max-width: 260px;
-    display: block;
-    margin: 0 auto;
+  .paper-video video {
+    aspect-ratio: 1;
   }
 
   .profile-image {
