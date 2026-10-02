@@ -2,17 +2,33 @@
 
 :root {
   --font-body: 'EB Garamond', Garamond, Georgia, serif;
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --link: #ededed;
+  --muted: #aaa;
+  --rule: #393939;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --background: #fff;
+  --foreground: #111;
+  --link: #1772d0;
+  --muted: #555;
+  --rule: #d8d8d8;
 }
 
 a {
-  color: #1772d0;
-  text-decoration: none;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 a:focus,
 a:hover {
-  color: #8b0000;
-  text-decoration: none;
+  color: var(--foreground);
 }
 
 body,
@@ -26,8 +42,49 @@ a {
 }
 
 body {
+  background: var(--background);
+  color: var(--foreground);
   margin: 0;
   line-height: 1.35;
+}
+
+.theme-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 20px 0;
+}
+
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--rule);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.paper-venue {
+  margin: 0 0 8px;
+  font-size: 25px;
+}
+
+.paper-venue span {
+  margin-left: 8px;
+  font-size: 16px;
+  color: var(--muted);
 }
 
 strong {
@@ -108,7 +165,7 @@ strong {
   font-family: var(--font-body);
   font-size: 23px;
   font-weight: 700;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--rule);
   padding-bottom: 4px;
 }
 
