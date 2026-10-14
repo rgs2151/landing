@@ -27,9 +27,10 @@ const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[p
 const navigationLabels = { research: 'Research Publications', packages: 'Tools & Packages' };
 const previewTools = tools.map(tool => ({ ...tool,
   ...(tool.id === 'neuraljaxlib' ? neuraljaxlibRevision : {}),
-  navigationTitle: tool.id === 'pylba' ? 'Linear Ballistic Accumulators' : tool.title,
+  navigationTitle: tool.id === 'pylba' ? 'pyLBA: Linear Ballistic Accumulators' : tool.title,
+  year: tool.id === 'neuraljaxlib' ? 2026 : tool.year,
   navigationLogo: false,
-}));
+})).sort((a, b) => b.year - a.year);
 
 export default function PrototypeE() {
   return <PrototypeB scenePieces={scenePieces} motion={createLocalMotion} variant="e" className="prototype-c"

@@ -13,9 +13,11 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.svg-asset[data-ready="true"]').length === 5);
   await page.getByRole('button', { name: 'Pause composition', exact: true }).click();
   await page.locator('[data-menu="packages"]').hover();
-  assert.equal(await page.locator('#pb-packages-menu a[href="#pylba"] span').textContent(), 'Linear Ballistic Accumulators');
+  assert.equal(await page.locator('#pb-packages-menu a[href="#pylba"] span').textContent(), 'pyLBA: Linear Ballistic Accumulators');
   assert.equal(await page.locator('#pb-packages-menu a[href="#pylba"] small').textContent(), '2025');
   assert.equal(await page.locator('#pb-packages-menu a[href="#neuraljaxlib"] span').textContent(), 'NeuralJAXlib');
+  assert.equal(await page.locator('#pb-packages-menu a[href="#neuraljaxlib"] small').textContent(), '2026');
+  assert.deepEqual(await page.locator('#pb-packages-menu a').evaluateAll(nodes => nodes.map(n => n.getAttribute('href'))), ['#neuraljaxlib', '#pylba']);
   assert.equal(await page.locator('#pb-packages-menu img').count(), 0);
   await page.mouse.move(5, 5);
 
