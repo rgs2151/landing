@@ -11,8 +11,9 @@ to the production homepage.
 - Navigation labels in D are Research Publications and Tools & Packages.
   The tools dropdown and splash preview both open PyLBA within the existing
   slide-in page, including direct hash links and back navigation.
-- PyLBA's title is the rocket emoji followed by PyLBA. Rudramani Singha is the
-  sole author. Documentation/code links come immediately below the author.
+- PyLBA uses the README title: rocket emoji followed by
+  "pyLBA: Linear Ballistic Accumulator Models in Python". Rudramani Singha is the
+  sole author. Code then Documentation links come immediately below the author.
   The animation floats left at its original 300px maximum width, with the
   abstract wrapping on its right. Preserve figure size over forcing text below it.
 - Shared content: `src/content/pylba.js` and `src/content/pylba.md`.

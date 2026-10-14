@@ -63,7 +63,9 @@ try {
   await page.locator('[data-menu="packages"]').hover();
   await page.locator('#pb-packages-menu a[href="#pylba"]').click();
   await page.waitForTimeout(850);
-  assert.equal(await page.locator('.pb-tool h2').textContent(), '\u{1f680} PyLBA');
+  assert.equal(await page.locator('.pb-tool h2').textContent(), '\u{1f680} pyLBA: Linear Ballistic Accumulator Models in Python');
+  assert.deepEqual(await page.locator('.pb-tool .pb-project-links a').allTextContents(), [' code', 'Documentation']);
+  assert.equal(await page.locator('.pb-tool .pb-project-links img').evaluate(n => getComputedStyle(n).width), '20px');
   assert.equal(await page.locator('.pb-tool .pb-authors').textContent(), 'Rudramani Singha');
   assert.equal(await page.locator('.pb-tool .pb-blurb').textContent(), readFileSync(new URL('../src/content/pylba.md', import.meta.url),'utf8').trim());
   assert(await page.locator('.pb-tool').evaluate(n=>n.children[1].classList.contains('pb-authors') && n.children[2].classList.contains('pb-project-links') && n.children[3].classList.contains('pb-tool-body')));

@@ -10,8 +10,8 @@ export default function ToolDetail({ tool, headingRef }) {
       {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'pb-self' : undefined}>{author}</span>
     </span>)}</p>
     <div className="pb-project-links">
-      <a href={tool.url} target="_blank" rel="noopener noreferrer">Documentation<ArrowUpRight size={17} /></a>
       <a href={tool.code} target="_blank" rel="noopener noreferrer"><img src={paper.githubLogo} alt="GitHub" /> code<ArrowUpRight size={17} /></a>
+      <a href={tool.url} target="_blank" rel="noopener noreferrer">Documentation<ArrowUpRight size={17} /></a>
     </div>
     <div className="pb-tool-body">
       <div className="pb-tool-media"><Animation /></div>

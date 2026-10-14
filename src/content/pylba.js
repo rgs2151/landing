@@ -3,7 +3,7 @@ import { profile } from './site';
 
 export const pylba = {
   id: 'pylba',
-  title: '\u{1f680} PyLBA',
+  title: '\u{1f680} pyLBA: Linear Ballistic Accumulator Models in Python',
   shortTitle: 'PyLBA',
   authors: [profile.name],
   url: 'https://rgs2151.github.io/pyLBA/',

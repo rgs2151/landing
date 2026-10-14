@@ -1,3 +1,4 @@
 .prototype-d .pb-canvas[data-open="false"][data-active=""] .pb-fragment[data-kind="tool"] { opacity: .5; }
 .prototype-d .pb-tool-body { display: flow-root; }
+.prototype-d .pb-tool .pb-project-links img { width: 20px; }
 .prototype-d .pb-tool-media { float: left; width: 40%; max-width: 300px; margin: 0 28px 16px 0; }
