@@ -1,5 +1,5 @@
-.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 400; background: transparent; overflow: hidden; }
-.rs-animation iframe { position: absolute; left: 50%; top: 50%; width: 1000px; height: 400px; max-width: none; border: 0; transform: scale(var(--steering-scale, 1)) translate(-388px, -200px); transform-origin: 0 0; }
+.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 380; background: transparent; overflow: hidden; }
+.rs-animation iframe { position: absolute; left: 50%; top: 50%; width: 1000px; height: 420px; max-width: none; border: 0; transform: scale(var(--steering-scale, 1)) translate(calc(-1 * var(--steering-center-x)), calc(-1 * var(--steering-center-y))); transform-origin: 0 0; }
 .rs-compact { pointer-events: none; }
 .pa-paper-artificial > .rs-animation { max-width: 776px; margin-inline: auto; }
 .rs-controls { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }

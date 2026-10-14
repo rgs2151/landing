@@ -8,7 +8,7 @@ import examples from '../../design/references/robust-steering-animation/mgsm-exa
 import landscapes from '../../design/references/robust-steering-animation/steering-landscapes.json';
 import './robust-steering-animation.css';
 
-function animationDocument() {
+function animationDocument(part) {
   const document = new DOMParser().parseFromString(sourcePage, 'text/html');
   const animation = document.querySelector('.steering-demo');
   // Isolate the source SVG IDs and desktop measurements at both display sizes.
@@ -17,8 +17,10 @@ function animationDocument() {
     html, body { margin: 0; width: 1000px; height: 400px; overflow: hidden; }
     body { --muted: #666; --teal: #007c7c; background: transparent; }
     ${sourceStyles}
-    .steering-demo { width: 776px; margin: 0; height: 400px; background: transparent; }
-    .steering-demo-layout { height: 400px; }
+    .steering-demo { width: 776px; margin: 0; height: 380px; background: transparent; }
+    .steering-demo-layout { height: 380px; padding-bottom: 20px; }
+    ${part === 'landscape' ? '.steering-demo-scene, .steering-demo-stimulation { visibility: hidden; }' : ''}
+    ${part === 'conversation' ? '.steering-demo-state { visibility: hidden; }' : ''}
     .steering-demo-controls { display: none; }
     .steering-demo-state, .steering-demo-scene { opacity: 1; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -54,22 +56,33 @@ function animationDocument() {
   </script></body></html>`;
 }
 
-export default function RobustSteeringAnimation({ compact = false, active = true, onClose }) {
+export function RobustSteeringLandscape(props) {
+  return <RobustSteeringAnimation {...props} part="landscape" />;
+}
+
+export function RobustSteeringConversation(props) {
+  return <RobustSteeringAnimation {...props} part="conversation" />;
+}
+
+export default function RobustSteeringAnimation({ compact = false, active = true, onClose, part = 'full' }) {
   const root = useRef(null);
   const frame = useRef(null);
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const srcDoc = useMemo(animationDocument, []);
+  const srcDoc = useMemo(() => animationDocument(part), [part]);
+  const view = part === 'landscape' ? { x: 20, y: 12, width: 320, height: compact ? 349 : 397 }
+    : part === 'conversation' ? { x: 350, y: 50, width: 416, height: compact ? 270 : 310 }
+    : { x: 0, y: 0, width: 776, height: 380 };
   const sync = () => frame.current?.contentWindow?.postMessage({ type: 'steering-active', active }, '*');
   const command = value => frame.current?.contentWindow?.postMessage({ type: 'steering-control', command: value }, '*');
 
   useEffect(() => {
     const resize = new ResizeObserver(([entry]) => {
-      const scale = Math.min(entry.contentRect.width / 776, entry.contentRect.height / 400);
+      const scale = Math.min(entry.contentRect.width / view.width, entry.contentRect.height / view.height);
       root.current.style.setProperty('--steering-scale', scale);
     });
     resize.observe(root.current);
     return () => resize.disconnect();
-  }, []);
+  }, [view.width, view.height]);
   useEffect(sync, [active]);
   useEffect(() => {
     const close = event => {
@@ -81,8 +94,9 @@ export default function RobustSteeringAnimation({ compact = false, active = true
     return () => window.removeEventListener('message', close);
   }, [onClose]);
 
-  return <div className={`rs-animation${compact ? ' rs-compact' : ''}`} ref={root}>
-    <iframe ref={frame} title="Robust steering animation" srcDoc={srcDoc}
+  return <div className={`rs-animation${compact ? ' rs-compact' : ''}`} ref={root} data-part={part}
+    style={{ aspectRatio: `${view.width} / ${view.height}`, '--steering-center-x': `${view.x + view.width / 2}px`, '--steering-center-y': `${view.y + view.height / 2}px` }}>
+    <iframe ref={frame} title={`Robust steering ${part === 'full' ? 'animation' : part}`} srcDoc={srcDoc}
       sandbox="allow-scripts" tabIndex={compact ? -1 : 0} aria-hidden={compact || undefined}
       onLoad={sync} />
     {!compact && <div className="rs-controls">

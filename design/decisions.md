@@ -1,5 +1,21 @@
 # Design Decisions
 
+## Robust Steering Views
+
+The full steering asset uses a 776 x 380 frame, trimming 20px of bottom space
+without changing figure geometry. Standard inset controls move up with the frame.
+`src/shared/RobustSteeringAnimation.jsx` also exports `RobustSteeringLandscape`
+and `RobustSteeringConversation`, accepting the same `compact` and `active` props
+as the neural-field fragments. Prototype A places these separately; either opens
+the full project view. Standalone views retain pause/replay controls.
+
+Unlike the native React/SVG neural-field assets, steering still uses an isolated
+SVG/HTML iframe. Its two fragments are transparent viewport views of the same
+renderer, timeline, content and cached geometry, not independently copied animations.
+The unused side is hidden without changing layout measurements. Each placement
+has its own playback state. A native React port is a separate task, not part of
+this extraction. Do not describe these fragments as native SVG components.
+
 ## Animation Controls
 
 All animations must use the accepted NeuralFieldManifold control style when

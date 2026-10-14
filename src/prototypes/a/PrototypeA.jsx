@@ -4,7 +4,7 @@ import { profile, paper, robustSteering, neuralFieldManifold } from '../../conte
 import ParticleField from '../../shared/ParticleField';
 import NeuralFieldAnimation, { NeuralFieldSignal, NeuralFieldAutoregressive, NeuralFieldManifold } from '../../shared/NeuralFieldAnimation';
 import ProjectVideo from '../../shared/ProjectVideo';
-import RobustSteeringAnimation from '../../shared/RobustSteeringAnimation';
+import RobustSteeringAnimation, { RobustSteeringLandscape, RobustSteeringConversation } from '../../shared/RobustSteeringAnimation';
 import './styles.css';
 
 const projectContent = { biological: paper, artificial: robustSteering, manifold: neuralFieldManifold };
@@ -110,9 +110,12 @@ export default function PrototypeA() {
         <div className="pa-artificial" onMouseEnter={() => setHovered('artificial')}
           onFocus={() => setHovered('artificial')} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>
           <button className="pa-model" onClick={() => openProject('artificial')} aria-label={robustSteering.shortTitle} aria-haspopup="dialog">
-            {desktop && <RobustSteeringAnimation compact active={!selected} />}
+            {desktop && <RobustSteeringLandscape compact active={!selected} />}
             <span>{robustSteering.shortTitle}<ArrowUpRight size={24} /></span>
           </button>
+          {desktop && <button className="pa-steering-conversation" onClick={() => openProject('artificial')} aria-label="Open Robust steering: conversation" aria-haspopup="dialog">
+            <RobustSteeringConversation compact active={!selected} />
+          </button>}
         </div>
         <div className="pa-manifold" onMouseEnter={() => setHovered('manifold')} onFocus={() => setHovered('manifold')}
           onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>

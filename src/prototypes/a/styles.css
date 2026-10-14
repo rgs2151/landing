@@ -38,6 +38,9 @@
 .pa-project-label { position: absolute; left: 53px; top: 548px; width: 350px; background: transparent; border: 0; padding: 10px 0; text-align: left; font-size: 24px !important; line-height: 1.12; pointer-events: auto; z-index: 4; }
 .pa-project-label svg { display: inline; vertical-align: middle; margin-left: 6px; }
 .pa-artificial { position: absolute; left: 746px; top: 22px; width: 355px; z-index: 4; }
+.pa-artificial .pa-model { width: 245px; }
+.pa-steering-conversation { position: absolute; left: -70px; top: 475px; width: 260px; padding: 0; border: 0; background: #fff; transform: rotate(6deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
+.pa-active-artificial .pa-steering-conversation { transform: translate(-18px,12px) rotate(0); }
 .pa-model { display: block; width: 100%; padding: 0; border: 0; background: #fff; text-align: left; transform: rotate(8deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
 .pa-model video { display: block; width: 100%; aspect-ratio: 776 / 550; pointer-events: none; }
 .pa-model > span, .pa-manifold-project > span { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--pa-accent); color: #fff; padding: 12px 14px; font-size: 28px; line-height: 1.1; }

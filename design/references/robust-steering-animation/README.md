@@ -46,7 +46,11 @@ before the connecting arrow draws and travels to the lightning. Complementary
 clips replace the opaque white landscape wipe. Each language reuses a cached,
 seeded synthetic field; these contours are not recorded model activations.
 
-The current frame is 776 x 400, capped at its native width in the project view.
+The current frame is 776 x 380, capped at its native width in the project view.
+The 20px bottom trim moves the inset controls upward without changing content geometry.
+`RobustSteeringLandscape` and `RobustSteeringConversation` expose the two halves
+through the same React `compact` / `active` interface as the neural-field fragments.
+They remain iframe-backed viewport views of this shared source, not native React/SVG.
 The language headings use the normal 20px text size in bold above the
 plot. Question and model response share an aligned icon/text layout, with a
 40px row gap. The model itself aligns with the first response line; lightning
