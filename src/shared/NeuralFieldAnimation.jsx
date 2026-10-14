@@ -1,0 +1,214 @@
+import { useEffect, useId, useRef, useState } from 'react';
+import { Pause, Play, RotateCcw } from 'lucide-react';
+import * as THREE from 'three';
+import { createNeuralFieldModel, LAG, SIGNAL_WINDOW, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
+import './neural-field-animation.css';
+
+const model = createNeuralFieldModel();
+const START = SIGNAL_WINDOW + 3 * LAG;
+const ACCENT = '#8b1e1e';
+
+function createManifold(host) {
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  } catch {
+    // Keep the scientific view usable when WebGL is disabled.
+    const canvas = document.createElement('canvas');
+    host.append(canvas);
+    const context = canvas.getContext('2d');
+    return {
+      resize(width, height) { canvas.width = width * 2; canvas.height = height * 2; },
+      draw(frame) {
+        const { width, height } = canvas;
+        context.clearRect(0, 0, width, height);
+        context.strokeStyle = ACCENT;
+        context.lineWidth = 1.6;
+        context.beginPath();
+        for (let i = Math.max(3 * LAG, frame - TRACE_LENGTH); i <= frame; i++) {
+          const [x, y, z] = model.points.subarray(i * 3, i * 3 + 3);
+          const px = width / 2 + (x * 0.85 + z * 0.4) * width / 4.5;
+          const py = height / 2 + (-y + z * 0.45) * height / 3.5;
+          if (i === Math.max(3 * LAG, frame - TRACE_LENGTH)) context.moveTo(px, py);
+          else context.lineTo(px, py);
+        }
+        context.stroke();
+      },
+      dispose() { canvas.remove(); },
+    };
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0xffffff, 0);
+  host.append(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
+  camera.position.set(3.2, 3.1, 4.9);
+  camera.lookAt(0, 0, 0);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(model.points, 3));
+  const material = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.78 });
+  scene.add(new THREE.Line(geometry, material));
+  const pointGeometry = new THREE.SphereGeometry(0.065, 12, 8);
+  const pointMaterial = new THREE.MeshBasicMaterial({ color: 0x191919 });
+  const point = new THREE.Mesh(pointGeometry, pointMaterial);
+  scene.add(point);
+  const grid = new THREE.GridHelper(4.4, 8, 0xcccccc, 0xe0e0e0);
+  grid.position.y = -0.64;
+  scene.add(grid);
+  return {
+    resize(width, height) {
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    },
+    draw(frame) {
+      const start = Math.max(3 * LAG, frame - TRACE_LENGTH);
+      geometry.setDrawRange(start, frame - start + 1);
+      point.position.fromArray(model.points, frame * 3);
+      renderer.render(scene, camera);
+    },
+    dispose() {
+      geometry.dispose(); material.dispose(); pointGeometry.dispose(); pointMaterial.dispose();
+      grid.geometry.dispose(); grid.material.dispose(); renderer.dispose();
+      renderer.forceContextLoss(); renderer.domElement.remove();
+    },
+  };
+}
+
+export default function NeuralFieldAnimation({ compact = false, active = true }) {
+  const id = useId().replaceAll(':', '');
+  const root = useRef(null);
+  const host = useRef(null);
+  const waveform = useRef(null);
+  const lagPoints = useRef([]);
+  const temporalPoint = useRef(null);
+  const controller = useRef(null);
+  const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  useEffect(() => {
+    const manifold = createManifold(host.current);
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = START + 240;
+    let raf = 0;
+    let last = 0;
+    let remainder = 0;
+    let visible = false;
+    let playing = true;
+    let motionAllowed = !reducedMotion.matches;
+    function draw() {
+      waveform.current.setAttribute('d', waveformPath(model.signal, frame));
+      lagPoints.current.forEach((point, j) => {
+        point.setAttribute('cx', 242 - j * LAG * 224 / (SIGNAL_WINDOW - 1));
+        point.setAttribute('cy', 286 - model.signal[frame - j * LAG] * 24);
+      });
+      temporalPoint.current.setAttribute('cx', 567 + model.signal[frame - LAG] * 19);
+      temporalPoint.current.setAttribute('cy', 446 - model.signal[frame - 2 * LAG] * 14);
+      root.current.dataset.frame = String(frame);
+      manifold.draw(frame);
+    }
+    function tick(now) {
+      if (last) remainder += Math.min(now - last, 100) * 0.03;
+      last = now;
+      const steps = Math.floor(remainder);
+      if (steps) {
+        remainder -= steps;
+        frame += steps;
+        if (frame >= model.signal.length) frame = START;
+        draw();
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    function sync() {
+      cancelAnimationFrame(raf);
+      last = 0;
+      if (visible && playing && motionAllowed && !document.hidden) raf = requestAnimationFrame(tick);
+    }
+    controller.current = {
+      setPlaying(value) { playing = value; sync(); },
+      replay() { frame = START; remainder = 0; draw(); },
+      allowMotion() { motionAllowed = true; sync(); },
+    };
+    const resize = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (width && height) { manifold.resize(width, height); draw(); }
+    });
+    resize.observe(host.current);
+    const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
+    intersection.observe(root.current);
+    const onMotion = () => { motionAllowed = !reducedMotion.matches; sync(); };
+    reducedMotion.addEventListener('change', onMotion);
+    document.addEventListener('visibilitychange', sync);
+    draw();
+    return () => {
+      cancelAnimationFrame(raf); resize.disconnect(); intersection.disconnect();
+      reducedMotion.removeEventListener('change', onMotion);
+      document.removeEventListener('visibilitychange', sync);
+      manifold.dispose(); controller.current = null;
+    };
+  }, []);
+
+  useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
+
+  return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} ref={root}>
+    <div className="nf-diagram">
+      <svg viewBox="0 0 1000 550" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+        <title id={`${id}-title`}>Extracting state space of a signal from time series</title>
+        <desc id={`${id}-desc`}>An illustrative noiseless AR(4) signal with two oscillatory modes. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; recovered modal phases trace a toroidal manifold.</desc>
+        <defs>
+          <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
+        </defs>
+        <text className="nf-heading" x="500" y="31" textAnchor="middle">Extracting state space of a signal from time series</text>
+        <text x="48" y="217" className="nf-label">LFP</text>
+        <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
+        {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
+        <path d="M191,263 L290,183" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
+        <text x="190" y="130" textAnchor="middle" className="nf-label">Hidden<tspan x="190" dy="24">dynamic</tspan></text>
+        <path d="M195,330 L279,432" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
+        <text x="191" y="430" textAnchor="middle" className="nf-label nf-red">Lag<tspan x="191" dy="24">embedding</tspan></text>
+
+        <rect x="306" y="65" width="392" height="190" fill="none" stroke="#898989" strokeWidth="2" />
+        <text x="502" y="94" textAnchor="middle" className="nf-label">Hidden dynamical process</text>
+        <text x="337" y="157" className="nf-equation">dx</text>
+        <path d="M328,165 H354" stroke="currentColor" />
+        <text x="337" y="189" className="nf-equation">dt</text>
+        <text x="364" y="177" className="nf-equation">= F(x(t); θ)</text>
+        <g className="nf-axes" transform="translate(568 177)" markerEnd={`url(#${id}-arrow)`}>
+          <path d="M0,0 V-57" /><path d="M0,0 H70" /><path d="M0,0 L-25,39" /><path d="M0,0 L44,36" />
+        </g>
+        <text x="554" y="128" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">n</tspan></text>
+        <text x="650" y="176" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">3</tspan></text>
+        <text x="617" y="232" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">2</tspan></text>
+        <text x="523" y="226" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">1</tspan></text>
+        <text x="507" y="198" transform="rotate(-90 507 198)" className="nf-axis-text">State space</text>
+        <path d="M594,130 Q613,131 620,157" fill="none" stroke="#555" strokeWidth="3" strokeDasharray="2 10" />
+
+        <rect x="306" y="326" width="392" height="190" fill="#8b1e1e" fillOpacity=".045" stroke={ACCENT} strokeWidth="2.5" />
+        <text x="502" y="355" textAnchor="middle" className="nf-label">Autoregressive notion</text>
+        <text x="367" y="408" className="nf-equation">x(t) =</text>
+        <text x="326" y="441" className="nf-equation" fontSize="32">Σ</text>
+        <text x="341" y="420" fontSize="13" fontStyle="italic">p</text>
+        <text x="322" y="456" fontSize="12">i = 1</text>
+        <text x="353" y="439" className="nf-equation">φ<tspan baselineShift="sub" fontSize="13">i</tspan> x(t−i) +</text>
+        <text x="377" y="475" className="nf-equation">ε(t)</text>
+        <g className="nf-axes nf-red" transform="translate(569 449)" markerEnd={`url(#${id}-arrow)`}>
+          <path d="M0,0 V-58" /><path d="M0,0 H71" /><path d="M0,0 L-26,36" /><path d="M0,0 L45,33" />
+        </g>
+        <text x="551" y="424" transform="rotate(-90 551 424)" className="nf-axis-text">t − nτ</text>
+        <text x="649" y="446" className="nf-axis-text">t − 3τ</text>
+        <text x="590" y="504" className="nf-axis-text">t − 2τ</text>
+        <text x="546" y="507" transform="rotate(-45 546 507)" className="nf-axis-text">t − τ</text>
+        <text x="499" y="478" transform="rotate(-90 499 478)" className="nf-axis-text">Temporal<tspan x="499" dy="18">state space</tspan></text>
+        <path d="M594,401 Q615,405 621,429" fill="none" stroke={ACCENT} strokeWidth="3" strokeDasharray="2 10" />
+        <circle ref={temporalPoint} r="4" fill={ACCENT} />
+        <path d="M713,426 L791,342" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
+        <text x="874" y="161" textAnchor="middle" className="nf-label">Formulation of manifold<tspan x="874" dy="24">properties</tspan></text>
+        <text x="874" y="392" textAnchor="middle" className="nf-caption">Lag-derived phases</text>
+      </svg>
+      <div className="nf-manifold" ref={host} aria-hidden="true" />
+    </div>
+    {!compact && <div className="nf-controls">
+      <button type="button" onClick={() => { controller.current?.allowMotion(); setPaused(value => !value); }} aria-label={paused ? 'Play neural field animation' : 'Pause neural field animation'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
+      <button type="button" onClick={() => controller.current?.replay()} aria-label="Replay neural field animation" title="Replay"><RotateCcw size={17} /></button>
+    </div>}
+  </div>;
+}

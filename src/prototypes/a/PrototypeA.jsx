@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, X } from 'lucide-react';
-import { profile, paper } from '../../content/site';
+import { profile, paper, robustSteering, neuralFieldManifold } from '../../content/site';
 import ParticleField from '../../shared/ParticleField';
+import NeuralFieldAnimation from '../../shared/NeuralFieldAnimation';
+import ProjectVideo from '../../shared/ProjectVideo';
 import './styles.css';
 
+const projectContent = { biological: paper, artificial: robustSteering, manifold: neuralFieldManifold };
+
 function ProjectView({ project }) {
-  const [steering, setSteering] = useState(0);
   if (project === 'about') {
     return <div className="pa-about">
       <img src={profile.photo} alt={profile.name} />
@@ -15,25 +18,21 @@ function ProjectView({ project }) {
       </div>
     </div>;
   }
-  if (project === 'artificial') {
-    return <div className="pa-steering-view">
-      <h2>LLM steering</h2>
-      <ParticleField steering={steering} />
-      <label>Steering <input type="range" min="-1" max="1" step="0.01" value={steering}
-        onChange={event => setSteering(Number(event.target.value))} /></label>
-    </div>;
-  }
-  return <article className="pa-paper">
-    <h2>{paper.title}</h2>
-    <video src={paper.strip} poster={paper.stripPoster} controls muted loop playsInline preload="metadata" />
+  const content = projectContent[project];
+  return <article className={`pa-paper pa-paper-${project}`}>
+    <h2>{content.title}</h2>
+    {project === 'biological' && <ProjectVideo src={paper.strip} poster={paper.stripPoster} />}
+    {project === 'artificial' && <ProjectVideo src={robustSteering.animation.src} poster={robustSteering.animation.poster} aria-label={robustSteering.animation.alt} />}
+    {project === 'manifold' && <NeuralFieldAnimation />}
     <div className="pa-paper-links">
-      <a href={paper.url} target="_blank" rel="noopener noreferrer"><img src={paper.natureLogo} alt="Nature" /> {paper.year}<ArrowUpRight size={18} /></a>
-      <a href={paper.code} target="_blank" rel="noopener noreferrer"><img src={paper.githubLogo} alt="GitHub" /> code<ArrowUpRight size={18} /></a>
+      <a href={content.url} target="_blank" rel="noopener noreferrer">{project === 'biological' ? <img src={paper.natureLogo} alt="Nature" /> : 'Project'} {content.year}<ArrowUpRight size={18} /></a>
+      <a href={content.code} target="_blank" rel="noopener noreferrer"><img src={paper.githubLogo} alt="GitHub" /> code<ArrowUpRight size={18} /></a>
     </div>
-    <p className="pa-authors">{paper.authors.map((author, index) => <span key={author}>
-      {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'pa-self' : undefined}>{author}</span>
+    <p className="pa-authors">{content.authors.map((author, index) => <span key={author}>
+      {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'pa-self' : undefined}>{author}</span>{content.equalContribution?.includes(author) && <sup>*</sup>}
     </span>)}</p>
-    <p>{paper.blurb}</p>
+    {content.equalContribution && <p className="pa-equal">* Equal contribution</p>}
+    <p className="pa-blurb">{content.blurb}</p>
   </article>;
 }
 
@@ -41,10 +40,18 @@ export default function PrototypeA() {
   const [hovered, setHovered] = useState(null);
   const [selected, setSelected] = useState(null);
   const [scale, setScale] = useState(1);
+  const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 741px)').matches);
   const stageRef = useRef(null);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
   const active = selected || hovered;
+
+  useEffect(() => {
+    const media = matchMedia('(min-width: 741px)');
+    const update = () => setDesktop(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const observer = new ResizeObserver(([entry]) => {
@@ -101,11 +108,16 @@ export default function PrototypeA() {
         </div>
         <div className="pa-artificial" onMouseEnter={() => setHovered('artificial')}
           onFocus={() => setHovered('artificial')} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>
-          <button className="pa-model" onClick={() => openProject('artificial')} aria-label="LLM steering" aria-haspopup="dialog">
-            <div className="pa-model-field"><ParticleField steering={active === 'artificial' ? 0.8 : 0} /></div>
-            <div className="pa-model-layer pa-model-layer-one"><ParticleField steering={-0.4} /></div>
-            <div className="pa-model-layer pa-model-layer-two"><ParticleField steering={0.4} /></div>
-            <span>LLM<br />steering<ArrowUpRight size={28} /></span>
+          <button className="pa-model" onClick={() => openProject('artificial')} aria-label={robustSteering.shortTitle} aria-haspopup="dialog">
+            {desktop && <ProjectVideo src={robustSteering.animation.src} poster={robustSteering.animation.poster} compact active={!selected} />}
+            <span>{robustSteering.shortTitle}<ArrowUpRight size={24} /></span>
+          </button>
+        </div>
+        <div className="pa-manifold" onMouseEnter={() => setHovered('manifold')} onFocus={() => setHovered('manifold')}
+          onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>
+          <button className="pa-manifold-project" onClick={() => openProject('manifold')} aria-label={neuralFieldManifold.title} aria-haspopup="dialog">
+            {desktop && <NeuralFieldAnimation compact active={!selected} />}
+            <span>NeuralFieldManifold<ArrowUpRight size={24} /></span>
           </button>
         </div>
         <div className="pa-paper-stamp" aria-hidden="true"><img src={paper.natureLogo} alt="" /><span>{paper.year}</span></div>
@@ -120,7 +132,7 @@ export default function PrototypeA() {
     </section>
 
     <dialog className="pa-dialog" ref={dialogRef} onCancel={closeProject} onClose={closeProject}
-      onClick={event => { if (event.target === event.currentTarget) closeProject(); }} aria-label={selected === 'biological' ? paper.title : selected === 'about' ? 'About Rudramani Singha' : 'LLM steering'}>
+      onClick={event => { if (event.target === event.currentTarget) closeProject(); }} aria-label={selected === 'about' ? 'About Rudramani Singha' : projectContent[selected]?.title || 'Project'}>
       <div className="pa-dialog-inner">
         <button className="pa-close" ref={closeRef} onClick={closeProject} aria-label="Close project" title="Close project"><X size={24} /></button>
         {selected && <ProjectView key={selected} project={selected} />}

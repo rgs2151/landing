@@ -24,5 +24,8 @@ identifies its activations and question/response example as schematic, not
 recorded benchmark outputs.
 
 Preserve the current sequence, wording, colors, and timing for the first reuse.
-The GIF is the initial project media asset; the source supports later styling
-and interactive adaptation. No screenshots or new video exports were made.
+The original GIF is retained. Prototype A uses `public/assets/videos/robust-steering.mp4`,
+an H.264 conversion with the original timing and a single white padding row
+(776 x 550). This allows native playback controls and pauses when hidden.
+Its poster is `public/assets/images/robust-steering.webp`, extracted at 18 seconds.
+The source supports later styling and interactive adaptation.
