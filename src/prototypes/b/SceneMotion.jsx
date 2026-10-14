@@ -2,18 +2,18 @@ import { cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'reac
 import { profile } from '../../content/site';
 import { createDriftMotion } from './sceneDrift';
 
-export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning }) {
+export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion = createDriftMotion }) {
   const animations = useRef([]);
   useEffect(() => {
     if (!desktop || !root.current) return;
     animations.current = [...root.current.querySelectorAll('.pb-orbit')].map((node, index) => {
       const x = Number(node.dataset.x) - 600, y = Number(node.dataset.y) - 350;
-      const { keyframes, duration } = createDriftMotion(index, x, y);
+      const { keyframes, duration } = motion(index, x, y);
       const animation = node.animate(keyframes, { duration, iterations: Infinity });
       return { animation, node, settle: null };
     });
     return () => animations.current.forEach(({ animation, settle }) => { animation.cancel(); settle?.cancel(); });
-  }, [desktop, root, replay]);
+  }, [desktop, root, replay, motion]);
   useEffect(() => {
     animations.current.forEach(({ animation }) => {
       if (paused || selected || reduced || hovered || transitioning || (diagnostic && diagnostic !== 'all' && diagnostic !== 'motion')) animation.pause();

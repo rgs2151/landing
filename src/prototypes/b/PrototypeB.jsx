@@ -17,7 +17,7 @@ const selectedFromHash = () => {
   const id = location.hash.slice(1);
   return projects[id] || id === 'about' ? id : null;
 };
-const pieces = [
+export const pieces = [
   { id: 'nature-0', project: 'cooperation', clip: 0, x: 205, y: -15, width: 270, angle: -8 },
   { id: 'nature-1', project: 'cooperation', clip: 1, x: 755, y: 105, width: 125, angle: 11 },
   { id: 'nature-2', project: 'cooperation', clip: 2, x: 920, y: 430, width: 95, angle: -12 },
@@ -108,7 +108,7 @@ function ProjectDetail({ id, headingRef, portraitSlot }) {
   </article>;
 }
 
-export default function PrototypeB() {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(selectedFromHash);
   const [hovered, setHovered] = useState(null);
@@ -129,7 +129,7 @@ export default function PrototypeB() {
   const active = hovered;
   const stackX = (24 - (viewport.width - 1200 * scale) / 2) / scale;
   const stackY = (viewport.height - 360 - 92) / scale;
-  useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning });
+  useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion });
   useLayoutEffect(() => {
     if (lastSelection.current === selected) { setTransitioning(false); return; }
     lastSelection.current = selected;
@@ -193,7 +193,7 @@ export default function PrototypeB() {
     <p>Open on a computer for the full experience.</p>
   </main>;
 
-  return <main className="prototype-b" data-selected={selected || ''}>
+  return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}`} data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
       <Navigation selected={selected} open={open} hover={hover} />
     </header>
@@ -209,7 +209,7 @@ export default function PrototypeB() {
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
           <h1 className="pb-title" tabIndex={-1}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></h1>
         </div>
-        <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{pieces.map((piece,index) => {
+        <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{scenePieces.map((piece,index) => {
           const matching = active === piece.project;
           const settle = Boolean(active) && !matching;
           const factor = selected ? Math.min(110 / piece.width, .5) : 1;
