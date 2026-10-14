@@ -45,8 +45,11 @@ the start, with no opening fade or white backing. Complementary clips replace
 the opaque white landscape wipe. Preserve the seeded landscapes and colors.
 
 The current frame is 776 x 400, capped at its native width in the project view.
-The larger English/Chinese headings sit directly above the plot; question and
-response share an aligned icon/text layout. Both text rows reserve enough space
+The English/Chinese headings use the normal 20px text size in bold above the
+plot. Question and model response share an aligned icon/text layout, with a
+40px row gap. The model itself aligns with the first response line; lightning
+sits above it, outside the row's height calculation, without vibration marks.
+Both text rows reserve enough space
 for every language and the corruption frames so the layout does not shift.
 
 Each cycle begins with a complete English question and English answer. At the
