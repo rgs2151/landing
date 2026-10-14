@@ -193,15 +193,14 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
-        <svg x="6" y="192" width="36" height="36" viewBox="0 0 36 36" className="nf-mouse-head" aria-hidden="true"
-          fill="white" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <svg x="14" y="196" width="28" height="28" viewBox="0 0 36 36" className="nf-mouse-head" aria-hidden="true"
+          fill="white" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="8" cy="8" r="6.5" /><circle cx="28" cy="8" r="6.5" />
-          <circle cx="8" cy="8" r="3.2" /><circle cx="28" cy="8" r="3.2" />
-          <path d="M10 11 Q14 9 18 11 Q22 9 26 11 C30 17 28 25 24 29 Q18 35 12 29 C8 25 6 17 10 11Z" />
-          <ellipse cx="13" cy="19" rx="1.5" ry="2" fill="currentColor" stroke="none" />
-          <ellipse cx="23" cy="19" rx="1.5" ry="2" fill="currentColor" stroke="none" />
-          <path d="M15.5 26 Q18 24 20.5 26 Q18 30 15.5 26Z" fill="currentColor" stroke="none" />
-          <path d="M18 28 V30 M18 30 Q15.5 32 14 30 M18 30 Q20.5 32 22 30 M12 25 L1 22 M12 28 L1 29 M24 25 L35 22 M24 28 L35 29" fill="none" />
+          <path d="M8 15 Q8 9 18 9 Q28 9 28 15 Q28 24 18 32 Q8 24 8 15Z" />
+          <g fill="currentColor" stroke="none">
+            <circle cx="13" cy="19" r="1" /><circle cx="23" cy="19" r="1" />
+            <circle cx="18" cy="27" r="1.2" />
+          </g>
         </svg>
         <text x="48" y="217" className="nf-label">LFP</text>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
