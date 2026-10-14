@@ -1,0 +1,41 @@
+{
+  "pylba": {
+    "id": "pylba",
+    "project": "pylba",
+    "name": "pylba",
+    "src": "/assets/projects/pylba/videos/pylba.webm",
+    "poster": "/assets/projects/pylba/posters/pylba.webp",
+    "revision": "a15feeb88354",
+    "width": 360,
+    "height": 360,
+    "layoutWidth": 300,
+    "layoutHeight": 300,
+    "duration": 1000,
+    "loopStart": 0,
+    "fps": 30,
+    "frames": 30,
+    "bytes": 51079,
+    "firstFrame": {
+      "visible": 11927,
+      "transparent": 117673,
+      "sha256": "20296f88a9b54745e93c7ffcc7eda28a44ec3ef12251fc6b2dc2d7a2235a6a16"
+    },
+    "lastFrameHash": "f46218c2b36374e7e9b3791dc0dcea0befb17c6e51039098a0e0a00defddf91e",
+    "fragment": "src/assets/pylba/fragments.js#pylba",
+    "composite": "src/assets/pylba/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/pylba/PyLBAAnimation.jsx",
+        "sha256": "7ad97d734e0549ee487d57ee117a0568319eea418e41656c1f2baeb68af5c4aa"
+      },
+      {
+        "path": "src/shared/pylba/pylba.svg",
+        "sha256": "b8e8f68a65e97cc909e0129b6087fda948b1221e0381072d3ef6a090702e1308"
+      },
+      {
+        "path": "src/shared/pylba/styles.css",
+        "sha256": "95d1dc855fc36ed09b5317482fa4a11d578374c4bbb2a1732e9d2410ddc96c96"
+      }
+    ]
+  }
+}

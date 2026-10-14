@@ -1,0 +1,14 @@
+:root {
+  --font-body: Arial, Helvetica, sans-serif;
+  color-scheme: light;
+  background: #fff;
+  color: #111;
+}
+
+body, td, th, tr, p, a { font-family: var(--font-body); font-size: 1em; }
+body { margin: 0; line-height: 1.35; }
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+strong { font-family: var(--font-body); font-size: 1em; }
+
+.not-found-container { margin: 40px auto; max-width: 680px; text-align: center; padding: 0 20px; }
+.not-found-title { margin: 12px 0; font-size: 56px; line-height: 1; letter-spacing: 0; }

@@ -1,0 +1,252 @@
+{
+  "neuraljax-cnn": {
+    "id": "neuraljax-cnn",
+    "project": "neuraljaxlib",
+    "name": "cnn",
+    "src": "/assets/projects/neuraljaxlib/videos/cnn.webm",
+    "poster": "/assets/projects/neuraljaxlib/posters/cnn.webp",
+    "revision": "d038a75cb8cb",
+    "width": 360,
+    "height": 394,
+    "layoutWidth": 300,
+    "layoutHeight": 328,
+    "duration": 43500,
+    "loopStart": 0,
+    "fps": 30,
+    "frames": 1305,
+    "crf": 15,
+    "exportPixelRatio": null,
+    "hideTitle": true,
+    "bytes": 941739,
+    "firstFrame": {
+      "visible": 129960,
+      "transparent": 11880,
+      "sha256": "ba854b762463f9af4d5c8774965574f7fda5b8c94635ae94b2e4fc3490349458"
+    },
+    "lastFrameHash": "395fc0c788840fa026d2d92af3ea6cda34a336d4637767a4611f966fbeb4f4e4",
+    "fragment": "src/assets/neuraljaxlib/fragments.js#cnn",
+    "composite": "src/assets/neuraljaxlib/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/neuraljaxlib/vendor/cnn_brain_mri/animation.js",
+        "sha256": "c1e616797f09d78830a4101e783f2d9922dd51d695a3ff74e114fca5eaf81931"
+      },
+      {
+        "path": "src/shared/neuraljaxlib/vendor/cnn_brain_mri/samples.js",
+        "sha256": "b4e0c4446b5041cda4b21570d0a47e9e58c2c0b5e07a1fd780989af5033e693f"
+      },
+      {
+        "path": "src/shared/SVGAnimation.jsx",
+        "sha256": "797fc5e663ad46fcadc60252a7026f6075c35c6b3e84fdce1778ce23d5fbb6a0"
+      },
+      {
+        "path": "src/shared/svg-animation.css",
+        "sha256": "ab653882050cbff2690c00d8687861611a42a851b20fdc3289a0d2e873933818"
+      },
+      {
+        "path": "src/assets/neuraljaxlib/variants.js",
+        "sha256": "1fff513feb46ee257779f739e135eeea5ca307d35e32dc05d2f90aa05848e592"
+      }
+    ]
+  },
+  "neuraljax-rnn": {
+    "id": "neuraljax-rnn",
+    "project": "neuraljaxlib",
+    "name": "rnn",
+    "src": "/assets/projects/neuraljaxlib/videos/rnn.webm",
+    "poster": "/assets/projects/neuraljaxlib/posters/rnn.webp",
+    "revision": "b7ff45ecf62b",
+    "width": 360,
+    "height": 354,
+    "layoutWidth": 300,
+    "layoutHeight": 294,
+    "duration": 18000,
+    "loopStart": 0,
+    "fps": 30,
+    "frames": 540,
+    "crf": 15,
+    "exportPixelRatio": null,
+    "hideTitle": true,
+    "bytes": 4128527,
+    "firstFrame": {
+      "visible": 35506,
+      "transparent": 91934,
+      "sha256": "fe3c34ee9b3426332d3f3db6913b1571a7be5b22bd75c83bfc039a268dde5101"
+    },
+    "lastFrameHash": "c89b5d4ac6f9ba3f09f6b135a18f8ddbbf0f1a63f9876f7a9d8acb1515512ffc",
+    "fragment": "src/assets/neuraljaxlib/fragments.js#rnn",
+    "composite": "src/assets/neuraljaxlib/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/neuraljaxlib/vendor/rnn/animation.js",
+        "sha256": "356e646f0b481b32ef95a1b0daceb295e728cb0a1f633ae9a8c77f5e783b7852"
+      },
+      {
+        "path": "src/shared/neuraljaxlib/vendor/rnn/samples.js",
+        "sha256": "0a11d01ca26e748575d75699ee2aa6ee001f0667fe86f9ac0da4c0b765dbf51c"
+      },
+      {
+        "path": "src/shared/SVGAnimation.jsx",
+        "sha256": "797fc5e663ad46fcadc60252a7026f6075c35c6b3e84fdce1778ce23d5fbb6a0"
+      },
+      {
+        "path": "src/shared/svg-animation.css",
+        "sha256": "ab653882050cbff2690c00d8687861611a42a851b20fdc3289a0d2e873933818"
+      },
+      {
+        "path": "src/assets/neuraljaxlib/variants.js",
+        "sha256": "1fff513feb46ee257779f739e135eeea5ca307d35e32dc05d2f90aa05848e592"
+      }
+    ]
+  },
+  "neuraljax-autoencoder": {
+    "id": "neuraljax-autoencoder",
+    "project": "neuraljaxlib",
+    "name": "autoencoder",
+    "src": "/assets/projects/neuraljaxlib/videos/autoencoder.webm",
+    "poster": "/assets/projects/neuraljaxlib/posters/autoencoder.webp",
+    "revision": "b986903c5b77",
+    "width": 480,
+    "height": 466,
+    "layoutWidth": 300,
+    "layoutHeight": 291,
+    "duration": 5400,
+    "loopStart": 0,
+    "fps": 30,
+    "frames": 162,
+    "crf": 15,
+    "exportPixelRatio": null,
+    "hideTitle": true,
+    "bytes": 3642155,
+    "firstFrame": {
+      "visible": 21943,
+      "transparent": 201737,
+      "sha256": "7a8a65f9b07a9ac2291c06162b6c0ef7e12f74035fbb1bd0c70d02952b6cd170"
+    },
+    "lastFrameHash": "2eb9adab4c8d0bf9607346874e80f4724f79bcc3b800c341f4f9b9f503b72c41",
+    "fragment": "src/assets/neuraljaxlib/fragments.js#autoencoder",
+    "composite": "src/assets/neuraljaxlib/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/neuraljaxlib/vendor/autoencoder/animation.js",
+        "sha256": "12c641717dba365cb3cbda5d587a7eef48b3ac83ec042f9bf0190a2254edddc2"
+      },
+      {
+        "path": "src/shared/neuraljaxlib/vendor/autoencoder/samples.js",
+        "sha256": "ffb775579529dca6d5b2f73d4c8b3c600eca1122d12c75460eb0a1f6cdd3d131"
+      },
+      {
+        "path": "src/shared/SVGAnimation.jsx",
+        "sha256": "797fc5e663ad46fcadc60252a7026f6075c35c6b3e84fdce1778ce23d5fbb6a0"
+      },
+      {
+        "path": "src/shared/svg-animation.css",
+        "sha256": "ab653882050cbff2690c00d8687861611a42a851b20fdc3289a0d2e873933818"
+      },
+      {
+        "path": "src/assets/neuraljaxlib/variants.js",
+        "sha256": "1fff513feb46ee257779f739e135eeea5ca307d35e32dc05d2f90aa05848e592"
+      }
+    ]
+  },
+  "neuraljax-gan": {
+    "id": "neuraljax-gan",
+    "project": "neuraljaxlib",
+    "name": "gan",
+    "src": "/assets/projects/neuraljaxlib/videos/gan.webm",
+    "poster": "/assets/projects/neuraljaxlib/posters/gan.webp",
+    "revision": "92f6e455d8a0",
+    "width": 360,
+    "height": 390,
+    "layoutWidth": 300,
+    "layoutHeight": 324,
+    "duration": 4590,
+    "loopStart": 0,
+    "fps": 30.065359477124183,
+    "frames": 138,
+    "crf": 15,
+    "exportPixelRatio": null,
+    "hideTitle": true,
+    "bytes": 1493882,
+    "firstFrame": {
+      "visible": 129960,
+      "transparent": 10440,
+      "sha256": "9471a5c94410cd102fc573b5f0c3a72b86e6009151111f8a8e724ad53075f0ee"
+    },
+    "lastFrameHash": "6044273100877aa66bb5071f7f9cab934220cb24297008973b98802beb6038ba",
+    "fragment": "src/assets/neuraljaxlib/fragments.js#gan",
+    "composite": "src/assets/neuraljaxlib/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/neuraljaxlib/vendor/gan_brain_mri/animation.js",
+        "sha256": "172f3c270e4e18e6864edbc09126ea914bb6abc990856a0ec6b41593158015e0"
+      },
+      {
+        "path": "src/shared/neuraljaxlib/vendor/gan_brain_mri/samples.js",
+        "sha256": "32d835458386369efd9ddfcc65bfcd3d7e54c023c1a3344f108bbf4d73ea407d"
+      },
+      {
+        "path": "src/shared/SVGAnimation.jsx",
+        "sha256": "797fc5e663ad46fcadc60252a7026f6075c35c6b3e84fdce1778ce23d5fbb6a0"
+      },
+      {
+        "path": "src/shared/svg-animation.css",
+        "sha256": "ab653882050cbff2690c00d8687861611a42a851b20fdc3289a0d2e873933818"
+      },
+      {
+        "path": "src/assets/neuraljaxlib/variants.js",
+        "sha256": "1fff513feb46ee257779f739e135eeea5ca307d35e32dc05d2f90aa05848e592"
+      }
+    ]
+  },
+  "neuraljax-transformer": {
+    "id": "neuraljax-transformer",
+    "project": "neuraljaxlib",
+    "name": "transformer",
+    "src": "/assets/projects/neuraljaxlib/videos/transformer.webm",
+    "poster": "/assets/projects/neuraljaxlib/posters/transformer.webp",
+    "revision": "1a6aca2d45e4",
+    "width": 360,
+    "height": 384,
+    "layoutWidth": 300,
+    "layoutHeight": 319,
+    "duration": 68000,
+    "loopStart": 0,
+    "fps": 30,
+    "frames": 2040,
+    "crf": 15,
+    "exportPixelRatio": null,
+    "hideTitle": true,
+    "bytes": 6045858,
+    "firstFrame": {
+      "visible": 8013,
+      "transparent": 130227,
+      "sha256": "ff70b7b927da6cdd5f3e8ad3d876a15979b861dc5a75e8329fa84232707a2f6f"
+    },
+    "lastFrameHash": "ff70b7b927da6cdd5f3e8ad3d876a15979b861dc5a75e8329fa84232707a2f6f",
+    "fragment": "src/assets/neuraljaxlib/fragments.js#transformer",
+    "composite": "src/assets/neuraljaxlib/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/neuraljaxlib/vendor/transformer/animation.js",
+        "sha256": "f8872e79757cad77fb764986dcb545955b08ea7eec3da485847c7ec294681d45"
+      },
+      {
+        "path": "src/shared/neuraljaxlib/vendor/transformer/samples.js",
+        "sha256": "1d35f70d259d4833fd4d2d7e6323028f7d4885b3ed6884d4a5ecb7d6915998ae"
+      },
+      {
+        "path": "src/shared/SVGAnimation.jsx",
+        "sha256": "797fc5e663ad46fcadc60252a7026f6075c35c6b3e84fdce1778ce23d5fbb6a0"
+      },
+      {
+        "path": "src/shared/svg-animation.css",
+        "sha256": "ab653882050cbff2690c00d8687861611a42a851b20fdc3289a0d2e873933818"
+      },
+      {
+        "path": "src/assets/neuraljaxlib/variants.js",
+        "sha256": "1fff513feb46ee257779f739e135eeea5ca307d35e32dc05d2f90aa05848e592"
+      }
+    ]
+  }
+}
