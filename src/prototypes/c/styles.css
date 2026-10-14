@@ -3,7 +3,8 @@
 .prototype-c .pb-fragment[data-piece="nature-3"] { z-index: 6; }
 .prototype-c .pb-fragment[data-piece="landscape"] { z-index: 8; }
 .prototype-c .pb-canvas { z-index: 5; pointer-events: none; }
-.prototype-c .pc-scene-portrait { position: absolute; pointer-events: auto; }
+.prototype-c .pc-scene-portrait { position: absolute; pointer-events: auto; transition: opacity 350ms; }
+.prototype-c .pb-canvas[data-open="false"]:not([data-active=""]):not([data-active="about"]) :is(.pb-lettering,.pc-scene-portrait) { opacity: .25; }
 .prototype-c .pc-scene-portrait[data-location="stack"] { z-index: 11; }
 .prototype-c .pc-name-button { display: block; padding: 0; color: inherit; text-align: left; pointer-events: auto; }
 .prototype-c .pb-canvas[data-open="true"] .pc-name-button,

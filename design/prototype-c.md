@@ -22,7 +22,8 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   video overlaps the portrait's upper edge from behind the portrait and name; the smallest video
   sits above the portrait. The steering landscape overlaps its lower-right edge
   without covering the face. The manifold fills the corner beside the second
-  name line. Sizes, rotations and internal animations remain unchanged.
+  name line, at (70,325), moved up and right toward the lettering.
+  Sizes, rotations and internal animations remain unchanged.
 - A single persistent square portrait lives 20 scene pixels beside the visible
   name lettering, aligned with its top and matching its full two-line height.
   The entire square source photo is visible, with subtle local
@@ -36,6 +37,8 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   remain grayscale. The splash name and photo now open About, alongside the nav.
 - Hovering or focusing the splash name/photo keeps both fully visible, dims
   project fragments, and pauses their drift without gathering or raising layers.
+- Project hover also dims the name and portrait to 25% opacity, matching the
+  other inactive assets. They return to full opacity when project hover ends.
 - Manifold stroke width belongs to the shared animation asset, not a preview
   override: the full schematic and standalone manifold both use width 2.
 - Preserve hover freeze/straightening/dimming, slide-in reading pages,

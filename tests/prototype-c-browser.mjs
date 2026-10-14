@@ -85,6 +85,7 @@ try {
     await page.locator('[data-piece="manifold"] .pb-orbit').hover();
     await page.waitForTimeout(550);
     assert.equal(await page.locator('.pb-canvas').getAttribute('data-active'),'neural-field-manifold');
+    assert(await page.locator('.pb-lettering,.pc-scene-portrait').evaluateAll(nodes=>nodes.every(n=>Number(getComputedStyle(n).opacity)===.25)),'Project hover dims the name and portrait too');
     assert(await page.locator('.pb-orbit').evaluateAll(nodes=>nodes.every(n=>n.getAnimations()[0].playState==='paused')));
     await page.mouse.move(20,20);
     for(const selector of ['.pc-name-button','.pc-scene-portrait button']) {

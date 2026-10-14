@@ -11,7 +11,7 @@ const placements = {
   'nature-3': { x: 960, y: 220 },
   autoregressive: { x: 365, y: 80 },
   signal: { x: 780, y: 515 },
-  manifold: { x: 40, y: 335 },
+  manifold: { x: 70, y: 325 },
   landscape: { x: 935, y: 355 },
   conversation: { x: 420, y: 480 },
 };
