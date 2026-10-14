@@ -67,7 +67,7 @@ function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
         {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(tool.id, event.currentTarget); }}
           onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>
-          <span><ProjectTitle project={tool} /></span><small>{tool.year}</small>
+          <span><ProjectTitle project={tool} title={tool.navigationTitle} /></span><small>{tool.year}</small>
         </a>) : <p>No packages listed yet.</p>}
       </div>
     </div>

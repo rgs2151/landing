@@ -24,8 +24,11 @@ const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[p
   id: figure.id, project: tool.id, kind: 'tool', Component: figure.Animation, ...placements[figure.id],
 })))];
 const navigationLabels = { research: 'Research Publications', packages: 'Tools & Packages' };
+const previewTools = tools.map(tool => tool.id === 'pylba'
+  ? { ...tool, navigationTitle: tool.title.replace('Linear Ballistic Accumulator Models', 'Linear Ballistic Accumulators') }
+  : tool);
 
 export default function PrototypeE() {
   return <PrototypeB scenePieces={scenePieces} motion={createLocalMotion} variant="e" className="prototype-c"
-    Portrait={ScenePortrait} profileEntry tools={tools} navigationLabels={navigationLabels} />;
+    Portrait={ScenePortrait} profileEntry tools={previewTools} navigationLabels={navigationLabels} />;
 }

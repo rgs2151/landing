@@ -1,4 +1,6 @@
 .prototype-e .pb-canvas[data-open="false"][data-active=""] .pb-fragment[data-kind="tool"] { opacity: .75; }
+.prototype-e .pc-name-button { pointer-events: none; }
+.prototype-e .pb-canvas[data-open="false"][data-transitioning="false"] .pc-name-button > span { pointer-events: auto; }
 .prototype-e .pb-canvas[data-open="false"] .pb-fragment[data-piece="manifold"] { z-index: 2; }
 .prototype-e .pb-fragment .pb-orbit,
 .prototype-e .pb-fragment .pb-orbit * { cursor: pointer; }
