@@ -20,6 +20,10 @@ After every prompt that changes repository files, commit and push the completed
 changes. Do not add a separate Git audit or diff review. Use ordinary pushes,
 not force pushes; retain necessary checks appropriate to the requested change.
 
-Working project blurbs live in `src/content/`. The accepted LFP version in
-`src/content/lfp.md` is frozen unless explicitly reopened by the user. Preserve
+Working project blurbs live in `src/content/`. The accepted NeuralFieldManifold version in
+`src/content/neural-field-manifold.md` is frozen unless explicitly reopened by the user. Preserve
 the iteration A snapshot in `src/content/iterations/iteration-a.md`.
+
+Chat shorthand does not authorize renaming a project or its content files.
+When revising a blurb, include the complete resulting paragraph in chat so
+the user can review it without opening files.

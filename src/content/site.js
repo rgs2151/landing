@@ -1,4 +1,4 @@
-import lfpBlurb from './lfp.md?raw';
+import neuralFieldManifoldBlurb from './neural-field-manifold.md?raw';
 import robustSteeringBlurb from './robust-steering.md?raw';
 
 export const profile = {
@@ -60,7 +60,7 @@ export const neuralFieldManifold = {
   status: 'Preprint',
   authors: ['Kasra Fallah', 'Haoyu Novak Chen', 'Rudramani Singha', 'Eunji Kong', 'Gergely Turi', 'Attila Losonczy', 'Erfan Zabeh'],
   reference: 'design/references/papers/neural-field-manifold.pdf',
-  blurb: lfpBlurb.trim(),
+  blurb: neuralFieldManifoldBlurb.trim(),
 };
 
 export const projects = [
