@@ -4,6 +4,7 @@ import { createLocalMotion } from '../c/localMotion';
 import ScenePortrait from '../c/ScenePortrait';
 import { tools } from '../../shared/tools';
 import { neuraljaxlibRevision } from '../../content/neuraljaxlib';
+import { biography } from '../../content/site';
 import './styles.css';
 
 const placements = {
@@ -34,5 +35,5 @@ const previewTools = tools.map(tool => ({ ...tool,
 
 export default function PrototypeE() {
   return <PrototypeB scenePieces={scenePieces} motion={createLocalMotion} variant="e" className="prototype-c"
-    Portrait={ScenePortrait} profileEntry projectArrival centeredStack sidebarCopyright tools={previewTools} navigationLabels={navigationLabels} />;
+    Portrait={ScenePortrait} profileEntry projectArrival centeredStack sidebarCopyright aboutProfile={biography} tools={previewTools} navigationLabels={navigationLabels} />;
 }

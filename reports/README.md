@@ -1,5 +1,8 @@
 # Prototype B Performance
 
+For the current E measurements, see [Prototype E Performance](prototype-e-performance.md).
+Everything below describes historical B measurements, not the current splash.
+
 Measured results live in [prototype-b-costs.csv](prototype-b-costs.csv).
 [prototype-b-costs.json](prototype-b-costs.json) contains every sample, browser
 version, viewport, preview sizes, source-frame counts, and the measurement date.

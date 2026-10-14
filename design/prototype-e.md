@@ -14,6 +14,8 @@ No design or content changes were part of creating E.
 
 ## E Changes
 
+- About uses the approved first-person UT Southwestern / Columbia biography
+  from shared content; earlier prototypes retain their previous introduction.
 - Open pages place copyright below the fixed sidebar contacts, with no trailing
   footer adding scroll space. The splash footer and earlier prototypes stay unchanged.
 - Only the name's highlighted lines capture pointer input; empty space passes

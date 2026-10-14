@@ -4,6 +4,8 @@ import playwright from '/tmp/landing-browser-check/node_modules/playwright/index
 
 const browser = await playwright.chromium.launch({ executablePath: '/home/dev/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell', args: ['--enable-unsafe-swiftshader'] });
 const base = process.env.SITE_URL || 'http://localhost:5173';
+const variant = process.env.VARIANT || 'b';
+if (!['b', 'e'].includes(variant)) throw new Error('VARIANT must be b or e');
 const duration = Number(process.env.SAMPLE_MS || 2500);
 const repetitions = Number(process.env.REPETITIONS || 3);
 const cases = process.env.CASES?.split(',') || ['idle', 'motion', 'nature-0', 'nature-1', 'nature-2', 'nature-3', 'signal', 'autoregressive', 'manifold', 'landscape', 'conversation', 'all', 'folded-about'];
@@ -16,9 +18,10 @@ try {
   for (let repetition = 0; repetition < repetitions; repetition++) {
     // Reverse alternate runs to reduce ordering/warm-cache bias.
     for (const name of repetition % 2 ? [...cases].reverse() : cases) {
-      await page.goto(`${base}/prototype/b?benchmark=${name === 'folded-about' ? 'all#about' : name}`);
+      await page.goto(`${base}/prototype/${variant}?benchmark=${name === 'folded-about' ? 'all#about' : name}`);
       await page.waitForSelector('.pb-fragment');
-      if (name !== 'all') await page.waitForFunction(expected => document.querySelectorAll('.pb-frozen').length === expected, ['idle', 'motion', 'folded-about'].includes(name) ? 9 : 8);
+      const count = await page.locator('.pb-fragment').count();
+      if (name !== 'all') await page.waitForFunction(expected => document.querySelectorAll('.pb-frozen').length === expected, ['idle', 'motion', 'folded-about'].includes(name) ? count : count - 1);
       await page.waitForTimeout(900);
       const before = Object.fromEntries((await session.send('Performance.getMetrics')).metrics.map(metric => [metric.name, metric.value]));
       const timing = await page.evaluate(duration => new Promise(resolve => {
@@ -55,8 +58,8 @@ try {
   const assets = JSON.parse(readFileSync('public/assets/images/previews/clips.json')).map(clip=>({ ...clip, bytes: statSync(`public${clip.src}`).size, decodedPixelBytes: clip.columns*Math.ceil(clip.frames/clip.columns)*clip.size*clip.size*4 }));
   const report = { measuredAt: new Date().toISOString(), baseCommit: execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(), browser: browser.version(), renderer: 'Chromium headless / SwiftShader', viewport: {width:1440,height:900}, durationMs:duration, repetitions, summary, assets, samples };
   mkdirSync('reports', {recursive:true});
-  writeFileSync('reports/prototype-b-costs.json',JSON.stringify(report,null,2)+'\n');
+  writeFileSync(`reports/prototype-${variant}-costs.json`,JSON.stringify(report,null,2)+'\n');
   const columns=Object.keys(summary[0]);
-  writeFileSync('reports/prototype-b-costs.csv',columns.join(',')+'\n'+summary.map(row=>columns.map(key=>row[key]).join(',')).join('\n')+'\n');
-  console.log('Saved reports/prototype-b-costs.json and .csv');
+  writeFileSync(`reports/prototype-${variant}-costs.csv`,columns.join(',')+'\n'+summary.map(row=>columns.map(key=>row[key]).join(',')).join('\n')+'\n');
+  console.log(`Saved reports/prototype-${variant}-costs.json and .csv`);
 } finally { await browser.close(); }

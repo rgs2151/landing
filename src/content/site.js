@@ -15,6 +15,13 @@ export const profile = {
   affiliation: ', UTSW.',
 };
 
+export const biography = {
+  ...profile,
+  role: 'I am a data scientist in the',
+  affiliation: ' at UT Southwestern Medical Center.',
+  statement: 'I received my M.S. in Biomedical Engineering from Columbia University. My research combines computational neuroscience and machine learning to study neural dynamics and information processing in biological and artificial neural networks.',
+};
+
 export const paper = {
   title: 'Asymmetric prefrontal representations for leader\u2013follower dynamics',
   url: 'https://www.nature.com/articles/s41586-026-10900-1',

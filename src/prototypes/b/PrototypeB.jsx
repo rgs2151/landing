@@ -96,14 +96,14 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools, omitAccepted }) {
+function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools, omitAccepted, aboutProfile = profile }) {
   const tool = tools.find(tool => tool.id === id);
   if (tool) return <ToolDetail tool={tool} headingRef={headingRef} />;
   if (id === 'about') return <article className="pb-about">
     {portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
     <h2 tabIndex={-1} ref={headingRef}>{profile.name}</h2>
     {!portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
-    <p>{profile.role} <a href={profile.institutionUrl}>{profile.institution}</a>{profile.affiliation} {profile.statement}</p>
+    <p>{aboutProfile.role} <a href={aboutProfile.institutionUrl}>{aboutProfile.institution}</a>{aboutProfile.affiliation} {aboutProfile.statement}</p>
     <p>{profile.email}<br /><a href={profile.github}>{profile.githubLabel}</a></p>
   </article>;
   const content = projects[id];
@@ -125,7 +125,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, sidebarCopyright = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, sidebarCopyright = false, aboutProfile = profile, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
@@ -258,7 +258,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd' || variant === 'e'} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd' || variant === 'e'} aboutProfile={aboutProfile} />
       </section>}
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}
