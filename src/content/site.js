@@ -40,6 +40,12 @@ export const paper = {
 export const robustSteering = {
   id: 'robust-steering',
   shortTitle: 'Robust steering',
+  animation: {
+    src: '/assets/videos/robust-steering.gif',
+    width: 776,
+    height: 549,
+    alt: 'Illustrative robust steering animation: a controller learned from one activation landscape is applied after a distribution shift to steer a response into Spanish.',
+  },
   title: 'Mind Control of LLMs via Closed-Loop Stimulation: Out-of-Distribution Robustness',
   url: 'https://rgs2151.github.io/controller/',
   code: 'https://github.com/rgs2151/controller',
