@@ -28,13 +28,15 @@ Open the local URL printed by Vite, usually `http://localhost:5173`.
 
 Preserved directions A, B and C are at `/prototype/a`, `/prototype/b` and
 `/prototype/c`. C and D are frozen; D remains at `/prototype/d`.
-The current iteration E is at `/prototype/e`, starting as an exact copy of D.
+E is frozen at `/prototype/e`. The current iteration F is at `/prototype/f`,
+preserving E's layout and content while caching the GAN/autoencoder splash previews.
 These local design routes are excluded from the production
 build; the homepage remains unchanged. Shared copy and media paths are
 in `src/content/site.js`; shared interactive visuals are in `src/shared/`.
 The A findings and B decisions are in `design/prototype-b.md`; C's layout and
 local-motion decisions are in `design/prototype-c.md`. D's additions are recorded
-in `design/prototype-d.md`. E's baseline is recorded in `design/prototype-e.md`.
+in `design/prototype-d.md`. E's baseline is recorded in `design/prototype-e.md`;
+F's cache and fidelity checks are in `design/prototype-f.md`.
 
 Tool additions use one shared structure:
 
@@ -42,10 +44,11 @@ Tool additions use one shared structure:
 - `src/shared/<tool>/`: original assets, renderers, license and provenance.
 - `src/shared/tools.js`: ordered figures paired with their text.
 - `src/shared/ToolDetail.jsx`: shared title, author, links and wrapped figures.
-- `src/prototypes/e/PrototypeE.jsx`: current splash placement; D remains frozen.
+- `src/prototypes/f/PrototypeF.jsx`: current splash placement; D and E remain frozen.
 
-PyLBA and NeuralJAXlib use this structure. NeuralJAXlib's five SVG animations
-share the same components between the splash and detail page; their imported
+PyLBA and NeuralJAXlib use this structure. NeuralJAXlib's SVG animations share
+the same sources between splash and detail views. F alone uses derived cached
+GAN/autoencoder splash previews; the full gallery is unchanged. Imported
 source and cached data are documented in `src/shared/neuraljaxlib/README.md`.
 Its current copy is taken from the source README/gallery, pending abstract review.
 

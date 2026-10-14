@@ -1,6 +1,7 @@
 # Prototype B Performance
 
-For the current E measurements, see [Prototype E Performance](prototype-e-performance.md).
+For the current F comparison, see [Prototype F Performance](prototype-f-performance.md).
+The preceding baseline is [Prototype E Performance](prototype-e-performance.md).
 Everything below describes historical B measurements, not the current splash.
 
 Measured results live in [prototype-b-costs.csv](prototype-b-costs.csv).

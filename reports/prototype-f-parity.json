@@ -1,0 +1,98 @@
+{
+  "geometry": [
+    {
+      "width": 1024,
+      "matchingPieces": 15
+    },
+    {
+      "width": 1440,
+      "matchingPieces": 15
+    },
+    {
+      "width": 1920,
+      "matchingPieces": 15
+    }
+  ],
+  "pixels": [
+    {
+      "id": "gan",
+      "comparisons": [
+        {
+          "frame": 0,
+          "maxChannelDifference": 0,
+          "meanChannelDifference": 0,
+          "changedChannels": 0,
+          "transparentPixels": 0
+        },
+        {
+          "frame": 17,
+          "maxChannelDifference": 0,
+          "meanChannelDifference": 0,
+          "changedChannels": 0,
+          "transparentPixels": 0
+        },
+        {
+          "frame": 46,
+          "maxChannelDifference": 0,
+          "meanChannelDifference": 0,
+          "changedChannels": 0,
+          "transparentPixels": 0
+        },
+        {
+          "frame": 82,
+          "maxChannelDifference": 0,
+          "meanChannelDifference": 0,
+          "changedChannels": 0,
+          "transparentPixels": 0
+        },
+        {
+          "frame": 137,
+          "maxChannelDifference": 0,
+          "meanChannelDifference": 0,
+          "changedChannels": 0,
+          "transparentPixels": 0
+        }
+      ]
+    },
+    {
+      "id": "autoencoder",
+      "comparisons": [
+        {
+          "frame": 0,
+          "maxChannelDifference": 1,
+          "meanChannelDifference": 0.03984295361875637,
+          "changedChannels": 25015,
+          "transparentPixels": 186857
+        },
+        {
+          "frame": 17,
+          "maxChannelDifference": 1,
+          "meanChannelDifference": 0.03984295361875637,
+          "changedChannels": 25015,
+          "transparentPixels": 186857
+        },
+        {
+          "frame": 108,
+          "maxChannelDifference": 1,
+          "meanChannelDifference": 0.04085913608562691,
+          "changedChannels": 25653,
+          "transparentPixels": 183694
+        },
+        {
+          "frame": 194,
+          "maxChannelDifference": 1,
+          "meanChannelDifference": 0.040462538226299694,
+          "changedChannels": 25404,
+          "transparentPixels": 184162
+        },
+        {
+          "frame": 323,
+          "maxChannelDifference": 1,
+          "meanChannelDifference": 0.040954701834862384,
+          "changedChannels": 25713,
+          "transparentPixels": 177468
+        }
+      ]
+    }
+  ]
+}

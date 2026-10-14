@@ -213,7 +213,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
 
   return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}${className ? ` ${className}` : ''}`} data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} omitAccepted={variant === 'd' || variant === 'e'} />
+      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} omitAccepted={variant === 'd' || variant === 'e' || variant === 'f'} />
     </header>
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
@@ -258,7 +258,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd' || variant === 'e'} aboutProfile={aboutProfile} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd' || variant === 'e' || variant === 'f'} aboutProfile={aboutProfile} />
       </section>}
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}

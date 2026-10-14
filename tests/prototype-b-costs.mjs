@@ -5,7 +5,7 @@ import playwright from '/tmp/landing-browser-check/node_modules/playwright/index
 const browser = await playwright.chromium.launch({ executablePath: '/home/dev/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell', args: ['--enable-unsafe-swiftshader'] });
 const base = process.env.SITE_URL || 'http://localhost:5173';
 const variant = process.env.VARIANT || 'b';
-if (!['b', 'e'].includes(variant)) throw new Error('VARIANT must be b or e');
+if (!['b', 'e', 'f'].includes(variant)) throw new Error('VARIANT must be b, e or f');
 const duration = Number(process.env.SAMPLE_MS || 2500);
 const repetitions = Number(process.env.REPETITIONS || 3);
 const cases = process.env.CASES?.split(',') || ['idle', 'motion', 'nature-0', 'nature-1', 'nature-2', 'nature-3', 'signal', 'autoregressive', 'manifold', 'landscape', 'conversation', 'all', 'folded-about'];

@@ -8,13 +8,15 @@ const browser = await playwright.chromium.launch({
   args: ['--enable-unsafe-swiftshader'],
 });
 const samples = [];
+const variant = process.env.VARIANT || 'e';
+if (!['e', 'f'].includes(variant)) throw new Error('VARIANT must be e or f');
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const session = await page.context().newCDPSession(page);
   await session.send('Performance.enable');
-  await page.goto('http://localhost:5173/prototype/e');
+  await page.goto(`http://localhost:5173/prototype/${variant}`);
   await page.waitForFunction(() => document.querySelectorAll('.svg-asset[data-ready="true"]').length === 5);
   await page.waitForTimeout(1500);
   const metrics = async () => Object.fromEntries((await session.send('Performance.getMetrics')).metrics.map(m => [m.name, m.value]));
@@ -58,7 +60,7 @@ try {
   await sample('hover-tools', 4000, 'hover');
   assert.equal(samples.at(-1).hover, 'neuraljaxlib');
   await sample('unhover', 2000, 'unhover');
-  for (let run = 1; run <= 2; run++) {
+  for (let run = 1; run <= Number(process.env.ROUNDS || 2); run++) {
     for (const project of ['cooperation', 'neural-field-manifold', 'robust-steering', 'neuraljaxlib', 'pylba', 'about']) {
       await sample(`open-${project}-${run}`, 1800, project);
       assert.equal(samples.at(-1).activeProject, project);
@@ -85,6 +87,6 @@ try {
   });
   const cpuSamples = [...totals].sort((a, b) => b[1] - a[1]).slice(0, 30).map(([frame, selfMs]) => ({ frame, selfMs }));
   assert.deepEqual(errors, []);
-  writeFileSync('reports/prototype-e-interactions.json', JSON.stringify({ measuredAt: new Date().toISOString(), baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), browser: browser.version(), renderer: 'Headless Chromium / SwiftShader; Vite development mode', viewport: { width: 1440, height: 900 }, samples, cpuSamples, errors }, null, 2) + '\n');
-  console.log('Saved reports/prototype-e-interactions.json; biography verified. No screenshots.');
+  writeFileSync(`reports/prototype-${variant}-interactions.json`, JSON.stringify({ measuredAt: new Date().toISOString(), baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), browser: browser.version(), renderer: 'Headless Chromium / SwiftShader; Vite development mode', viewport: { width: 1440, height: 900 }, samples, cpuSamples, errors }, null, 2) + '\n');
+  console.log(`Saved reports/prototype-${variant}-interactions.json; biography verified. No screenshots.`);
 } finally { await browser.close(); }

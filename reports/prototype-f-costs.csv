@@ -1,0 +1,6 @@
+name,fps,p95ms,mainThreadMsPerSecond,scriptMsPerSecond,layoutMsPerSecond,styleMsPerSecond,liveCanvases,frozenPreviews,runningOrbits
+idle,60,16.7,25.42,2.27,0,6.73,0,15,0
+neuraljax-gan,60,16.7,32.09,4.45,0,6.56,1,14,0
+neuraljax-autoencoder,60,16.8,39.32,7.11,0,6.15,1,14,0
+all,60,16.8,698.61,151.58,20.66,49.64,7,0,15
+folded-about,60,16.7,14.05,2.08,0,0,0,15,0

@@ -23,7 +23,7 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
       controller.current.pause();
       // Remove page backings, not meaningful white regions within the artwork.
       const svg = mount.current.querySelector('svg');
-      if (getComputedStyle(svg).backgroundColor === 'rgb(255, 255, 255)') svg.style.background = 'transparent';
+      if (svg && getComputedStyle(svg).backgroundColor === 'rgb(255, 255, 255)') svg.style.background = 'transparent';
       setReady(true);
     }).catch(error => { if (!disposed) { setFailed(true); console.error(error); } });
     return () => { disposed = true; cancelAnimationFrame(frame.current); controller.current?.destroy(); controller.current = null; };
