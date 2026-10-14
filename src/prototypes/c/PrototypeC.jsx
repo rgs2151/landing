@@ -15,7 +15,7 @@ const placements = {
   landscape: { x: 935, y: 355 },
   conversation: { x: 420, y: 480 },
 };
-const spread = pieces.map(piece => ({ ...piece, width: piece.width / 1.2, ...placements[piece.id] }));
+export const spread = pieces.map(piece => ({ ...piece, width: piece.width / 1.2, ...placements[piece.id] }));
 
 export default function PrototypeC() {
   return <PrototypeB scenePieces={spread} motion={createLocalMotion} variant="c" Portrait={ScenePortrait} profileEntry />;

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, ChevronDown, Pause, Play, RotateCcw } from 'lucide-react';
 import { profile, paper, robustSteering, neuralFieldManifold } from '../../content/site';
 import ProjectVideo from '../../shared/ProjectVideo';
+import ToolDetail from '../../shared/ToolDetail';
 import NeuralFieldAnimation, { NeuralFieldSignal, NeuralFieldAutoregressive, NeuralFieldManifold } from '../../shared/NeuralFieldAnimation';
 import RobustSteeringAnimation, { RobustSteeringLandscape, RobustSteeringConversation } from '../../shared/RobustSteeringAnimation';
 import './styles.css';
@@ -13,9 +14,11 @@ const names = { cooperation: 'Leader follower', 'robust-steering': robustSteerin
 const publication = id => id === 'cooperation' ? `Nature ${paper.year}`
   : projects[id].venue ? `${projects[id].venue} ${projects[id].year} · ${projects[id].status}`
   : `${projects[id].status} · ${projects[id].year}`;
-const selectedFromHash = () => {
+const NO_TOOLS = [];
+const DEFAULT_NAVIGATION = { research: 'Research', packages: 'Tool Packages' };
+const selectedFromHash = (tools = NO_TOOLS) => {
   const id = location.hash.slice(1);
-  return projects[id] || id === 'about' ? id : null;
+  return projects[id] || tools.some(tool => tool.id === id) || id === 'about' ? id : null;
 };
 export const pieces = [
   { id: 'nature-0', project: 'cooperation', clip: 0, x: 205, y: -15, width: 270, angle: -8 },
@@ -29,7 +32,7 @@ export const pieces = [
   { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 65, y: 365, width: 380, angle: -6 },
 ].map(piece => ({ ...piece, width: piece.width * 1.2 }));
 
-function Navigation({ selected, open, hover }) {
+function Navigation({ selected, open, hover, tools, labels }) {
   const [menu, setMenu] = useState(null);
   const root = useRef(null);
   useEffect(() => {
@@ -46,7 +49,7 @@ function Navigation({ selected, open, hover }) {
       <button data-menu="research" aria-expanded={menu === 'research'} aria-controls="pb-research-menu"
         onFocus={() => setMenu(current => current === 'research' ? current : null)}
         onClick={() => setMenu('research')}
-        onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); setMenu('research'); requestAnimationFrame(() => root.current.querySelector('.pb-dropdown a')?.focus()); } }}>Research<ChevronDown size={14} /></button>
+        onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); setMenu('research'); requestAnimationFrame(() => root.current.querySelector('.pb-dropdown a')?.focus()); } }}>{labels.research}<ChevronDown size={14} /></button>
       <div id="pb-research-menu" className="pb-dropdown" hidden={menu !== 'research'}>
         {Object.keys(projects).map(id => <a key={id} href={`#${id}`} aria-current={selected === id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(id, event.currentTarget); }}
@@ -56,8 +59,13 @@ function Navigation({ selected, open, hover }) {
       </div>
     </div>
     <div className="pb-nav-group" onPointerEnter={() => setMenu('packages')}>
-      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu('packages')}>Tool Packages<ChevronDown size={14} /></button>
-      <div id="pb-packages-menu" className="pb-dropdown pb-packages" hidden={menu !== 'packages'}><p>No packages listed yet.</p></div>
+      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu('packages')}
+        onKeyDown={event => { if (tools.length && event.key === 'ArrowDown') { event.preventDefault(); setMenu('packages'); requestAnimationFrame(() => root.current.querySelector('#pb-packages-menu a')?.focus()); } }}>{labels.packages}<ChevronDown size={14} /></button>
+      <div id="pb-packages-menu" className="pb-dropdown pb-packages" hidden={menu !== 'packages'}>
+        {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
+          onClick={event => { event.preventDefault(); setMenu(null); open(tool.id, event.currentTarget); }}
+          onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>{tool.title}</a>) : <p>No packages listed yet.</p>}
+      </div>
     </div>
     <a href="#about" aria-current={selected === 'about' ? 'page' : undefined} onPointerEnter={() => setMenu(null)} onFocus={() => setMenu(null)}
       onClick={event => { event.preventDefault(); open('about', event.currentTarget); }}>About</a>
@@ -83,7 +91,9 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false }) {
+function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools }) {
+  const tool = tools.find(tool => tool.id === id);
+  if (tool) return <ToolDetail tool={tool} headingRef={headingRef} />;
   if (id === 'about') return <article className="pb-about">
     {portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
     <h2 tabIndex={-1} ref={headingRef}>{profile.name}</h2>
@@ -110,9 +120,9 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false }) 
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
-  const [selected, setSelected] = useState(selectedFromHash);
+  const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
   const [transitioning, setTransitioning] = useState(false);
   const lastSelection = useRef(selected);
@@ -148,11 +158,11 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const motionChange = () => { setReduced(motion.matches); setPaused(motion.matches); };
     const change = () => setDesktop(media.matches);
-    const hash = () => { setSelected(selectedFromHash()); setHovered(null); };
+    const hash = () => { setSelected(selectedFromHash(tools)); setHovered(null); };
     media.addEventListener('change', change); window.addEventListener('hashchange', hash);
     motion.addEventListener('change', motionChange);
     return () => { media.removeEventListener('change', change); motion.removeEventListener('change', motionChange); window.removeEventListener('hashchange', hash); };
-  }, []);
+  }, [tools]);
   useEffect(() => {
     if (!desktop || !scene.current) return;
     const resize = () => {
@@ -183,11 +193,11 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     });
   }
   useEffect(() => {
-    const pop = () => setSelected(selectedFromHash());
+    const pop = () => setSelected(selectedFromHash(tools));
     const escape = event => { if (event.key === 'Escape' && selected) close(); };
     window.addEventListener('popstate', pop); window.addEventListener('keydown', escape);
     return () => { window.removeEventListener('popstate', pop); window.removeEventListener('keydown', escape); };
-  }, [selected]);
+  }, [selected, tools]);
 
   if (!desktop) return <main className="prototype-b pb-mobile">
     <img src={profile.photo} alt={profile.name} /><h1>{profile.name}</h1><p>{profile.statement}</p>
@@ -195,9 +205,9 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     <p>Open on a computer for the full experience.</p>
   </main>;
 
-  return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}`} data-selected={selected || ''}>
+  return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}${className ? ` ${className}` : ''}`} data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      <Navigation selected={selected} open={open} hover={hover} />
+      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} />
     </header>
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
@@ -220,9 +230,9 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
           const x = selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
           const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
           const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
-          return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-matching={matching}
+          return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-kind={piece.kind} data-matching={matching}
             style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : 0}deg) scale(${factor})` }}
-            aria-label={`${names[piece.project]}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
+            aria-label={`${names[piece.project] || tools.find(tool => tool.id === piece.project)?.shortTitle}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
             tabIndex={selected ? -1 : 0} aria-hidden={selected ? true : undefined} aria-controls="pb-reading"
             onClick={event => { if (!transitioning) selected ? close() : open(piece.project,event.currentTarget); }} onPointerEnter={() => hover(piece.project)} onPointerLeave={() => hover(null)} onFocus={() => hover(piece.project)} onBlur={() => hover(null)}>
             <div className="pb-orbit" data-project={piece.project} data-x={piece.x + piece.width / 2} data-y={piece.y + piece.width / 2} key={replay}>
@@ -236,7 +246,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} />
       </section>}
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}

@@ -26,13 +26,14 @@ npm run dev
 
 Open the local URL printed by Vite, usually `http://localhost:5173`.
 
-Preserved directions A and B are at `/prototype/a` and `/prototype/b`.
-The current spread-out composition C is at `/prototype/c`.
+Preserved directions A, B and C are at `/prototype/a`, `/prototype/b` and
+`/prototype/c`. C is frozen. The current additive iteration D is at `/prototype/d`.
 These local design routes are excluded from the production
 build; the homepage remains unchanged. Shared copy and media paths are
 in `src/content/site.js`; shared interactive visuals are in `src/shared/`.
 The A findings and B decisions are in `design/prototype-b.md`; C's layout and
-local-motion decisions are in `design/prototype-c.md`.
+local-motion decisions are in `design/prototype-c.md`. D's additions are recorded
+in `design/prototype-d.md`.
 
 Build locally:
 
