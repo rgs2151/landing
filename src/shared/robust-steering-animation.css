@@ -1,7 +1,7 @@
-.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 550; background: transparent; overflow: hidden; }
-.rs-animation iframe { position: absolute; left: 50%; top: 50%; width: 1000px; height: 550px; max-width: none; border: 0; transform: scale(var(--steering-scale, 1)) translate(-388px, -275px); transform-origin: 0 0; }
+.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 400; background: transparent; overflow: hidden; }
+.rs-animation iframe { position: absolute; left: 50%; top: 50%; width: 1000px; height: 400px; max-width: none; border: 0; transform: scale(var(--steering-scale, 1)) translate(-388px, -200px); transform-origin: 0 0; }
 .rs-compact { pointer-events: none; }
-.pa-paper-artificial > .rs-animation { max-height: 420px; }
+.pa-paper-artificial > .rs-animation { max-width: 776px; margin-inline: auto; }
 .rs-controls { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }
 .rs-animation .rs-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
 .rs-animation .rs-controls button:hover { background: #f5ebeb; }

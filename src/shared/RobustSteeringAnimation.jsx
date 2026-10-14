@@ -11,11 +11,11 @@ function animationDocument() {
   // Isolate the source SVG IDs and desktop measurements at both display sizes.
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     * { box-sizing: border-box; }
-    html, body { margin: 0; width: 1000px; height: 550px; overflow: hidden; }
+    html, body { margin: 0; width: 1000px; height: 400px; overflow: hidden; }
     body { --muted: #666; --teal: #007c7c; background: transparent; }
     ${sourceStyles}
-    .steering-demo { width: 776px; margin: 0; height: 550px; background: transparent; }
-    .steering-demo-layout { height: 436px; }
+    .steering-demo { width: 776px; margin: 0; height: 400px; background: transparent; }
+    .steering-demo-layout { height: 400px; }
     .steering-demo-controls { display: none; }
     .steering-demo-state, .steering-demo-scene { opacity: 1; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -61,7 +61,7 @@ export default function RobustSteeringAnimation({ compact = false, active = true
 
   useEffect(() => {
     const resize = new ResizeObserver(([entry]) => {
-      const scale = Math.min(entry.contentRect.width / 776, entry.contentRect.height / 550);
+      const scale = Math.min(entry.contentRect.width / 776, entry.contentRect.height / 400);
       root.current.style.setProperty('--steering-scale', scale);
     });
     resize.observe(root.current);

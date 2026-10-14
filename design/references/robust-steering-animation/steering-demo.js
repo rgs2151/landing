@@ -7,6 +7,8 @@
   // Replace this data with approved question/response pairs in the next iteration.
   let example = {
     benchmark: "An Example of Multilingual Grade-School Mathematics",
+    englishQuestion: "Amina has 3 boxes of pencils, with 12 pencils in each box. How many pencils does she have in total?",
+    englishBaseline: "Amina has 36 pencils in total.",
     question: "阿米娜有3盒铅笔，每盒有12支。她一共有多少支铅笔？",
     baseline: "阿米娜一共有36支铅笔。",
     steered: "Amina tiene 36 lápices en total.",
@@ -36,7 +38,7 @@
     field: 400, endpoints: 1100, direction: 1550, store: 2800, stored: 3900,
     shift: 4500, shifted: 5600, dot: 5800, expand: 6500, chat: 7550,
   };
-  let questionChars, baselineChars, targetChars, responseChars, timing;
+  let englishChars, baselineChars, targetChars, responseChars, timing;
   let elapsed = 0;
   let previousTime = null;
   let frame = null;
@@ -197,7 +199,7 @@
   function measureFlight() {
     const bounds = box.getBoundingClientRect();
     box.style.setProperty("--demo-svg-scale-inverse", 340 / find("state-map").clientWidth);
-    sceneScale = parseFloat(getComputedStyle(box).getPropertyValue("--demo-chat-scale"));
+    sceneScale = parseFloat(getComputedStyle(box).getPropertyValue("--demo-chat-scale")) * find("robot").clientWidth / 58;
     const model = find("robot").getBoundingClientRect();
     find("stimulation").style.transform = "translate(" + (model.x + model.width / 2 - bounds.x - 45 * sceneScale) + "px," + (model.y - bounds.y - 72 * sceneScale) + "px) scale(" + sceneScale + ")";
     const to = find("bolt").getBoundingClientRect();
@@ -206,12 +208,21 @@
   }
 
   function reserveResponseHeight() {
+    const questionSample = question.cloneNode(false);
+    questionSample.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;min-height:0;height:auto;width:" + question.clientWidth + "px";
+    question.parentElement.append(questionSample);
+    const questionHeight = Math.max(...[example.englishQuestion, example.question].map(text => {
+      questionSample.textContent = text;
+      return questionSample.offsetHeight;
+    }));
+    question.style.height = questionHeight + "px";
+    questionSample.remove();
     // Reserve every mixed/glitched response too, not only the two complete answers.
     // Inline-block glitch glyphs can add a line; they must not resize the scene.
     const sample = response.cloneNode(false);
     sample.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;min-height:0;height:auto;width:" + response.clientWidth + "px";
     response.parentElement.append(sample);
-    let height = Math.max(...[example.baseline, example.steered].map((text) => {
+    let height = Math.max(...[example.englishBaseline, example.baseline, example.steered].map((text) => {
       sample.textContent = text;
       return sample.offsetHeight;
     }));
@@ -244,19 +255,14 @@
   }
 
   function prepare() {
-    const q = Array.from(example.question);
+    englishChars = Array.from(example.englishBaseline);
     baselineChars = Array.from(example.baseline);
     targetChars = Array.from(example.steered);
-    questionChars = characterNodes(question, q.length);
-    questionChars.forEach((span, i) => { span.textContent = q[i]; });
-    responseChars = characterNodes(response, Math.max(baselineChars.length, targetChars.length));
-    const questionStart = intro.chat + 250;
-    const questionEnd = questionStart + q.length * 55;
-    const baselineStart = questionEnd + 450;
-    const baselineEnd = baselineStart + baselineChars.length * 42;
-    const steeringStart = baselineEnd + 1000;
+    responseChars = characterNodes(response, Math.max(englishChars.length, baselineChars.length, targetChars.length));
+    const translation = (intro.shift + intro.shifted) / 2;
+    const steeringStart = intro.chat;
     const steeringEnd = steeringStart + 2800;
-    timing = { questionStart, baselineStart, baselineEnd, steeringStart, steeringEnd, end: steeringEnd + 6800 };
+    timing = { translation, steeringStart, steeringEnd, end: steeringEnd + 6800 };
     elapsed = 0;
     previousTime = null;
     render();
@@ -264,10 +270,8 @@
   }
 
   function phaseAt(time) {
-    if (time < timing.questionStart) return "waiting";
-    if (time < timing.baselineStart) return "question";
-    if (time < timing.baselineEnd) return "baseline";
-    if (time < timing.steeringStart) return "baseline-hold";
+    if (time < timing.translation) return "english";
+    if (time < timing.steeringStart) return "chinese";
     if (time < timing.steeringEnd) return "steering";
     return "steered";
   }
@@ -320,22 +324,22 @@
     const phase = phaseAt(elapsed);
     if (box.dataset.phase !== phase) {
       box.dataset.phase = phase;
-      if (phase === "baseline-hold") description.textContent = "Illustrative question: " + example.question + " Original response: " + example.baseline;
+      const english = phase === "english";
+      question.textContent = english ? example.englishQuestion : example.question;
+      question.lang = english ? "en" : "zh";
+      response.lang = english ? "en" : phase === "steered" ? "es" : "zh";
+      if (phase === "english" || phase === "chinese") description.textContent = "Illustrative question: " + question.textContent + " Original response: " + (english ? example.englishBaseline : example.baseline);
       if (phase === "steered") description.textContent = "Illustrative steered response: " + example.steered;
     }
-    questionChars.forEach((span, i) => {
-      span.classList.toggle("is-visible", elapsed >= timing.questionStart + (i + 1) * 55);
-    });
-    const typed = Math.max(0, Math.floor((elapsed - timing.baselineStart) / 42));
     const corruption = progress(timing.steeringStart, timing.steeringEnd - timing.steeringStart);
     const front = corruption * (responseChars.length + 5);
     responseChars.forEach((span, i) => {
       const changing = phase === "steering" && i <= front && i > front - 5;
-      let char = baselineChars[i] || "";
+      let char = (phase === "english" ? englishChars[i] : baselineChars[i]) || "";
       if (phase === "steered" || (phase === "steering" && i <= front - 5)) char = targetChars[i] || "";
       if (changing) char = glyphs[(i * 7 + Math.floor(elapsed / 65)) % glyphs.length];
       if (span.textContent !== char) span.textContent = char;
-      span.classList.toggle("is-visible", phase === "steering" || phase === "steered" || i < typed);
+      span.classList.add("is-visible");
       span.classList.toggle("is-glitch", changing);
     });
   }
@@ -402,8 +406,8 @@
   box.steeringDemo = {
     replay,
     setExample(next) {
-      if (!["question", "baseline", "steered"].every((key) => typeof next[key] === "string" && next[key].trim())) {
-        throw new TypeError("Each example needs question, baseline, and steered text.");
+      if (!["englishQuestion", "englishBaseline", "question", "baseline", "steered"].every((key) => typeof next[key] === "string" && next[key].trim())) {
+        throw new TypeError("Each example needs English and Chinese question/answer text and a Spanish steered response.");
       }
       if (next.metrics && (!Array.isArray(next.metrics) || next.metrics.length !== 2 || !next.metrics.every((s) => typeof s === "string" && s.trim()))) {
         throw new TypeError("Metrics must be two nonempty labels.");
@@ -411,7 +415,8 @@
       if (next.symbols && (!Array.isArray(next.symbols) || next.symbols.length !== 2 || !next.symbols.every((s) => typeof s === "string"))) {
         throw new TypeError("Symbols must be two strings.");
       }
-      example = { ...example, question: next.question, baseline: next.baseline, steered: next.steered, benchmark: next.benchmark || example.benchmark, metrics: next.metrics || example.metrics, symbols: next.symbols || example.symbols };
+      example = { ...example, englishQuestion: next.englishQuestion, englishBaseline: next.englishBaseline, question: next.question, baseline: next.baseline, steered: next.steered, benchmark: next.benchmark || example.benchmark, metrics: next.metrics || example.metrics, symbols: next.symbols || example.symbols };
+      delete box.dataset.phase;
       prepare();
       replay();
     },

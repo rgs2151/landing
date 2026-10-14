@@ -42,5 +42,15 @@ Approved local changes: omit the animation heading, controller box and both
 metric readouts. The steering vector travels directly to the right-hand lightning
 instead of stopping at a controller. The landscape and vector are visible at
 the start, with no opening fade or white backing. Complementary clips replace
-the opaque white landscape wipe. Preserve the question/response copy, seeded
-landscapes, colors and remaining sequence for subsequent focused iterations.
+the opaque white landscape wipe. Preserve the seeded landscapes and colors.
+
+The current frame is 776 x 400, capped at its native width in the project view.
+The larger English/Chinese headings sit directly above the plot; question and
+response share an aligned icon/text layout. Both text rows reserve enough space
+for every language and the corruption frames so the layout does not shift.
+
+Each cycle begins with a complete English question and English answer. At the
+midpoint of the landscape swipe, both are replaced directly with their Chinese
+versions, without glitches or typing. After the Chinese hold, only the response
+uses the existing corruption animation to become Spanish. The next loop/replay
+restores the populated English conversation, never empty question/answer rows.
