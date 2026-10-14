@@ -6,12 +6,12 @@ import { tools } from '../../shared/tools';
 import './styles.css';
 
 const placements = {
-  pylba: { x: 910, y: 0, width: 175, angle: 7 },
+  pylba: { x: 930, y: 0, width: 175, angle: 4 },
   'neuraljax-cnn': { x: 815, y: 565, width: 140, angle: 10 },
   'neuraljax-rnn': { x: -20, y: 245, width: 180, angle: 9 },
-  'neuraljax-autoencoder': { x: 1005, y: 125, width: 234, angle: -12 },
-  'neuraljax-gan': { x: 140, y: 470, width: 181.35, angle: -6 },
-  'neuraljax-transformer': { x: 200, y: 590, width: 190, angle: 7 },
+  'neuraljax-autoencoder': { x: 1025, y: 125, width: 234, angle: -12 },
+  'neuraljax-gan': { x: 90, y: 470, width: 181.35, angle: -6 },
+  'neuraljax-transformer': { x: 200, y: 600, width: 190, angle: 7 },
 };
 const researchPlacements = {
   manifold: { x: 105, y: 295 },
