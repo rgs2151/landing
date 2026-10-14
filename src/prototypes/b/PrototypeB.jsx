@@ -11,7 +11,8 @@ import { FreezePreview, TravelingPortrait, useOrbits } from './SceneMotion';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
-const publication = id => id === 'cooperation' ? `Nature ${paper.year}`
+const publication = (id, omitAccepted = false) => id === 'cooperation' ? `Nature ${paper.year}`
+  : omitAccepted && projects[id].venue && projects[id].status === 'Accepted' ? `${projects[id].venue} ${projects[id].year}`
   : projects[id].venue ? `${projects[id].venue} ${projects[id].year} · ${projects[id].status}`
   : `${projects[id].status} · ${projects[id].year}`;
 const NO_TOOLS = [];
@@ -32,7 +33,7 @@ export const pieces = [
   { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 65, y: 365, width: 380, angle: -6 },
 ].map(piece => ({ ...piece, width: piece.width * 1.2 }));
 
-function Navigation({ selected, open, hover, tools, labels }) {
+function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
   const [menu, setMenu] = useState(null);
   const root = useRef(null);
   useEffect(() => {
@@ -54,7 +55,7 @@ function Navigation({ selected, open, hover, tools, labels }) {
         {Object.keys(projects).map(id => <a key={id} href={`#${id}`} aria-current={selected === id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(id, event.currentTarget); }}
           onPointerEnter={() => hover(id)} onFocus={() => hover(id)}>
-          <span>{projects[id].title}</span><small>{publication(id)}</small>
+          <span>{projects[id].title}</span><small>{publication(id, omitAccepted)}</small>
         </a>)}
       </div>
     </div>
@@ -93,7 +94,7 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools }) {
+function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools, omitAccepted }) {
   const tool = tools.find(tool => tool.id === id);
   if (tool) return <ToolDetail tool={tool} headingRef={headingRef} />;
   if (id === 'about') return <article className="pb-about">
@@ -109,7 +110,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
     <p className="pb-authors">{content.authors.map((author, index) => <span key={author}>{index > 0 ? ', ' : ''}<span className={author === profile.name ? 'pb-self' : undefined}>{author}</span>{content.equalContribution?.includes(author) && <sup>*</sup>}</span>)}</p>
     {content.equalContribution && <p className="pb-equal">* Equal contribution</p>}
     <div className="pb-project-links">
-      <a href={content.url} target="_blank" rel="noopener noreferrer">{id === 'cooperation' ? <><img src={paper.natureLogo} alt="Nature" /> {content.year}</> : publication(id)}<ArrowUpRight size={17} /></a>
+      <a href={content.url} target="_blank" rel="noopener noreferrer">{id === 'cooperation' ? <><img src={paper.natureLogo} alt="Nature" /> {content.year}</> : publication(id, omitAccepted)}<ArrowUpRight size={17} /></a>
       <a href={content.code} target="_blank" rel="noopener noreferrer"><img src={paper.githubLogo} alt="GitHub" /> code<ArrowUpRight size={17} /></a>
     </div>
     <div className="pb-project-media">
@@ -209,7 +210,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
 
   return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}${className ? ` ${className}` : ''}`} data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} />
+      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} omitAccepted={variant === 'd'} />
     </header>
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
@@ -248,7 +249,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd'} />
       </section>}
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}
