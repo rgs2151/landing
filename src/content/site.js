@@ -33,3 +33,34 @@ export const paper = {
   natureLogo: '/assets/logos/nature.svg',
   githubLogo: '/assets/logos/github.svg',
 };
+
+export const llmSteering = {
+  id: 'llm-steering',
+  title: 'Mind Control of LLMs via Closed-Loop Stimulation: Out-of-Distribution Robustness',
+  url: 'https://rgs2151.github.io/controller/',
+  code: 'https://github.com/rgs2151/controller',
+  year: '2026',
+  status: 'Manuscript',
+  authors: ['Kasra Fallah', 'Rudramani Singha', 'Hannah Ghanei', 'Paul Sajda', 'James Anderson', 'Erfan Zabeh'],
+  equalContribution: ['Kasra Fallah', 'Rudramani Singha'],
+  reference: 'design/references/papers/llm-robust-stimulation.pdf',
+  blurb: 'We formulate LLM steering as a feedback-control problem inspired by closed-loop neurostimulation. Our robust controller adapts interventions to the model\'s evolving internal state while accounting for uncertainty in its dynamics, improving steering under shifts in language, adversarial prompts, and context length without changing model weights. We also introduce robust steerability, a pre-deployment measure of how much dynamics mismatch an intervention can tolerate, connecting reliable control in artificial and biological neural systems.',
+};
+
+export const neuralFieldManifold = {
+  id: 'neural-field-manifold',
+  title: 'NeuralFieldManifold: Reconstruction of LFP manifold with Lag Embedding',
+  url: 'https://erfanzabeh.github.io/NeuralFieldManifold/',
+  code: 'https://github.com/erfanzabeh/NeuralFieldManifold',
+  year: '2026',
+  status: 'Preprint',
+  authors: ['Kasra Fallah', 'Haoyu Novak Chen', 'Rudramani Singha', 'Eunji Kong', 'Gergely Turi', 'Attila Losonczy', 'Erfan Zabeh'],
+  reference: 'design/references/papers/neural-field-manifold.pdf',
+  blurb: 'We develop a framework for recovering the geometry of local field potentials, revealing the low-dimensional structure behind population-level brain signals. Under an autoregressive model, we show how sustained oscillatory modes give rise to toroidal manifolds through lag embedding, while noise and aperiodic activity contribute geometric thickness. A geometry-aware learning network extends reconstruction to time-varying dynamics, with validation on synthetic systems and neural recordings across species.',
+};
+
+export const projects = [
+  { id: 'cooperation', ...paper },
+  llmSteering,
+  neuralFieldManifold,
+];
