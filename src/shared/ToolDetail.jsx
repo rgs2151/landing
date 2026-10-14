@@ -26,9 +26,11 @@ export default function ToolDetail({ tool, headingRef }) {
     </span>)}</p>
     <div className="pb-project-links">
       <a href={tool.code} target="_blank" rel="noopener noreferrer"><img src={paper.githubLogo} alt="GitHub" /> code<ArrowUpRight size={17} /></a>
+      {tool.resourceLinks?.map(link => <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer">{link.label}<ArrowUpRight size={17} /></a>)}
       <a href={tool.url} target="_blank" rel="noopener noreferrer">Documentation<ArrowUpRight size={17} /></a>
     </div>
     {Gallery && <div className="pb-tool-gallery"><Gallery /></div>}
-    {tool.figures.map(figure => <ToolFigure key={figure.id} figure={figure} showMedia={!Gallery} />)}
+    {tool.abstract ? <ToolFigure figure={{ id: tool.id, text: tool.abstract }} showMedia={false} />
+      : tool.figures.map(figure => <ToolFigure key={figure.id} figure={figure} showMedia={!Gallery} />)}
   </article>;
 }

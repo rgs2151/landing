@@ -3,6 +3,7 @@ import { spread } from '../c/PrototypeC';
 import { createLocalMotion } from '../c/localMotion';
 import ScenePortrait from '../c/ScenePortrait';
 import { tools } from '../../shared/tools';
+import { neuraljaxlibRevision } from '../../content/neuraljaxlib';
 import './styles.css';
 
 const placements = {
@@ -25,6 +26,7 @@ const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[p
 })))];
 const navigationLabels = { research: 'Research Publications', packages: 'Tools & Packages' };
 const previewTools = tools.map(tool => ({ ...tool,
+  ...(tool.id === 'neuraljaxlib' ? neuraljaxlibRevision : {}),
   navigationTitle: tool.id === 'pylba' ? 'Linear Ballistic Accumulators' : tool.title,
   navigationLogo: false,
 }));

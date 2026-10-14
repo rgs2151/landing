@@ -1,8 +1,9 @@
 import introduction from './neuraljaxlib.md?raw';
+import abstract from './neuraljaxlib-abstract.md?raw';
 import logo from '../shared/neuraljaxlib/logo.svg';
 import { profile } from './site';
 
-// Existing README/gallery descriptions, not the pending framework abstract.
+// Preserve the README/gallery copy used by frozen prototype D.
 export const neuraljaxlib = {
   id: 'neuraljaxlib',
   title: 'NeuralJAXlib',
@@ -20,4 +21,12 @@ export const neuraljaxlib = {
     gan: 'Twelve fixed latent inputs cycle in three 2\u00d72 batches through the generator\u2019s training progression. Four samples develop together in each batch. Playback starts at epoch 3, skipping the initial gray frames, and runs at twice the original speed. This shows training progress, not iterative denoising during inference. A trained GAN generates each output in one forward pass.',
     transformer: 'Each new word enters from the right as previous words slide left. The current word is bold and dark red, with the text line close beneath the title. One set of black semicircles below the text shows the mean attention of both heads in transformer layer 3; stronger weights produce thicker arcs. This is word-grouped character attention, not a word-tokenized model.',
   },
+};
+
+export const neuraljaxlibRevision = {
+  abstract: abstract.trim(),
+  resourceLinks: [
+    { label: 'Architecture tutorials', url: 'https://rgs2151.github.io/NeuralJAXlib/docs/learning.html' },
+    { label: 'API tutorials', url: 'https://rgs2151.github.io/NeuralJAXlib/docs/api_tutorials.html' },
+  ],
 };
