@@ -1,0 +1,521 @@
+{
+  "measuredAt": "2026-10-14T18:37:11.196Z",
+  "baseCommit": "d13533916cdcae2235ca8e2253ccb42317b1689a",
+  "browser": "151.0.7922.34",
+  "renderer": "Headless Chromium / SwiftShader; Vite development mode",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "samples": [
+    {
+      "name": "live-30-seconds",
+      "seconds": 30.0155,
+      "fps": 60.002332128400326,
+      "p95ms": 16.799999999999272,
+      "p99ms": 16.800000000000182,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 666.9621362296148,
+      "ScriptDurationMsPerSecond": 131.03339941030467,
+      "LayoutDurationMsPerSecond": 19.383318618713663,
+      "RecalcStyleDurationMsPerSecond": 51.48080158584732
+    },
+    {
+      "name": "hover-tools",
+      "seconds": 4.016400000000002,
+      "fps": 60.00398366696542,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.799999999995634,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "neuraljaxlib",
+      "TaskDurationMsPerSecond": 664.4709192311517,
+      "ScriptDurationMsPerSecond": 130.9426351956978,
+      "LayoutDurationMsPerSecond": 20.53779504033462,
+      "RecalcStyleDurationMsPerSecond": 44.751518773030554
+    },
+    {
+      "name": "unhover",
+      "seconds": 2,
+      "fps": 60,
+      "p95ms": 16.799999999995634,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 669.8759999999986,
+      "ScriptDurationMsPerSecond": 128.20950000000008,
+      "LayoutDurationMsPerSecond": 23.119,
+      "RecalcStyleDurationMsPerSecond": 66.16750000000005
+    },
+    {
+      "name": "open-cooperation-1",
+      "seconds": 1.8165999999999984,
+      "fps": 58.3507651656942,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 66.80000000000291,
+      "framesOver33ms": 1,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "cooperation",
+      "hover": "",
+      "TaskDurationMsPerSecond": 198.33480127711164,
+      "ScriptDurationMsPerSecond": 45.652317516239414,
+      "LayoutDurationMsPerSecond": 68.10194869536502,
+      "RecalcStyleDurationMsPerSecond": 18.927116591434473
+    },
+    {
+      "name": "settled-cooperation",
+      "seconds": 2.0165,
+      "fps": 60.004959087527894,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "cooperation",
+      "hover": "",
+      "TaskDurationMsPerSecond": 15.080585172329966,
+      "ScriptDurationMsPerSecond": 1.9637986610464593,
+      "LayoutDurationMsPerSecond": 0,
+      "RecalcStyleDurationMsPerSecond": 0
+    },
+    {
+      "name": "return-cooperation-1",
+      "seconds": 1.8165999999999984,
+      "fps": 54.49741274909175,
+      "p95ms": 16.80000000000291,
+      "p99ms": 150,
+      "maxFrameMs": 150,
+      "framesOver33ms": 1,
+      "longTasks": [
+        80,
+        65
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 778.4641638225246,
+      "ScriptDurationMsPerSecond": 200.34239788616102,
+      "LayoutDurationMsPerSecond": 49.815589562919776,
+      "RecalcStyleDurationMsPerSecond": 55.24221072332942
+    },
+    {
+      "name": "open-neural-field-manifold-1",
+      "seconds": 1.8165999999999984,
+      "fps": 52.295497082461786,
+      "p95ms": 16.799999999995634,
+      "p99ms": 216.6999999999971,
+      "maxFrameMs": 216.6999999999971,
+      "framesOver33ms": 1,
+      "longTasks": [
+        84,
+        127
+      ],
+      "frozen": 15,
+      "activeProject": "neural-field-manifold",
+      "hover": "",
+      "TaskDurationMsPerSecond": 882.7309259055387,
+      "ScriptDurationMsPerSecond": 129.45172299900918,
+      "LayoutDurationMsPerSecond": 51.559506770890685,
+      "RecalcStyleDurationMsPerSecond": 33.05901133986558
+    },
+    {
+      "name": "settled-neural-field-manifold",
+      "seconds": 2.0165,
+      "fps": 60.004959087527894,
+      "p95ms": 16.799999999995634,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "neural-field-manifold",
+      "hover": "",
+      "TaskDurationMsPerSecond": 757.7778328787515,
+      "ScriptDurationMsPerSecond": 19.210513265559324,
+      "LayoutDurationMsPerSecond": 1.8621373667246093,
+      "RecalcStyleDurationMsPerSecond": 2.9328043639971217
+    },
+    {
+      "name": "return-neural-field-manifold-1",
+      "seconds": 1.8165999999999984,
+      "fps": 55.04789166574925,
+      "p95ms": 16.80000000000291,
+      "p99ms": 133.3000000000029,
+      "maxFrameMs": 133.3000000000029,
+      "framesOver33ms": 2,
+      "longTasks": [
+        75,
+        67
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 776.346471430143,
+      "ScriptDurationMsPerSecond": 185.55323131124075,
+      "LayoutDurationMsPerSecond": 45.18496091599691,
+      "RecalcStyleDurationMsPerSecond": 53.654079048772296
+    },
+    {
+      "name": "open-robust-steering-1",
+      "seconds": 1.8167000000000044,
+      "fps": 57.24665602465996,
+      "p95ms": 16.799999999995634,
+      "p99ms": 33.400000000001455,
+      "maxFrameMs": 83.29999999999563,
+      "framesOver33ms": 1,
+      "longTasks": [
+        65
+      ],
+      "frozen": 15,
+      "activeProject": "robust-steering",
+      "hover": "",
+      "TaskDurationMsPerSecond": 348.95359718170596,
+      "ScriptDurationMsPerSecond": 161.25116970330805,
+      "LayoutDurationMsPerSecond": 53.075356415478495,
+      "RecalcStyleDurationMsPerSecond": 30.980348984422196
+    },
+    {
+      "name": "settled-robust-steering",
+      "seconds": 2.0165999999999986,
+      "fps": 60.00198353664588,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "robust-steering",
+      "hover": "",
+      "TaskDurationMsPerSecond": 176.156897748686,
+      "ScriptDurationMsPerSecond": 127.25230586135103,
+      "LayoutDurationMsPerSecond": 2.182882078746305,
+      "RecalcStyleDurationMsPerSecond": 2.6554596846177847
+    },
+    {
+      "name": "return-robust-steering-1",
+      "seconds": 1.8,
+      "fps": 55,
+      "p95ms": 16.700000000004366,
+      "p99ms": 133.29999999999563,
+      "maxFrameMs": 133.29999999999563,
+      "framesOver33ms": 2,
+      "longTasks": [
+        80,
+        67
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 732.5966666666674,
+      "ScriptDurationMsPerSecond": 181.5327777777778,
+      "LayoutDurationMsPerSecond": 46.907777777777845,
+      "RecalcStyleDurationMsPerSecond": 52.25777777777773
+    },
+    {
+      "name": "open-neuraljaxlib-1",
+      "seconds": 1.8166000000000058,
+      "fps": 54.49741274909154,
+      "p95ms": 33.299999999995634,
+      "p99ms": 83.39999999999418,
+      "maxFrameMs": 83.39999999999418,
+      "framesOver33ms": 3,
+      "longTasks": [
+        54
+      ],
+      "frozen": 15,
+      "activeProject": "neuraljaxlib",
+      "hover": "",
+      "TaskDurationMsPerSecond": 752.9285478366156,
+      "ScriptDurationMsPerSecond": 171.84465484971895,
+      "LayoutDurationMsPerSecond": 78.97005394693355,
+      "RecalcStyleDurationMsPerSecond": 241.16261147198003
+    },
+    {
+      "name": "settled-neuraljaxlib",
+      "seconds": 2.016699999999997,
+      "fps": 59.99900828085495,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "neuraljaxlib",
+      "hover": "",
+      "TaskDurationMsPerSecond": 567.8916050974357,
+      "ScriptDurationMsPerSecond": 129.62513016313775,
+      "LayoutDurationMsPerSecond": 21.689393563742794,
+      "RecalcStyleDurationMsPerSecond": 253.8448951257007
+    },
+    {
+      "name": "return-neuraljaxlib-1",
+      "seconds": 1.8,
+      "fps": 54.44444444444444,
+      "p95ms": 16.80000000000291,
+      "p99ms": 133.40000000000146,
+      "maxFrameMs": 133.40000000000146,
+      "framesOver33ms": 1,
+      "longTasks": [
+        75,
+        65
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 785.8038888888904,
+      "ScriptDurationMsPerSecond": 193.98111111111126,
+      "LayoutDurationMsPerSecond": 67.02888888888889,
+      "RecalcStyleDurationMsPerSecond": 58.45111111111103
+    },
+    {
+      "name": "open-pylba-1",
+      "seconds": 1.8165999999999984,
+      "fps": 57.24980733237921,
+      "p95ms": 16.80000000000291,
+      "p99ms": 33.299999999995634,
+      "maxFrameMs": 83.40000000000146,
+      "framesOver33ms": 1,
+      "longTasks": [
+        60
+      ],
+      "frozen": 15,
+      "activeProject": "pylba",
+      "hover": "",
+      "TaskDurationMsPerSecond": 246.2347242100639,
+      "ScriptDurationMsPerSecond": 60.58681052515748,
+      "LayoutDurationMsPerSecond": 53.454805680942414,
+      "RecalcStyleDurationMsPerSecond": 39.16712539909723
+    },
+    {
+      "name": "settled-pylba",
+      "seconds": 2.0166000000000057,
+      "fps": 60.00198353664567,
+      "p95ms": 16.700000000004366,
+      "p99ms": 16.799999999995634,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "pylba",
+      "hover": "",
+      "TaskDurationMsPerSecond": 62.304373698305746,
+      "ScriptDurationMsPerSecond": 1.025984330060764,
+      "LayoutDurationMsPerSecond": 0,
+      "RecalcStyleDurationMsPerSecond": 11.09342457601886
+    },
+    {
+      "name": "return-pylba-1",
+      "seconds": 1.8165999999999913,
+      "fps": 55.598370582406965,
+      "p95ms": 16.70000000001164,
+      "p99ms": 33.30000000000291,
+      "maxFrameMs": 133.39999999999418,
+      "framesOver33ms": 1,
+      "longTasks": [
+        73,
+        63
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 760.5372674226602,
+      "ScriptDurationMsPerSecond": 185.0660574699995,
+      "LayoutDurationMsPerSecond": 54.766596939337575,
+      "RecalcStyleDurationMsPerSecond": 52.161730705714206
+    },
+    {
+      "name": "open-about-1",
+      "seconds": 1.8,
+      "fps": 57.22222222222222,
+      "p95ms": 16.79999999998836,
+      "p99ms": 33.30000000000291,
+      "maxFrameMs": 83.30000000000291,
+      "framesOver33ms": 1,
+      "longTasks": [
+        64
+      ],
+      "frozen": 15,
+      "activeProject": "about",
+      "hover": "",
+      "TaskDurationMsPerSecond": 190.92277777778023,
+      "ScriptDurationMsPerSecond": 56.14333333333338,
+      "LayoutDurationMsPerSecond": 29.204444444444416,
+      "RecalcStyleDurationMsPerSecond": 30.09555555555549
+    },
+    {
+      "name": "settled-about",
+      "seconds": 2.0165,
+      "fps": 60.004959087527894,
+      "p95ms": 16.70000000001164,
+      "p99ms": 16.80000000000291,
+      "maxFrameMs": 16.80000000000291,
+      "framesOver33ms": 0,
+      "longTasks": [],
+      "frozen": 15,
+      "activeProject": "about",
+      "hover": "",
+      "TaskDurationMsPerSecond": 15.411356310437016,
+      "ScriptDurationMsPerSecond": 2.017852715100141,
+      "LayoutDurationMsPerSecond": 0,
+      "RecalcStyleDurationMsPerSecond": 0
+    },
+    {
+      "name": "return-about-1",
+      "seconds": 1.8,
+      "fps": 55,
+      "p95ms": 16.80000000000291,
+      "p99ms": 133.1999999999971,
+      "maxFrameMs": 133.1999999999971,
+      "framesOver33ms": 1,
+      "longTasks": [
+        74,
+        65
+      ],
+      "frozen": 0,
+      "activeProject": "",
+      "hover": "",
+      "TaskDurationMsPerSecond": 738.160555555554,
+      "ScriptDurationMsPerSecond": 186.4927777777778,
+      "LayoutDurationMsPerSecond": 51.39777777777768,
+      "RecalcStyleDurationMsPerSecond": 50.71944444444451
+    }
+  ],
+  "cpuSamples": [
+    {
+      "frame": ":0 (program)",
+      "selfMs": 5366.045999999897
+    },
+    {
+      "frame": ":0 (idle)",
+      "selfMs": 3486.6369999999947
+    },
+    {
+      "frame": "node_modules/.vite/deps/react_jsx-dev-runtime.js?v=fbcc6da7:191 exports.jsxDEV",
+      "selfMs": 282.8489999999998
+    },
+    {
+      "frame": ":0 setAttribute",
+      "selfMs": 245.18500000000003
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/rnn/animation.js?t=1791997474458:81 (anonymous)",
+      "selfMs": 145.7780000000001
+    },
+    {
+      "frame": "node_modules/.vite/deps/react_jsx-dev-runtime.js?v=fbcc6da7:148 jsxDEVImpl",
+      "selfMs": 45.218999999999994
+    },
+    {
+      "frame": ":0 run",
+      "selfMs": 44.37299999999999
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/rnn/animation.js?t=1791997474458:37 polar",
+      "selfMs": 41.196
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/transformer/animation.js?t=1791997474470:23 (anonymous)",
+      "selfMs": 37.88700000000001
+    },
+    {
+      "frame": "node_modules/.vite/deps/react-dom_client.js?v=fbcc6da7:8136 prepareFreshStack",
+      "selfMs": 34.779
+    },
+    {
+      "frame": ":0 (garbage collector)",
+      "selfMs": 28.533999999999995
+    },
+    {
+      "frame": "node_modules/.vite/deps/react-dom_client.js?v=fbcc6da7:9924 updateProperties",
+      "selfMs": 26.357
+    },
+    {
+      "frame": ":0 close",
+      "selfMs": 17.929999999999996
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/rnn/animation.js?t=1791997474458:79 curve",
+      "selfMs": 14.812000000000001
+    },
+    {
+      "frame": "src/shared/robustSteeringModel.js:72 sampleSteering",
+      "selfMs": 14.796999999999997
+    },
+    {
+      "frame": ":0 now",
+      "selfMs": 13.712
+    },
+    {
+      "frame": "src/shared/neuralFieldModel.js?t=1791966816977:54 (anonymous)",
+      "selfMs": 12.812
+    },
+    {
+      "frame": ":0 createTask",
+      "selfMs": 12.675999999999998
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/transformer/animation.js?t=1791997474470:18 draw",
+      "selfMs": 11.608
+    },
+    {
+      "frame": ":0 createImageBitmap",
+      "selfMs": 9.693
+    },
+    {
+      "frame": ":0 fetch",
+      "selfMs": 9.495
+    },
+    {
+      "frame": ":0 drawImage",
+      "selfMs": 8.591
+    },
+    {
+      "frame": "src/shared/neuralFieldModel.js?t=1791966816977:53 waveformPath",
+      "selfMs": 8.458
+    },
+    {
+      "frame": "node_modules/.vite/deps/react-dom_client.js?v=fbcc6da7:1873 validateProperty",
+      "selfMs": 8.427
+    },
+    {
+      "frame": ":0 measure",
+      "selfMs": 7.404
+    },
+    {
+      "frame": "node_modules/.vite/deps/react-dom_client.js?v=fbcc6da7:578 pushHostContext",
+      "selfMs": 7.379
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/rnn/animation.js?t=1791997474458:72 interpolate",
+      "selfMs": 6.353
+    },
+    {
+      "frame": "node_modules/.vite/deps/react-dom_client.js?v=fbcc6da7:2407 addObjectDiffToProperties",
+      "selfMs": 6.3389999999999995
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/transformer/animation.js?t=1791997474470:36 (anonymous)",
+      "selfMs": 6.335000000000001
+    },
+    {
+      "frame": "src/shared/neuraljaxlib/vendor/rnn/animation.js?t=1791997474458:95 (anonymous)",
+      "selfMs": 6.325
+    }
+  ],
+  "errors": []
+}

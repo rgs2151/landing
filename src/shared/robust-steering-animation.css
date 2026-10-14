@@ -1,0 +1,35 @@
+.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 380; background: transparent; overflow: hidden; }
+.rs-compact { pointer-events: none; }
+.pa-paper-artificial > .rs-animation { max-width: 776px; margin-inline: auto; }
+.rs-controls { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }
+.rs-animation .rs-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
+.rs-animation .rs-controls button:hover { background: #f5ebeb; }
+.rs-description { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.rs-stage { all: initial; position: absolute; display: block; left: 50%; top: 50%; width: 776px; height: 380px; color: #111; background: transparent; font: 16px Arial, Helvetica, sans-serif; letter-spacing: 0; overflow: hidden; transform: scale(var(--steering-scale, 1)) translate(calc(-1 * var(--steering-center-x)), calc(-1 * var(--steering-center-y))); transform-origin: 0 0; }
+.rs-stage * { box-sizing: border-box; letter-spacing: 0; }
+.rs-stage .steering-demo-state { position: absolute; left: 20px; top: 12px; width: 320px; }
+.rs-stage .steering-demo-language { height: 38px; overflow: hidden; text-align: center; font-size: 20px; line-height: 38px; font-weight: 700; }
+.rs-stage .steering-demo-language > div { position: relative; height: 38px; margin-inline: 8.823529%; }
+.rs-stage .steering-demo-language span { position: absolute; inset: 0; display: block; height: 38px; clip-path: inset(0 0 0 calc(var(--demo-swipe, 0) * 100%)); }
+.rs-stage .steering-demo-language span:last-child { clip-path: inset(0 calc((1 - var(--demo-swipe, 0)) * 100%) 0 0); }
+.rs-stage .steering-demo-state-map { display: block; width: 320px; height: auto; overflow: visible; }
+.rs-stage .steering-demo-state-map text { font-family: Arial, Helvetica, sans-serif; font-size: 21.25px; font-weight: 400; }
+.rs-stage .steering-demo-scene { position: absolute; left: 368px; top: 59.28125px; width: 388px; display: flex; flex-direction: column; gap: 40px; padding: 4px 0; }
+.rs-stage .steering-demo-question, .rs-stage .steering-demo-answer { display: flex; align-items: flex-start; gap: 12px; }
+.rs-stage .steering-demo-copy { min-width: 0; flex: 1; }
+.rs-stage .steering-demo-label { display: block; margin-bottom: 6px; font-size: 20px; line-height: normal; color: #666; }
+.rs-stage .steering-demo-copy p { margin: 0; padding: 0; min-height: 1.45em; font: 400 20px/1.45 Arial, Helvetica, sans-serif; color: #111; overflow-wrap: anywhere; white-space: pre-wrap; }
+.rs-stage .steering-demo-question-text { height: 116px; }
+.rs-stage .steering-demo-question-text:not([lang="en"]) { color: #8b1e1e; }
+.rs-stage .steering-demo-answer-text { height: 29px; }
+.rs-stage .steering-demo-copy p[data-typing="true"]::after { content: ""; display: inline-block; width: 1px; height: 1em; background: currentColor; vertical-align: -.1em; }
+.rs-stage .steering-demo-char.is-glitch { color: #007c7c; display: inline-block; transform: translateY(-2px); text-shadow: 2px 0 rgba(0,124,124,.3); }
+.rs-stage .steering-demo-asker { width: 36px; height: 36px; flex: 0 0 36px; margin-top: 30px; }
+.rs-stage .steering-demo-model { position: relative; order: -1; width: 36px; flex: 0 0 36px; margin-top: 26.5px; }
+.rs-stage .steering-demo-robot { display: block; width: 36px; height: 34px; }
+.rs-stage .steering-demo-stimulation { position: absolute; width: 90px; height: 60px; left: 0; top: 0; transform: translate(358.0689655172414px, 230.09159482758622px) scale(.6206896551724138); transform-origin: top left; pointer-events: none; }
+.rs-stage .steering-demo-bolt { position: absolute; left: 23px; width: 44px; height: 56px; transform-origin: 50% 65%; }
+.rs-stage[data-phase="steering"] .steering-demo-bolt { animation: steering-demo-shake .14s cubic-bezier(.65, 0, .35, 1) infinite; }
+.rs-stage[data-paused="true"] .steering-demo-bolt { animation-play-state: paused; }
+@keyframes steering-demo-shake { 0%,100% { transform: translateX(-2px) rotate(-9deg); } 50% { transform: translateX(2px) rotate(9deg); } }
+@media (prefers-reduced-motion: reduce) { .rs-stage .steering-demo-bolt { animation: none !important; } }

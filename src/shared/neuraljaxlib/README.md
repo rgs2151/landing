@@ -1,0 +1,78 @@
+# NeuralJAXlib Assets
+
+Source: `https://github.com/rgs2151/NeuralJAXlib`, imported from the sibling
+`NeuralJAXwork` checkout. `vendor/` contains the five approved gallery renderers
+and cached samples: CNN, RNN, Autoencoder, GAN and Transformer, plus the corrected
+composite renderer that keeps those same five assets intact in an HTML grid row. `logo.svg` is
+the original vector logo, used inline at text height rather than rasterized.
+The source MIT license is included.
+
+## Brain MRI Variants
+
+`vendor/cnn_brain_mri/` and `vendor/gan_brain_mri/` contain the additionally
+approved source animations and samples. `brain-provenance.json` records source
+and imported hashes; adaptation is limited to ES module exports. Refresh only
+on explicit approval with `node scripts/import-neuraljax-brain-assets.mjs`.
+The sibling repository is never edited by this import.
+
+`NeuralJAXBrainGallery` substitutes those two panels in the existing composite;
+the other three panels, dimensions and headings are preserved. Original
+`vendor/cnn/` (MNIST) and `vendor/gan/` (Fashion-MNIST) remain intact. The main site
+places them as left/right floats within the unchanged abstract. Earlier
+prototypes are preserved in Git history.
+
+The five splash exports hide only the headings, keeping their original layout
+space so artwork does not move or rescale. The content gallery and abstract
+figures retain their titles and standard controls. Videos/posters retain the
+same canonical filenames; `src/assets/neuraljaxlib/variants.js` maps them to
+their current source variants.
+
+Brain data attribution and training details are preserved in
+`vendor/neuroscience/README.md` (some upstream reproduction links refer to files
+not bundled here). The CNN display uses modified CC BY 4.0 Jun Cheng MRI images;
+the GAN uses the CC0 MPI-Leipzig Mind-Brain-Body dataset. The source documentation
+records preprocessing, original citations and limitations. No models or dataset
+downloads were imported.
+
+Run `node scripts/import-neuraljax-assets.mjs /path/to/NeuralJAXwork` only when
+explicitly updating these assets. The importer changes module export boundaries,
+not geometry, samples, labels, or animation timing. The shared source now includes
+RNN's resize fix: `clientWidth` replaces `getBoundingClientRect().width`
+so "now" scales with its SVG rather than compensating for ancestor transforms.
+Source and imported hashes
+are recorded in `provenance.json`. No models, training data, videos or checkpoints
+are copied into the website.
+
+`animations.jsx` registers the five lazy-loaded assets and the composite. The shared
+`SVGAnimation.jsx` React adapter mounts native SVG, handles lifecycle and
+standard pause/play/replay controls, and uses each asset's design width: 300px
+for standalone figures, 1248px for the composite. This prevents double scaling
+from inflating non-scaling SVG strokes. Only white outer SVG backings are made
+transparent; meaningful white regions and black image grids are unchanged.
+These high-quality renderers use no iframe or injected script. The landing
+previews are transparent videos exported from them; see
+`src/assets/README.md` for the export policy and project-grouped media files.
+
+Each instance has an independent clock, with the source timing preserved.
+Standalone GAN rendering retains its 30fps limit. Hidden, offscreen, inactive and
+reduced-motion views do not advance. Earlier prototypes retain inert SVG snapshots;
+the running renderer is destroyed. A deterministic `elapsedMs` prop supports
+source parity tests without screenshots.
+
+Metadata and verbatim README/gallery excerpts live in `src/content/neuraljaxlib.*`.
+The framework abstract is intentionally deferred for a separate copy iteration.
+`src/shared/tools.js` pairs content with these assets for the common detail renderer.
+`src/site/App.jsx` owns placement; full pages and preview exports use shared
+asset components. There are no NeuralJAXlib-specific branches in the page renderer.
+The optional tool `Gallery` slot places a composite above all copy without
+repeating its individual figures. PyLBA keeps its existing wrapped-figure layout.
+
+The corrected composite uses five 240px-wide panels with 12px gaps and a shared
+heading/plot grid. Headings and labels share an 18px design scale; PCA
+labels are normalized only within the row. The original RNN legend stays with
+its panel, tucked directly below the circle. The website-only composite is
+1248 x 270, ending at the CNN/GAN plots, with inset controls beneath Transformer.
+No SVG is transplanted into another SVG viewport. This local spacing revision
+has not been synced to the source repository; wait for user approval before
+any upstream changes or export generation. Reimporting the composite would
+overwrite this local layout adjustment.

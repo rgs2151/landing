@@ -1,0 +1,267 @@
+{
+  "splash": {
+    "pieces": [
+      {
+        "id": "nature-0",
+        "width": "280.8px",
+        "height": 281,
+        "transform": "translate(690px, 35px) rotate(0deg) scale(1)",
+        "angle": "-8deg",
+        "opacity": "1",
+        "zIndex": "4"
+      },
+      {
+        "id": "nature-1",
+        "width": "125px",
+        "height": 125,
+        "transform": "translate(170px, 120px) rotate(0deg) scale(1)",
+        "angle": "11deg",
+        "opacity": "1",
+        "zIndex": "8"
+      },
+      {
+        "id": "nature-2",
+        "width": "95px",
+        "height": 95,
+        "transform": "translate(150px, 215px) rotate(0deg) scale(1)",
+        "angle": "-12deg",
+        "opacity": "1",
+        "zIndex": "3"
+      },
+      {
+        "id": "nature-3",
+        "width": "65px",
+        "height": 65,
+        "transform": "translate(960px, 220px) rotate(0deg) scale(1)",
+        "angle": "8deg",
+        "opacity": "1",
+        "zIndex": "6"
+      },
+      {
+        "id": "landscape",
+        "width": "270px",
+        "height": 293,
+        "transform": "translate(935px, 355px) rotate(0deg) scale(1)",
+        "angle": "5deg",
+        "opacity": "1",
+        "zIndex": "8"
+      },
+      {
+        "id": "conversation",
+        "width": "350px",
+        "height": 227,
+        "transform": "translate(420px, 470px) rotate(0deg) scale(1)",
+        "angle": "-3deg",
+        "opacity": "1",
+        "zIndex": "3"
+      },
+      {
+        "id": "signal",
+        "width": "150px",
+        "height": 99,
+        "transform": "translate(790px, 485px) rotate(0deg) scale(1)",
+        "angle": "-8deg",
+        "opacity": "1",
+        "zIndex": "3"
+      },
+      {
+        "id": "autoregressive",
+        "width": "310px",
+        "height": 153,
+        "transform": "translate(345px, 120px) rotate(0deg) scale(1)",
+        "angle": "5deg",
+        "opacity": "1",
+        "zIndex": "10"
+      },
+      {
+        "id": "manifold",
+        "width": "380px",
+        "height": 359,
+        "transform": "translate(105px, 295px) rotate(0deg) scale(1)",
+        "angle": "-6deg",
+        "opacity": "1",
+        "zIndex": "2"
+      },
+      {
+        "id": "pylba",
+        "width": "175px",
+        "height": 175,
+        "transform": "translate(970px, 0px) rotate(0deg) scale(1)",
+        "angle": "-5deg",
+        "opacity": "0.75",
+        "zIndex": "3"
+      },
+      {
+        "id": "neuraljax-cnn",
+        "width": "126px",
+        "height": 138,
+        "transform": "translate(785px, 565px) rotate(0deg) scale(1)",
+        "angle": "10deg",
+        "opacity": "0.75",
+        "zIndex": "11"
+      },
+      {
+        "id": "neuraljax-rnn",
+        "width": "180px",
+        "height": 176,
+        "transform": "translate(-20px, 245px) rotate(0deg) scale(1)",
+        "angle": "9deg",
+        "opacity": "0.75",
+        "zIndex": "6"
+      },
+      {
+        "id": "neuraljax-autoencoder",
+        "width": "189.54px",
+        "height": 184,
+        "transform": "translate(1025px, 175px) rotate(0deg) scale(1)",
+        "angle": "5deg",
+        "opacity": "0.75",
+        "zIndex": "11"
+      },
+      {
+        "id": "neuraljax-gan",
+        "width": "226.325px",
+        "height": 244,
+        "transform": "translate(-40px, 470px) rotate(0deg) scale(1)",
+        "angle": "-6deg",
+        "opacity": "0.75",
+        "zIndex": "11"
+      },
+      {
+        "id": "neuraljax-transformer",
+        "width": "190px",
+        "height": 202,
+        "transform": "translate(200px, 610px) rotate(0deg) scale(1)",
+        "angle": "7deg",
+        "opacity": "0.75",
+        "zIndex": "11"
+      }
+    ],
+    "title": {
+      "text": "RudramaniSingha",
+      "font": "900 108px / 102.6px Impact, \"Arial Narrow\", sans-serif"
+    },
+    "navFont": "18px / 24.3px Arial, Helvetica, sans-serif",
+    "bodyLineHeight": "21.6px"
+  },
+  "cooperation": {
+    "heading": "Asymmetric prefrontal representations for leader–follower dynamics",
+    "authors": "Yuan Cheng*, Yusi Chen*, Myungji Kwak, Ross P. Kempner, Rudramani Singha, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu",
+    "abstract": [
+      "Across species, cooperative behaviour is often organized by distinct social roles such as leaders and followers, yet the neural mechanisms that support these emergent role dynamics remain unclear. Here we introduce a mouse paradigm that captures leader–follower dynamics during cooperation. In this paradigm, stable social roles emerge through reciprocal interaction and predict learning speed. Disrupting the activity of the medial prefrontal cortex (mPFC), particularly in followers, impairs cooperation and induces complementary shifts in how animals weigh self- and partner-related cues during decision-making. Calcium imaging reveals that the mPFC represents leader–follower dynamics and computes an egocentric social value map of the partner’s position in a role-dependent manner. By integrating these empirical findings with a multi-agent inverse reinforcement learning framework, we identify latent value functions that guide cooperative decisions and are decodable from mPFC activity. These findings identify prefrontal representations of leader–follower dynamics and partner information, revealing how social roles structure asymmetric yet reciprocal influence over joint decisions."
+    ],
+    "font": "21px / 30.45px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": " 2026",
+        "href": "https://www.nature.com/articles/s41586-026-10900-1"
+      },
+      {
+        "text": " code",
+        "href": "https://github.com/NuttidaLab/MARLAX"
+      }
+    ]
+  },
+  "robust-steering": {
+    "heading": "Mind Control of LLMs via Closed-Loop Stimulation: Out-of-Distribution Robustness",
+    "authors": "Kasra Fallah*, Rudramani Singha*, Hannah Ghanei, Paul Sajda, James Anderson, Erfan Zabeh",
+    "abstract": [
+      "Brains and large language models need not be considered equivalent systems to reveal an interpretable commonality: both exhibit high-dimensional, nonlinear dynamics whose behavior can only be modeled imperfectly. This creates a shared challenge whenever we seek to intervene in their dynamics. A controller may either rely on a model identified around a particular operating regime and risk failure as the system moves away from that regime, or explicitly account for uncertainty and a changing internal state. Neurostimulation has confronted an analogous problem for decades. The limitations of fixed, open-loop stimulation have motivated closed-loop and state-dependent approaches that condition intervention on the ongoing state of the neural system. Inspired by this principle, we formulate LLM steering as a feedback-control problem in which the network’s internal state, rather than a fixed intervention alone, determines how the system is perturbed. We further account for the inevitable mismatch between tractable dynamical models and the nonlinear transformer they approximate by adopting a robust control approach. As one principled realization of this framework, we develop an H∞-based steering controller that explicitly limits sensitivity to disturbances and linearization mismatches. Across multiple steering benchmarks, the resulting controller improves performance over existing steering baselines, with particularly pronounced gains under out-of-distribution conditions and varying length complexities—regimes in which the assumptions underlying locally identified dynamics are increasingly challenged. Beyond controller performance, we introduce robust steerability, Srob, a pre-deployment measure of tolerance to dynamics mismatch; across model–task pairs, it exhibits task-specific structure and varies systematically with model scale. Beyond robust LLM steering, our measure asks not merely whether control is possible, but how much uncertainty it can survive—a principle that may span artificial and biological neural systems."
+    ],
+    "font": "21px / 30.45px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": "Under review · 2026",
+        "href": "https://rgs2151.github.io/controller/"
+      },
+      {
+        "text": " code",
+        "href": "https://github.com/rgs2151/controller"
+      }
+    ]
+  },
+  "neural-field-manifold": {
+    "heading": "NeuralFieldManifold: Reconstruction of LFP manifold with Lag Embedding",
+    "authors": "Kasra Fallah, Haoyu Novak Chen, Rudramani Singha, Eunji Kong, Gergely Turi, Attila Losonczy, Erfan Zabeh",
+    "abstract": [
+      "Manifold geometry has become a powerful framework for understanding how the brain organizes high-dimensional neural activity into compact, interpretable structure. To date, however, most theoretical and methodological advances in neural manifold analysis have focused on spiking activity, leaving unresolved a fundamental question: what is the intrinsic geometric structure of local field potentials (LFPs)—population-level signals that reflect coordinated neural dynamics and are widely translatable in clinical and brain–computer interface settings. This question is challenging because standard population-manifold reconstruction methods rely on assumptions that are violated by LFPs, including strong temporal autocorrelation across channels. Here, we show that these very properties enable an analytical solution. Modeling LFPs as bounded autoregressive dynamical systems, we derive an explicit analytical characterization of their intrinsic geometry and prove that each sustained oscillatory component contributes an independent topological degree of freedom. As a result, the lag-embedded dynamics lie on a low-dimensional K-torus, where K is determined by the number of distinct oscillatory modes present in the signal. Aperiodic 1/f-like components and stochastic variability do not alter this topology, contributing only geometric thickness around the manifold. To handle nonstationarity and deviations from fixed linear dynamics in real data, we further introduce a geometry-aware learning network that parameterizes time-varying autoregressive operators, enabling robust recovery of the predicted manifold structure under realistic conditions. We validate these predictions using synthetic systems with known dynamics and demonstrate that the predicted toroidal geometry is recoverable in practice via lag embedding. Applying the framework to real neural recordings, we demonstrate its applicability across multiple, independent electrophysiological datasets forming a cross-species evaluation, with consistent recovery of the predicted manifold structure. Together, these results position intrinsic manifold reconstruction as a framework for probing the dynamical systems underlying local field potentials, with implications for mechanistic modeling and behavioral inference."
+    ],
+    "font": "21px / 30.45px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": "NeurIPS 2026",
+        "href": "https://erfanzabeh.github.io/NeuralFieldManifold/"
+      },
+      {
+        "text": " code",
+        "href": "https://github.com/erfanzabeh/NeuralFieldManifold"
+      }
+    ]
+  },
+  "pylba": {
+    "heading": "🚀 pyLBA: Linear Ballistic Accumulator Models in Python",
+    "authors": "Rudramani Singha",
+    "abstract": [
+      "PyLBA is a Python package for fitting and simulating Linear Ballistic Accumulator (LBA) models commonly used in cognitive psychology and neuroscience. The LBA provides a mathematically tractable account of decision-making, jointly explaining choice probabilities and response-time distributions through independent evidence accumulators. Brown & Heathcote, 2008. PyLBA provides a unified interface for model specification, estimation, and simulation. Flexible Bayesian fitting supports custom priors and fixed or freely estimated parameters. Structured parameter management accommodates shared and accumulator-specific configurations. Synthetic data generation connects fitted models to their behavioral predictions. Its extensible architecture allows additional accumulator models to use the same interface."
+    ],
+    "font": "21px / 30.45px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": " code",
+        "href": "https://github.com/rgs2151/pyLBA"
+      },
+      {
+        "text": "Documentation",
+        "href": "https://rgs2151.github.io/pyLBA/"
+      },
+      {
+        "text": "Brown & Heathcote, 2008",
+        "href": "https://doi.org/10.1016/j.cogpsych.2007.12.002"
+      }
+    ]
+  },
+  "neuraljaxlib": {
+    "heading": "NeuralJAXlib",
+    "authors": "Rudramani Singha",
+    "abstract": [
+      "NeuralJAXlib is a lightweight, GPU-accelerated framework for building and exploring neural networks in JAX, designed for research, experimentation, and education. It provides a unified interface for model construction, training, and evaluation while retaining explicit control over network composition and optimization. Modular components support dense, convolutional, and recurrent networks alongside transformers, autoencoders, and generative adversarial models, allowing architectures to be extended and combined through ordinary Python code. Automatic differentiation and just-in-time compilation support accelerated computation, while customizable training procedures accommodate new objectives and learning strategies. NeuralJAXlib provides a common foundation for understanding established architectures and developing new approaches."
+    ],
+    "font": "21px / 30.45px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": " code",
+        "href": "https://github.com/rgs2151/NeuralJAXlib"
+      },
+      {
+        "text": "Architecture tutorials",
+        "href": "https://rgs2151.github.io/NeuralJAXlib/docs/learning.html"
+      },
+      {
+        "text": "API tutorials",
+        "href": "https://rgs2151.github.io/NeuralJAXlib/docs/api_tutorials.html"
+      },
+      {
+        "text": "Documentation",
+        "href": "https://rgs2151.github.io/NeuralJAXlib/"
+      }
+    ]
+  },
+  "about": {
+    "heading": "Rudramani Singha",
+    "abstract": [
+      "I am a data scientist in the Program in Memory Longevity at UT Southwestern Medical Center. I received my M.S. in Biomedical Engineering from Columbia University. My research combines computational neuroscience and machine learning to study neural dynamics and information processing in biological and artificial neural networks.",
+      "rgs2151@columbia.edugithub.com/rgs2151"
+    ],
+    "font": "21px / 31.5px Arial, Helvetica, sans-serif",
+    "links": [
+      {
+        "text": "Program in Memory Longevity",
+        "href": "https://memorylongevity.org/"
+      },
+      {
+        "text": "github.com/rgs2151",
+        "href": "https://github.com/rgs2151"
+      }
+    ]
+  }
+}

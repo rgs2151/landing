@@ -1,0 +1,87 @@
+import { cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createLocalMotion } from './localMotion';
+
+export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion = createLocalMotion }) {
+  const animations = useRef([]);
+  useEffect(() => {
+    if (!desktop || !root.current) return;
+    animations.current = [...root.current.querySelectorAll('.pb-orbit')].map((node, index) => {
+      const x = Number(node.dataset.x) - 600, y = Number(node.dataset.y) - 350;
+      const { keyframes, duration } = motion(index, x, y);
+      const animation = node.animate(keyframes, { duration, iterations: Infinity });
+      return { animation, node, settle: null };
+    });
+    return () => animations.current.forEach(({ animation, settle }) => { animation.cancel(); settle?.cancel(); });
+  }, [desktop, root, replay, motion]);
+  useEffect(() => {
+    animations.current.forEach(({ animation }) => {
+      if (paused || selected || reduced || hovered || transitioning || (diagnostic && diagnostic !== 'all' && diagnostic !== 'motion')) animation.pause();
+      else animation.play();
+    });
+  }, [desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning]);
+  useEffect(() => {
+    animations.current.forEach(item => {
+      const from = getComputedStyle(item.node).transform;
+      item.settle?.cancel();
+      const to = selected ? 'translate(0px, 0px) scale(1)' : getComputedStyle(item.node).transform;
+      item.settle = item.node.animate([{ transform: from }, { transform: to }], {
+        duration: reduced ? 0 : 700, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both',
+      });
+      if (!selected) item.settle.onfinish = () => item.settle?.cancel();
+    });
+  }, [desktop, selected, reduced, replay]);
+}
+
+// Preserve the accepted frame as inert DOM; discard the running React/WebGL tree.
+// SVG and text need no rasterization. Canvases and videos become small bitmaps.
+function cloneFrame(source) {
+  const clone = source.cloneNode(true);
+  let emptyCanvas = false;
+  const originals = source.querySelectorAll('canvas, video');
+  clone.querySelectorAll('canvas, video').forEach((canvas, index) => {
+    const original = originals[index];
+    const width = original.videoWidth || original.width;
+    const height = original.videoHeight || original.height;
+    if (!width || !height) { emptyCanvas = true; return; }
+    const bitmap = document.createElement('canvas');
+    bitmap.width = Math.min(width, 160);
+    bitmap.height = Math.max(1, Math.round(height * bitmap.width / width));
+    const context = bitmap.getContext('2d');
+    context.drawImage(original, 0, 0, bitmap.width, bitmap.height);
+    if (!context.getImageData(0, 0, bitmap.width, bitmap.height).data.some((value, i) => i % 4 === 3 && value > 0)) emptyCanvas = true;
+    const image = document.createElement('img');
+    image.src = bitmap.toDataURL('image/webp', .8);
+    image.alt = ''; image.className = 'pb-frozen-canvas';
+    if (original.tagName === 'VIDEO') canvas.parentElement.querySelector('img')?.remove();
+    canvas.replaceWith(image);
+  });
+  clone.setAttribute('aria-hidden', 'true');
+  return emptyCanvas ? null : clone;
+}
+
+export function FreezePreview({ frozen, children }) {
+  const live = useRef(null), snapshot = useRef(null);
+  const snapshotRef = useRef(null);
+  const [captured, setCaptured] = useState(false);
+  useLayoutEffect(() => {
+    if (!frozen) { setCaptured(false); snapshot.current = null; return; }
+    if (captured || !live.current) return;
+    let frame, attempts = 0;
+    const capture = () => {
+      const node = live.current;
+      if (!node) return;
+      const waiting = node.querySelector('.nf-animation[aria-label], .pb-nature-preview canvas:not([data-ready="true"]), .svg-asset[data-ready="false"], .landing-video video:not([data-ready="true"])');
+      if (waiting && attempts++ < 120) { frame = requestAnimationFrame(capture); return; }
+      snapshotRef.current?.();
+      snapshot.current = cloneFrame(node);
+      if (!snapshot.current) { frame = requestAnimationFrame(capture); return; }
+      setCaptured(true);
+    };
+    // Copy inside the paint frame, while the WebGL drawing buffer is available.
+    frame = requestAnimationFrame(capture);
+    return () => cancelAnimationFrame(frame);
+  }, [frozen, captured]);
+  return captured && frozen
+    ? <div key="frozen" className="pb-frozen" ref={node => { if (node && snapshot.current) node.replaceChildren(snapshot.current); }} />
+    : <div key="live" ref={live}>{cloneElement(children, { snapshotRef })}</div>;
+}

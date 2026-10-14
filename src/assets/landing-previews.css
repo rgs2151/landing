@@ -1,0 +1,8 @@
+.landing-video { position: relative; width: 100%; background: transparent; }
+.landing-video > img, .pb-fragment .landing-video > video {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+  aspect-ratio: auto; object-fit: fill; pointer-events: none;
+}
+.landing-video > video { opacity: 0; }
+.landing-video > video[data-ready="true"] { opacity: 1; }
+.landing-video:has(> video[data-ready="true"]) > img { visibility: hidden; }

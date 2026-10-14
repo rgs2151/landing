@@ -1,0 +1,11 @@
+.pylba-animation { position: relative; width: 100%; }
+.pylba-animation > svg { display: block; width: 100%; height: auto; aspect-ratio: 300 / 338; overflow: visible; }
+.pylba-compact > svg { aspect-ratio: 1; }
+.pylba-animation text { font-family: Arial, Helvetica, sans-serif; font-size: 16px; fill: black; }
+.pylba-animation .param { font-size: 21px; fill: black; }
+.pylba-animation .line { fill: none; stroke: black; stroke-width: 1.1; }
+.pylba-animation .arrow { fill: none; stroke: #8b1e1e; stroke-width: 2.6; }
+.pylba-animation[data-reduced="true"] .onion { display: none; }
+.pylba-controls { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }
+.pylba-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
+.pylba-controls button:hover { background: #f5ebeb; }

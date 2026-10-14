@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/rgs2151/NeuralJAXlib",
+  "adaptation": "ES module exports only. Original MNIST/Fashion-MNIST assets retained unchanged.",
+  "files": {
+    "cnn_brain_mri/animation.js": {
+      "source": "25919efeb2898dd309562c88aa42a15d5c02b83ca4a9b7a7ec3c039a386d67c3",
+      "imported": "c1e616797f09d78830a4101e783f2d9922dd51d695a3ff74e114fca5eaf81931"
+    },
+    "cnn_brain_mri/samples.js": {
+      "source": "a0fe9497eac252d93f3b5f2f0cd3910392ddc2724ddb6fe0f7547037fc569366",
+      "imported": "b4e0c4446b5041cda4b21570d0a47e9e58c2c0b5e07a1fd780989af5033e693f"
+    },
+    "gan_brain_mri/animation.js": {
+      "source": "4d3d15eac6b6b968779d308ffdbf09004e388c1f5daab641c30278409d7069c3",
+      "imported": "172f3c270e4e18e6864edbc09126ea914bb6abc990856a0ec6b41593158015e0"
+    },
+    "gan_brain_mri/samples.js": {
+      "source": "7996295401132a81211a8bbd85207cbda1cbf83fd69fef19cd9ffc3b288a2033",
+      "imported": "32d835458386369efd9ddfcc65bfcd3d7e54c023c1a3344f108bbf4d73ea407d"
+    }
+  }
+}

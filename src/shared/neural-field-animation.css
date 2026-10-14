@@ -1,0 +1,33 @@
+.nf-animation { position: relative; width: 100%; margin: 0; background: #fff; color: #202020; }
+.nf-diagram { position: relative; aspect-ratio: 1000 / 480; }
+.nf-diagram > svg { display: block; width: 100%; height: 100%; font-family: Arial, sans-serif; }
+.nf-heading { font-size: 23px; font-weight: 700; font-style: normal; }
+.nf-label { font-size: 20px; font-style: normal; }
+.nf-equation { font-size: 21px; font-style: normal; }
+.nf-axis-text { font-size: 16px; font-style: normal; }
+.nf-caption { font-size: 13px; fill: #555; }
+.nf-arrow { stroke: #333; stroke-width: 2; fill: none; }
+.nf-axes { stroke: #707070; stroke-width: 3; fill: none; }
+.nf-red { color: #8b1e1e; stroke: #8b1e1e; }
+text.nf-red { fill: #8b1e1e; stroke: none; }
+.nf-manifold { position: absolute; left: 76%; top: calc(148 / 480 * 100%); width: 23%; height: calc(187 / 480 * 100%); }
+.nf-manifold canvas { width: 100%; height: 100%; display: block; }
+.nf-controls { position: absolute; right: 10px; bottom: 8px; display: flex; justify-content: flex-end; gap: 4px; }
+.nf-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
+.nf-controls button:hover { background: #f5ebeb; }
+.nf-compact { pointer-events: none; }
+
+.nf-animation[data-part="signal"],
+.nf-animation[data-part="autoregressive"],
+.nf-animation[data-part="manifold"] { background: transparent; }
+.nf-animation[data-part="signal"] { --nf-part-ratio: 250 / 165; }
+.nf-animation[data-part="autoregressive"] { --nf-part-ratio: 375 / 185; }
+.nf-animation[data-part="manifold"] { --nf-part-ratio: 270 / 255; }
+.nf-animation[data-part]:not([data-part="full"]) .nf-diagram,
+.nf-animation.nf-diagram[data-part]:not([data-part="full"]) { aspect-ratio: var(--nf-part-ratio); }
+.nf-animation[data-part="manifold"] .nf-manifold {
+  left: calc(20 / 270 * 100%);
+  top: calc(8 / 255 * 100%);
+  width: calc(230 / 270 * 100%);
+  height: calc(187 / 255 * 100%);
+}

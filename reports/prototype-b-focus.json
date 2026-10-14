@@ -1,0 +1,74 @@
+{
+  "measuredAt": "2026-10-14T13:02:45.272Z",
+  "browser": "151.0.7922.34",
+  "renderer": "Headless Chromium / SwiftShader",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "sampleMs": 1500,
+  "summary": [
+    {
+      "dimmed": false,
+      "fps": 60,
+      "p95ms": 16.8,
+      "mainThreadMsPerSecond": 476.19
+    },
+    {
+      "dimmed": true,
+      "fps": 60,
+      "p95ms": 16.7,
+      "mainThreadMsPerSecond": 451.35
+    }
+  ],
+  "samples": [
+    {
+      "repetition": 0,
+      "dimmed": false,
+      "seconds": 1.5166000000000004,
+      "fps": 60.00263747857047,
+      "p95ms": 16.799999999999272,
+      "mainThreadMsPerSecond": 466.6701833047605
+    },
+    {
+      "repetition": 0,
+      "dimmed": true,
+      "seconds": 1.5166000000000004,
+      "fps": 60.00263747857047,
+      "p95ms": 16.700000000000728,
+      "mainThreadMsPerSecond": 448.670051430832
+    },
+    {
+      "repetition": 1,
+      "dimmed": true,
+      "seconds": 1.5166000000000004,
+      "fps": 60.00263747857047,
+      "p95ms": 16.700000000000728,
+      "mainThreadMsPerSecond": 501.08400369247
+    },
+    {
+      "repetition": 1,
+      "dimmed": false,
+      "seconds": 1.5,
+      "fps": 60,
+      "p95ms": 16.700000000000728,
+      "mainThreadMsPerSecond": 510.6213333333335
+    },
+    {
+      "repetition": 2,
+      "dimmed": false,
+      "seconds": 1.5165999999999986,
+      "fps": 60.00263747857054,
+      "p95ms": 16.799999999999272,
+      "mainThreadMsPerSecond": 476.18686535671975
+    },
+    {
+      "repetition": 2,
+      "dimmed": true,
+      "seconds": 1.5166000000000022,
+      "fps": 60.0026374785704,
+      "p95ms": 16.799999999999272,
+      "mainThreadMsPerSecond": 451.3477515495181
+    }
+  ]
+}

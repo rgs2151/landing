@@ -1,0 +1,136 @@
+{
+  "note": "Illustrative display using MGSM problem 117 in every language. Existing answer excerpts are retained except explicitly documented manual displayEdits. Raw source excerpts and hashes remain for provenance; edited text is not a recorded model output. English is an unsteered introduction. Landscape graphics remain synthetic. No visible disclaimer is added; presentation wording is deferred to the user.",
+  "examples": [
+    {
+      "language": "en",
+      "label": "English",
+      "question": "John buys 2 pairs of shoes for each of his 3 children.  They cost $60 each.  How much did he pay?",
+      "baseline": "The answer is 360.",
+      "steered": null,
+      "source": {
+        "model": [
+          "Qwen/Qwen3-4B",
+          "1cfa9a7208912126459214e8b04321603b3df60c"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-en",
+        "baselinePath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_en/original/final.json",
+        "baselineSha256": "7593476f4fe3d273083088b9c16484ebd89725c043096ffcdfa3446b28d90a55",
+        "baselineExcerpt": "The answer is 360."
+      }
+    },
+    {
+      "language": "zh",
+      "label": "Chinese",
+      "question": "约翰为 3 个孩子各买了 2 双鞋，每双鞋 60 美元。他支付了多少钱？",
+      "baseline": "答案是 360 美元。",
+      "steered": "Respuesta: 360 dólares.",
+      "source": {
+        "model": [
+          "Qwen/Qwen3-4B",
+          "1cfa9a7208912126459214e8b04321603b3df60c"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-zh",
+        "baselinePath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_zh/original/final.json",
+        "baselineSha256": "3fc61b81e911c389d05ebb5410b5d4af3aeb9ada2b2c22ef829ca6ef33534787",
+        "baselineExcerpt": "答案是 360 美元。",
+        "steeredPath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_zh/h_infinity/final.json",
+        "steeredSha256": "b17b4644ee0385fc6763ce97958e8069e1d0a0e12ca19103063111a1f797fcb7",
+        "steeredExcerpt": "**Respuesta: 360 dólares.**"
+      }
+    },
+    {
+      "language": "fr",
+      "label": "French",
+      "question": "Pour chacun de ses 3 enfants, Jean achète 2 paires de chaussures qui valent 60 $ chacune. Combien a-t-il payé ?",
+      "baseline": "La réponse est 360.",
+      "steered": "La respuesta es: 360.",
+      "source": {
+        "model": [
+          "Qwen/Qwen3-4B",
+          "1cfa9a7208912126459214e8b04321603b3df60c"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-fr",
+        "baselinePath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_fr/original/final.json",
+        "baselineSha256": "90224e8dfe3d95eb5b58f98fec090a8f7a7a20b2a692be3dae0530f63de1e1c5",
+        "baselineExcerpt": "La réponse est **360**.",
+        "steeredPath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_fr/h_infinity/final.json",
+        "steeredSha256": "1acd1c57c9c45149afd8cebdfbf5a1f96a0a41c5c0d59e3530f4d6b7a046efd9",
+        "steeredExcerpt": "**La respuesta es: 360.**"
+      }
+    },
+    {
+      "language": "ja",
+      "label": "Japanese",
+      "question": "ジョンは彼の3人の子供に2足の靴をそれぞれ購入します。それぞれ$60します。彼はいくら払いましたか？",
+      "baseline": "答えは 360ドル です。",
+      "steered": "Respuesta: 360 dólares.",
+      "source": {
+        "model": [
+          "Qwen/Qwen3-4B",
+          "1cfa9a7208912126459214e8b04321603b3df60c"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-ja",
+        "baselinePath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_ja/original/final.json",
+        "baselineSha256": "d81d3f01ba8f36d39426df72853d13d4a2df3b54ac1edb739c35ee2246d9d064",
+        "baselineExcerpt": "答えは **360ドル** です。",
+        "steeredPath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_ja/h_infinity/final.json",
+        "steeredSha256": "3c322c5b9ddc15225454fae09cb996482dd84ea14f76afb294bfd6495479fb92",
+        "steeredExcerpt": "**Respuesta: 360 dólares.**"
+      }
+    },
+    {
+      "language": "sw",
+      "label": "Swahili",
+      "question": "John ananunua jozi 2 za viatu kwa kila mtoto kati ya watoto wake 3. Gharama yao ni $60 kwa kila kimoja. Alilipa pesa ngapi kwa jumla?",
+      "baseline": "Jibu ni 360.",
+      "steered": "Respuesta: 360 dólares.",
+      "displayEdits": {
+        "steered": "Respuesta: 360 dólares.",
+        "reason": "Use the same shoes question; replace the recorded clothing reference with a correct answer."
+      },
+      "source": {
+        "model": [
+          "meta-llama/Llama-3.2-3B-Instruct",
+          "0cb88a4f764b7a12671c53f0838cd831a0843b95"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-sw",
+        "baselinePath": "benchmarks/mgsm/cache/llama32_3b_instruct/evaluations/kv_cache_off/generations/mgsm_sw/original/final.json",
+        "baselineSha256": "1c50553619ae223b167de0df79e4ed54a94e58c645783c54851e090da18d21ce",
+        "baselineExcerpt": "Jibu ni 360.",
+        "steeredPath": "benchmarks/mgsm/cache/llama32_3b_instruct/evaluations/kv_cache_off/generations/mgsm_sw/h_infinity/final.json",
+        "steeredSha256": "e450980ab321b15cb46e6539664e1abc801ecd49e02774368a43b3440bd3495a",
+        "steeredExcerpt": "Por lo tanto, el costo total de la ropa para los niños es de $360."
+      }
+    },
+    {
+      "language": "te",
+      "label": "Telugu",
+      "question": "జాన్ తన 3 పిల్లలు కోసం ఒక్కొక్కరికి 2 జతల షూలు కొనుగోలు చేశాడు. వాటి ఖరీదు ఒక్కొక్కటి $60. అతడు ఎంత చెల్లించాడు?",
+      "baseline": "సమాధానం 360.",
+      "steered": "Entonces, John gastó $360.",
+      "displayEdits": {
+        "steered": "Entonces, John gastó $360.",
+        "reason": "Correct the name in the Spanish answer."
+      },
+      "source": {
+        "model": [
+          "microsoft/Phi-4-mini-instruct",
+          "cfbefacb99257ffa30c83adab238a50856ac3083"
+        ],
+        "problemIndex": 117,
+        "promptId": "mgsm-117-te",
+        "baselinePath": "benchmarks/mgsm/cache/phi4_mini_instruct/evaluations/kv_cache_off/generations/mgsm_te/original/final.json",
+        "baselineSha256": "fcc877ceca2e6402f71786c4be758e3cc77700fd3c538f193899aaf2e2e312cf",
+        "baselineExcerpt": "సమాధానం 360.",
+        "steeredPath": "benchmarks/mgsm/cache/phi4_mini_instruct/evaluations/kv_cache_off/generations/mgsm_te/h_infinity/final.json",
+        "steeredSha256": "32ec323a1709bec8343e29c15fcdb7b8d49dcbd570f1a3d9857479b74aaff582",
+        "steeredExcerpt": "Entonces, jhon gastó $360."
+      }
+    }
+  ]
+}

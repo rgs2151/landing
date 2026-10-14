@@ -8,6 +8,7 @@ RUN npm ci
 COPY index.html ./
 COPY public ./public
 COPY src ./src
+COPY design/references/robust-steering-animation/*.json ./design/references/robust-steering-animation/
 RUN npm run build
 
 FROM nginx:1.27-alpine
