@@ -28,7 +28,7 @@ export function NeuralFieldManifold(props) {
   return <NeuralFieldAnimation {...props} part="manifold" />;
 }
 
-function createManifold(host, model, strokeWidth, capture = false) {
+function createManifold(host, model, strokeWidth, capture = false, pixelRatio = Math.min(window.devicePixelRatio, 2)) {
   const LAG = model.lag;
   const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
   camera.position.set(3.2, 3.1, 4.9).multiplyScalar(1.2);
@@ -68,7 +68,7 @@ function createManifold(host, model, strokeWidth, capture = false) {
       dispose() { canvas.remove(); },
     };
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(pixelRatio);
   renderer.setClearColor(0xffffff, 0);
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
@@ -139,8 +139,9 @@ export default function NeuralFieldAnimation(props) {
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, maxFps, elapsedMs }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, maxFps, elapsedMs, exportPixelRatio }) {
   const full = part === 'full';
+  const strokeWidth = part === 'manifold' ? 1.5 : MANIFOLD_STROKE_WIDTH;
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
   const root = useRef(null);
@@ -153,7 +154,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
   const exporting = elapsedMs !== undefined;
 
   useEffect(() => {
-    const manifold = host.current ? createManifold(host.current, model, MANIFOLD_STROKE_WIDTH, exporting) : null;
+    const manifold = host.current ? createManifold(host.current, model, strokeWidth, exporting, exporting ? exportPixelRatio : undefined) : null;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const initialFrame = Math.floor(model.signal.length / 2);
     let frame = initialFrame;
@@ -228,7 +229,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       manifold?.dispose(); controller.current = null;
       if (snapshotRef) snapshotRef.current = null;
     };
-  }, [model, LAG, part, snapshotRef, maxFps, exporting]);
+  }, [model, LAG, part, snapshotRef, maxFps, exporting, exportPixelRatio, strokeWidth]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused && !exporting); }, [active, paused, exporting]);
   useEffect(() => { if (exporting) controller.current?.seek(elapsedMs); }, [elapsedMs, exporting]);
@@ -297,7 +298,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
         </>}
         {(full || part === 'manifold') && <text x="874" y="392" textAnchor="middle" className="nf-caption">x(t), x(t − τ), x(t − 2τ)</text>}
       </svg>
-      {(full || part === 'manifold') && <div className="nf-manifold" ref={host} data-stroke-width={MANIFOLD_STROKE_WIDTH} aria-hidden="true" />}
+      {(full || part === 'manifold') && <div className="nf-manifold" ref={host} data-stroke-width={strokeWidth} aria-hidden="true" />}
     </div>
     {!compact && <div className="nf-controls">
       <button type="button" onClick={() => { controller.current?.allowMotion(); setPaused(value => !value); }} aria-label={paused ? 'Play neural field animation' : 'Pause neural field animation'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>

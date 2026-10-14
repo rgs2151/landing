@@ -41,6 +41,11 @@ timestamps into isolated transparent frames, not page screenshots. The catalog
 sets per-fragment resolution and frame rate. The manifest records source hashes,
 encoded dimensions, original layout dimensions, duration, frame count and bytes.
 Output files replace the same named exports; revision hashes invalidate caches.
+For canvas-backed fragments, render the source drawing buffer at export quality
+before encoding; increasing only the output video dimensions upscales blur.
+The manifold uses a 4x source buffer, 960px output width and CRF 10. Other preview
+settings remain unchanged. `VERIFY_ONLY=1 ASSETS=signal,autoregressive` checks
+unchanged sibling first-frame pixels without regenerating their media.
 
 `landingPreviews.jsx` is the shared native video player. F requires an exported
 preview for every live-source fragment, with no live-renderer fallback. Original

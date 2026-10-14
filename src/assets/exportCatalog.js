@@ -24,7 +24,8 @@ export async function exportCatalog() {
   for (const name of ['signal', 'autoregressive', 'manifold']) entries.push({
     project: 'neural-field-manifold', name, id: name, Component: neuralField[name], duration: nfmDuration,
     sourceWidth: name === 'signal' ? 250 : name === 'autoregressive' ? 375 : 270,
-    width: name === 'signal' ? 300 : name === 'autoregressive' ? 450 : 480, fps: 15,
+    width: name === 'signal' ? 300 : name === 'autoregressive' ? 450 : 960, fps: 15,
+    ...(name === 'manifold' ? { crf: 10, props: { exportPixelRatio: 4 } } : {}),
   });
   for (const name of ['landscape', 'conversation']) entries.push({
     project: 'robust-steering', name, id: name, Component: steering[name],

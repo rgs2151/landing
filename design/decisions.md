@@ -88,6 +88,12 @@ Implementation: `src/shared/NeuralFieldAnimation.jsx`,
 
 ## NeuralFieldManifold Fragments
 
+The standalone manifold fragment was explicitly reopened for F's sharpness fix:
+its trajectory stroke is 1.5 instead of 2. The full schematic retains stroke 2.
+Its video is exported at 960px width, using a 4x WebGL drawing buffer before
+rasterization and VP9 CRF 10. Do not upscale a low-resolution WebGL canvas to
+produce a supposedly higher-resolution export. Geometry and timing are unchanged.
+
 The frozen full schematic also supplies three reusable, transparent rectangular
 assets. They are named exports from the same `NeuralFieldAnimation.jsx` module:
 

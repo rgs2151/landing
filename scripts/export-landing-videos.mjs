@@ -12,6 +12,7 @@ const browser = await playwright.chromium.launch({
   args: ['--enable-unsafe-swiftshader'],
 });
 const selected = process.env.ASSETS?.split(',');
+const verifyOnly = process.env.VERIFY_ONLY === '1';
 const manifests = new Map();
 let runningEncoder;
 try {
@@ -62,13 +63,13 @@ try {
     const count = Math.ceil(entry.duration * entry.fps / 1000);
     const fps = count * 1000 / entry.duration;
     const file = `${base}/videos/${entry.name}.webm`;
-    const encoder = spawn('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-vcodec', 'png', '-framerate', String(fps), '-i', 'pipe:0',
-      '-an', '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-auto-alt-ref', '0', '-b:v', '0', '-crf', '15', '-deadline', 'good', '-cpu-used', '4', '-row-mt', '1', '-threads', '2', file]);
+    const encoder = verifyOnly ? null : spawn('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'image2pipe', '-vcodec', 'png', '-framerate', String(fps), '-i', 'pipe:0',
+      '-an', '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-auto-alt-ref', '0', '-b:v', '0', '-crf', String(entry.crf ?? 15), '-deadline', 'good', '-cpu-used', '4', '-row-mt', '1', '-threads', '2', file]);
     runningEncoder = encoder;
-    let stderr = ''; encoder.stderr.on('data', data => { stderr += data; });
-    const finished = once(encoder, 'close');
+    let stderr = ''; encoder?.stderr.on('data', data => { stderr += data; });
+    const finished = encoder ? once(encoder, 'close') : null;
     let firstStats, lastHash;
-    for (let frame = 0; frame < count; frame++) {
+    for (let frame = 0; frame < (verifyOnly ? 1 : count); frame++) {
       const rendered = await page.evaluate(async ({ ms, width, height }) => {
         const e = window.exporter;
         e.render(ms);
@@ -107,6 +108,12 @@ try {
       const png = Buffer.from(rendered.png, 'base64');
       if (!rendered.visible) throw new Error(`Blank asset frame: ${entry.id}/${frame}`);
       lastHash = createHash('sha256').update(png).digest('hex');
+      if (verifyOnly) {
+        const previous = manifests.get(entry.project)[entry.id];
+        if (lastHash !== previous?.firstFrame.sha256) throw new Error(`Source first frame changed: ${entry.id}`);
+        console.log(`${entry.id}: original first-frame pixels unchanged`);
+        continue;
+      }
       if (!frame) {
         firstStats = { visible: rendered.visible, transparent: rendered.transparent, sha256: lastHash };
         await sharp(png).webp({ lossless: true }).toFile(`${base}/posters/${entry.name}.webp`);
@@ -114,6 +121,7 @@ try {
       if (!encoder.stdin.write(png)) await once(encoder.stdin, 'drain');
       if (frame && frame % 300 === 0) console.log(`${entry.id}: ${frame}/${count} frames`);
     }
+    if (verifyOnly) continue;
     encoder.stdin.end();
     const [code] = await finished;
     runningEncoder = null;
@@ -122,7 +130,8 @@ try {
     const item = { id: entry.id, project: entry.project, name: entry.name, src: `/assets/projects/${entry.project}/videos/${entry.name}.webm`,
       poster: `/assets/projects/${entry.project}/posters/${entry.name}.webp`, revision, width, height,
       layoutWidth: layout.width, layoutHeight: layout.height, duration: entry.duration, loopStart: entry.loopStart || 0,
-      fps, frames: count, bytes: statSync(file).size, firstFrame: firstStats, lastFrameHash: lastHash,
+      fps, frames: count, crf: entry.crf ?? 15, exportPixelRatio: entry.props?.exportPixelRatio || null,
+      bytes: statSync(file).size, firstFrame: firstStats, lastFrameHash: lastHash,
       fragment: `src/assets/${entry.project}/fragments.js#${entry.name}`, composite: `src/assets/${entry.project}/composite.js`, sources: previewSources(entry) };
     manifests.get(entry.project)[entry.id] = item;
     writeFileSync(`${base}/previews.json`, JSON.stringify(manifests.get(entry.project), null, 2) + '\n');

@@ -26,7 +26,7 @@
     "sources": [
       {
         "path": "src/shared/NeuralFieldAnimation.jsx",
-        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+        "sha256": "365c3ca3081eaab806503bb268dfe8334fb752a845f7b2d8d1f96aae4fdb8106"
       },
       {
         "path": "src/shared/neuralFieldModel.js",
@@ -40,7 +40,8 @@
         "path": "public/assets/data/mouse-lfp.json",
         "sha256": "d70ca4c1f84301cb818656b547813230c8f4d370a596410a0dd68a812ddb74cc"
       }
-    ]
+    ],
+    "sourceVerification": "Shared source updated for manifold-only stroke/export resolution; unchanged sibling first-frame pixels verified, video not regenerated."
   },
   "autoregressive": {
     "id": "autoregressive",
@@ -69,7 +70,7 @@
     "sources": [
       {
         "path": "src/shared/NeuralFieldAnimation.jsx",
-        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+        "sha256": "365c3ca3081eaab806503bb268dfe8334fb752a845f7b2d8d1f96aae4fdb8106"
       },
       {
         "path": "src/shared/neuralFieldModel.js",
@@ -83,7 +84,8 @@
         "path": "public/assets/data/mouse-lfp.json",
         "sha256": "d70ca4c1f84301cb818656b547813230c8f4d370a596410a0dd68a812ddb74cc"
       }
-    ]
+    ],
+    "sourceVerification": "Shared source updated for manifold-only stroke/export resolution; unchanged sibling first-frame pixels verified, video not regenerated."
   },
   "manifold": {
     "id": "manifold",
@@ -91,28 +93,30 @@
     "name": "manifold",
     "src": "/assets/projects/neural-field-manifold/videos/manifold.webm",
     "poster": "/assets/projects/neural-field-manifold/posters/manifold.webp",
-    "revision": "0712524dc189",
-    "width": 480,
-    "height": 454,
+    "revision": "a7dfd2c09036",
+    "width": 960,
+    "height": 908,
     "layoutWidth": 270,
     "layoutHeight": 255,
     "duration": 39680,
     "loopStart": 0,
     "fps": 15.02016129032258,
     "frames": 596,
-    "bytes": 808694,
+    "crf": 10,
+    "exportPixelRatio": 4,
+    "bytes": 2198259,
     "firstFrame": {
-      "visible": 37717,
-      "transparent": 180203,
-      "sha256": "cb5a543602ec927d9fd3eb83658f9626fad119401a8da2dd6923a0d22c733ff3"
+      "visible": 79559,
+      "transparent": 792121,
+      "sha256": "840f752a5476adfaeabdc206d51a7299b36f9def2e8c4d01a841621ec18260d9"
     },
-    "lastFrameHash": "cc874249bc6264a9bfca1d755a54cfc5948210a7d684c81929bd7263efec24b4",
+    "lastFrameHash": "bb28daab202af0288989c6fed08df1d02ce67b3f3ac172ee4934f6ceff96361d",
     "fragment": "src/assets/neural-field-manifold/fragments.js#manifold",
     "composite": "src/assets/neural-field-manifold/composite.js",
     "sources": [
       {
         "path": "src/shared/NeuralFieldAnimation.jsx",
-        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+        "sha256": "365c3ca3081eaab806503bb268dfe8334fb752a845f7b2d8d1f96aae4fdb8106"
       },
       {
         "path": "src/shared/neuralFieldModel.js",

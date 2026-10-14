@@ -14,7 +14,7 @@ frame-sheet playback. No live SVG/WebGL simulation remains on F's splash.
 Project pages retain their accepted live high-quality renderers and composites.
 Videos are derived from those exact sources, preserving the complete timeline
 and framing. Encoded pixels are compressed; they are not byte-identical to SVG.
-The new files total approximately 22.4 MB, trading transfer/storage for avoiding
+The new files total approximately 23.8 MB, trading transfer/storage for avoiding
 live simulation and SVG updates. No new performance measurements were requested
 or performed, and no speedup is claimed here.
 
