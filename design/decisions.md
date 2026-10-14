@@ -59,7 +59,8 @@ fragments have the standard inset controls. Compact clickable previews omit
 controls and open the full project view, avoiding nested buttons. Each instance
 has its own playback state; reuse does not require coupling unrelated placements.
 
-Prototype A groups the three animated fragments where the full-schematic preview
-was previously placed. Their white backing belongs to that prototype, not the
-transparent assets. Do not change Nature media or the production homepage as
-part of this extraction.
+Keep each project's assets together in code, not clustered together on the page.
+Prototype A distributes the three fragments independently around the composition,
+like the Nature panels, with individual positions and hover transforms. Their
+white backing belongs to that prototype, not the transparent assets. Do not
+change Nature media or the production homepage as part of this extraction.

@@ -42,14 +42,14 @@
 .pa-model video { display: block; width: 100%; aspect-ratio: 776 / 550; pointer-events: none; }
 .pa-model > span, .pa-manifold-project > span { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--pa-accent); color: #fff; padding: 12px 14px; font-size: 28px; line-height: 1.1; }
 .pa-model > span svg, .pa-manifold-project > span svg { flex-shrink: 0; }
-.pa-manifold { position: absolute; left: 718px; top: 418px; width: 400px; z-index: 4; }
-.pa-manifold-project { position: absolute; top: 220px; display: block; width: 100%; padding: 0; border: 0; text-align: left; background: #fff; transform: rotate(-7deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
+.pa-manifold { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.pa-manifold-project { position: absolute; left: 718px; top: 638px; display: block; width: 400px; padding: 0; border: 0; text-align: left; background: #fff; pointer-events: auto; transform: rotate(-7deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
 .pa-manifold-project > span { font-size: 26px; }
-.pa-manifold-fragments { position: relative; height: 220px; }
-.pa-manifold-fragment { position: absolute; padding: 0; border: 0; background: #fff; transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
-.pa-manifold-signal { left: 0; top: -30px; width: 205px; aspect-ratio: 250 / 165; transform: rotate(-9deg); }
-.pa-manifold-autoregressive { left: 0; top: 95px; width: 245px; aspect-ratio: 375 / 185; transform: rotate(4deg); }
-.pa-manifold-trajectory { left: 222px; top: 12px; width: 170px; aspect-ratio: 270 / 255; transform: rotate(-7deg); }
+.pa-manifold-fragments { position: absolute; inset: 0; }
+.pa-manifold-fragment { position: absolute; padding: 0; border: 0; background: #fff; pointer-events: auto; transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
+.pa-manifold-signal { left: 280px; top: 40px; width: 205px; aspect-ratio: 250 / 165; transform: rotate(-9deg); }
+.pa-manifold-autoregressive { left: 805px; top: 350px; width: 245px; aspect-ratio: 375 / 185; transform: rotate(4deg); }
+.pa-manifold-trajectory { left: 895px; top: 470px; width: 170px; aspect-ratio: 270 / 255; transform: rotate(-7deg); }
 .pa-paper-stamp { position: absolute; left: 130px; top: 477px; display: flex; align-items: baseline; gap: 12px; transform: rotate(-5deg); z-index: 4; pointer-events: none; }
 .pa-paper-stamp img { width: 118px; height: auto; filter: invert(1); }
 .pa-paper-stamp span { font-size: 30px; }
