@@ -2,6 +2,11 @@
 
 Communicate professionally and concisely.
 
+Production hosting is GitHub Pages: `deploy` branch, `/ (root)`, `singha.io`.
+Editable source stays on `expansion`. `npm run deploy` builds locally and publishes
+compiled files with an ordinary push; do not put source code on `deploy` or deploy
+to `dan`. Docker is not the production hosting path. Publish only when requested.
+
 Before applying website or prototype feedback, read
 `.agents/skills/scoped-design-feedback/SKILL.md` and follow it.
 

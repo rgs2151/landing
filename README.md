@@ -1,7 +1,7 @@
 # Rudramani Singha Website
 
-The accepted interactive website, built with React and Vite and served by nginx
-in a single Docker container. The final F design is now the homepage at `/`.
+The accepted interactive website, built with React and Vite and hosted on GitHub
+Pages at `singha.io`. The final F design is now the homepage at `/`.
 
 ## Local Development
 
@@ -65,7 +65,29 @@ Original Nature supplementary videos are in `public/assets/videos/`.
 The Nature mark comes from the journal; the GitHub mark is from Primer Octicons.
 Source licenses and attribution remain with the content/assets.
 
-## Docker And Hosting
+## Publishing
+
+Editable source lives on `expansion`. The `deploy` branch contains only the built
+website. GitHub Pages serves `deploy` from `/ (root)` with the custom domain
+`singha.io`. The previous `dan` branch is retained but is no longer the publishing
+source.
+
+After committing and pushing source changes on `expansion`:
+
+```sh
+npm run deploy
+```
+
+This builds locally, copies `dist/` into an isolated temporary checkout, and
+pushes a normal commit to `deploy`. It preserves deployment history, includes
+`CNAME` and `.nojekyll`, and leaves your working branch untouched. A clean source
+checkout and Git push access are required. An identical build makes no new commit.
+
+There is no application backend and no custom GitHub Actions build or Docker
+publishing workflow. GitHub still runs its managed Pages publishing process after
+the deploy push; publication is not instantaneous.
+
+## Optional Local Docker
 
 ```sh
 docker compose up --build -d
@@ -77,24 +99,4 @@ The container serves the production site at `http://localhost:8080`.
 The Docker build includes the two cached steering-data JSON files under
 `design/references/robust-steering-animation/`, in addition to `src/` and `public/`.
 
-Every push to `expansion` publishes these images through GitHub Actions:
-
-```text
-ghcr.io/rgs2151/landing:expansion
-ghcr.io/rgs2151/landing:latest
-ghcr.io/rgs2151/landing:sha-<commit>
-```
-
-The server repository should pull the image and route `singha.io` to its port 80:
-
-```yaml
-services:
-  landing:
-    image: ghcr.io/rgs2151/landing:latest
-    restart: unless-stopped
-    expose:
-      - "80"
-```
-
-Publishing an image does not itself restart the server container. Its deployment
-must pull and recreate the service. Domain metadata remains `singha.io`.
+Docker is optional for local use and is not involved in publishing the live site.
