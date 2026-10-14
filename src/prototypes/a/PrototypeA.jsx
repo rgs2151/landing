@@ -4,11 +4,12 @@ import { profile, paper, robustSteering, neuralFieldManifold } from '../../conte
 import ParticleField from '../../shared/ParticleField';
 import NeuralFieldAnimation from '../../shared/NeuralFieldAnimation';
 import ProjectVideo from '../../shared/ProjectVideo';
+import RobustSteeringAnimation from '../../shared/RobustSteeringAnimation';
 import './styles.css';
 
 const projectContent = { biological: paper, artificial: robustSteering, manifold: neuralFieldManifold };
 
-function ProjectView({ project }) {
+function ProjectView({ project, onClose }) {
   if (project === 'about') {
     return <div className="pa-about">
       <img src={profile.photo} alt={profile.name} />
@@ -22,7 +23,7 @@ function ProjectView({ project }) {
   return <article className={`pa-paper pa-paper-${project}`}>
     <h2>{content.title}</h2>
     {project === 'biological' && <ProjectVideo src={paper.strip} poster={paper.stripPoster} />}
-    {project === 'artificial' && <ProjectVideo src={robustSteering.animation.src} poster={robustSteering.animation.poster} aria-label={robustSteering.animation.alt} />}
+    {project === 'artificial' && <RobustSteeringAnimation onClose={onClose} />}
     {project === 'manifold' && <NeuralFieldAnimation />}
     <div className="pa-paper-links">
       <a href={content.url} target="_blank" rel="noopener noreferrer">{project === 'biological' ? <img src={paper.natureLogo} alt="Nature" /> : 'Project'} {content.year}<ArrowUpRight size={18} /></a>
@@ -109,7 +110,7 @@ export default function PrototypeA() {
         <div className="pa-artificial" onMouseEnter={() => setHovered('artificial')}
           onFocus={() => setHovered('artificial')} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>
           <button className="pa-model" onClick={() => openProject('artificial')} aria-label={robustSteering.shortTitle} aria-haspopup="dialog">
-            {desktop && <ProjectVideo src={robustSteering.animation.src} poster={robustSteering.animation.poster} compact active={!selected} />}
+            {desktop && <RobustSteeringAnimation compact active={!selected} />}
             <span>{robustSteering.shortTitle}<ArrowUpRight size={24} /></span>
           </button>
         </div>
@@ -135,7 +136,7 @@ export default function PrototypeA() {
       onClick={event => { if (event.target === event.currentTarget) closeProject(); }} aria-label={selected === 'about' ? 'About Rudramani Singha' : projectContent[selected]?.title || 'Project'}>
       <div className="pa-dialog-inner">
         <button className="pa-close" ref={closeRef} onClick={closeProject} aria-label="Close project" title="Close project"><X size={24} /></button>
-        {selected && <ProjectView key={selected} project={selected} />}
+        {selected && <ProjectView key={selected} project={selected} onClose={closeProject} />}
       </div>
     </dialog>
   </main>;

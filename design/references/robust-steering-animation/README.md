@@ -24,8 +24,14 @@ identifies its activations and question/response example as schematic, not
 recorded benchmark outputs.
 
 Preserve the current sequence, wording, colors, and timing for the first reuse.
-The original GIF is retained. Prototype A uses `public/assets/videos/robust-steering.mp4`,
-an H.264 conversion with the original timing and a single white padding row
-(776 x 550). This allows native playback controls and pauses when hidden.
-Its poster is `public/assets/images/robust-steering.webp`, extracted at 18 seconds.
-The source supports later styling and interactive adaptation.
+Prototype A now runs the original JavaScript and SVG, not the GIF or MP4.
+`src/shared/RobustSteeringAnimation.jsx` imports these unchanged local snapshots,
+extracts only the animation markup using DOMParser, and runs it in a sandboxed
+inline frame. There is no remote embed and no video request. The fixed internal
+viewport preserves the source composition at thumbnail and reading sizes.
+
+The wrapper supplies the inherited colors/reset, hides thumbnail controls,
+and pauses the thumbnail while a project is open. The source retains its
+timeline, seeded KDE fields, pause/replay controls, visibility handling and
+reduced-motion state. Removing the frame also disposes all its animation work.
+Previous media exports remain archived but are no longer used by the prototype.

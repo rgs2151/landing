@@ -41,8 +41,7 @@ export const robustSteering = {
   id: 'robust-steering',
   shortTitle: 'Robust steering',
   animation: {
-    src: '/assets/videos/robust-steering.mp4',
-    poster: '/assets/images/robust-steering.webp',
+    type: 'javascript',
     width: 776,
     height: 550,
     alt: 'Illustrative robust steering animation: a controller learned from one activation landscape is applied after a distribution shift to steer a response into Spanish.',

@@ -9,18 +9,27 @@ the signal model is in `src/shared/neuralFieldModel.js`.
 
 ## Demonstration Model
 
-This is an illustrative synthetic signal, not an experimental LFP recording
-or a fitted result from the paper. Two incommensurate, sustained oscillatory
-modes define a noiseless AR(4) process. Its recurrence is obtained by multiplying
-the two second-order oscillator characteristic polynomials. Innovations are
-zero in this demonstration; the displayed general equation retains epsilon.
+The simulation now follows `notebooks/rudra_novak/donuts_retry_improve.ipynb`,
+cells 1, 2 and 8, in [NeuralFieldManifold](https://github.com/erfanzabeh/NeuralFieldManifold/blob/9eafbedcfbddb25f0d6102db6e75ddfa6eb31c79/notebooks/rudra_novak/donuts_retry_improve.ipynb).
+The reference clone stays outside this repository, at
+`/tmp/landing-NeuralFieldManifold-reference`; no notebook or dataset is vendored.
 
-The waveform and moving delay markers use that same recurrence. Four delayed
-observations (lag = 8 samples) recover the two modal phases by a linear inverse.
-Their product of circles is displayed as a torus with a growing trajectory.
-The torus is a phase-coordinate visualization of the delay state, not a claim
-that every AR process or its first three raw delay coordinates forms a torus.
-The upper hidden-dynamics panel is the static conceptual comparison.
+- Noise-driven AR(4), with pole radii 0.999 and 0.993.
+- Frequencies 0.025 and 0.10 cycles/sample; sampling rate 100 Hz.
+- Gaussian innovation standard deviation 0.05, 5,000-sample burn-in,
+  5,000 retained samples, seed 42.
+- The notebook's min/max normalization to [-1, 1].
+- Direct three-coordinate delay embedding with lag 10; the initial trajectory
+  uses the first 1,500 samples, as in the notebook's low-noise AR(4) figure.
+
+JavaScript uses a seeded Mulberry32/Box-Muller Gaussian stream, not NumPy PCG64:
+the model and parameters match, but individual random samples are not bitwise
+identical. This remains synthetic data, not an experimental recording.
+
+The displayed coordinates are x(t), x(t-tau), x(t-2tau), uniformly scaled for
+viewing. No modal-phase recovery, imposed torus surface, or radial projection is
+used. The waveform, lag markers and moving 3D point share the same sample index.
+The upper hidden-dynamics panel remains the static conceptual comparison.
 
 SVG renders labels, equations, arrows, and the waveform. Three.js renders the
 manifold; a canvas projection is used if WebGL is unavailable. Animation stops

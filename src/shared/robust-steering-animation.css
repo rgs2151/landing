@@ -1,0 +1,4 @@
+.rs-animation { position: relative; width: 100%; aspect-ratio: 776 / 550; background: #fff; overflow: hidden; }
+.rs-animation iframe { position: absolute; left: 50%; top: 50%; width: 1000px; height: 550px; max-width: none; border: 0; transform: scale(var(--steering-scale, 1)) translate(-388px, -275px); transform-origin: 0 0; }
+.rs-compact { pointer-events: none; }
+.pa-paper-artificial > .rs-animation { max-height: 420px; }

@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import * as THREE from 'three';
-import { createNeuralFieldModel, LAG, SIGNAL_WINDOW, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
+import { createNeuralFieldModel, LAG, SIGNAL_WINDOW, SIGNAL_HEIGHT, SIMULATION, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
 import './neural-field-animation.css';
 
 const model = createNeuralFieldModel();
@@ -9,6 +9,10 @@ const START = SIGNAL_WINDOW + 3 * LAG;
 const ACCENT = '#8b1e1e';
 
 function createManifold(host) {
+  const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
+  camera.position.set(3.2, 3.1, 4.9).multiplyScalar(1.2);
+  camera.lookAt(0, 0, 0);
+  camera.updateMatrixWorld();
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -17,19 +21,23 @@ function createManifold(host) {
     const canvas = document.createElement('canvas');
     host.append(canvas);
     const context = canvas.getContext('2d');
+    const projected = new THREE.Vector3();
     return {
-      resize(width, height) { canvas.width = width * 2; canvas.height = height * 2; },
+      resize(width, height) {
+        canvas.width = width * 2; canvas.height = height * 2;
+        camera.aspect = width / height; camera.updateProjectionMatrix();
+      },
       draw(frame) {
         const { width, height } = canvas;
         context.clearRect(0, 0, width, height);
         context.strokeStyle = ACCENT;
         context.lineWidth = 1.6;
         context.beginPath();
-        for (let i = Math.max(3 * LAG, frame - TRACE_LENGTH); i <= frame; i++) {
-          const [x, y, z] = model.points.subarray(i * 3, i * 3 + 3);
-          const px = width / 2 + (x * 0.85 + z * 0.4) * width / 4.5;
-          const py = height / 2 + (-y + z * 0.45) * height / 3.5;
-          if (i === Math.max(3 * LAG, frame - TRACE_LENGTH)) context.moveTo(px, py);
+        for (let i = Math.max(2 * LAG, frame - TRACE_LENGTH + 1); i <= frame; i++) {
+          projected.fromArray(model.points, i * 3).project(camera);
+          const px = (projected.x + 1) * width / 2;
+          const py = (1 - projected.y) * height / 2;
+          if (i === Math.max(2 * LAG, frame - TRACE_LENGTH + 1)) context.moveTo(px, py);
           else context.lineTo(px, py);
         }
         context.stroke();
@@ -41,9 +49,6 @@ function createManifold(host) {
   renderer.setClearColor(0xffffff, 0);
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
-  camera.position.set(3.2, 3.1, 4.9);
-  camera.lookAt(0, 0, 0);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(model.points, 3));
   const material = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.78 });
@@ -53,7 +58,7 @@ function createManifold(host) {
   const point = new THREE.Mesh(pointGeometry, pointMaterial);
   scene.add(point);
   const grid = new THREE.GridHelper(4.4, 8, 0xcccccc, 0xe0e0e0);
-  grid.position.y = -0.64;
+  grid.position.y = -1.85;
   scene.add(grid);
   return {
     resize(width, height) {
@@ -62,7 +67,7 @@ function createManifold(host) {
       camera.updateProjectionMatrix();
     },
     draw(frame) {
-      const start = Math.max(3 * LAG, frame - TRACE_LENGTH);
+      const start = Math.max(2 * LAG, frame - TRACE_LENGTH + 1);
       geometry.setDrawRange(start, frame - start + 1);
       point.position.fromArray(model.points, frame * 3);
       renderer.render(scene, camera);
@@ -88,7 +93,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
   useEffect(() => {
     const manifold = createManifold(host.current);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = START + 240;
+    let frame = 1499;
     let raf = 0;
     let last = 0;
     let remainder = 0;
@@ -99,7 +104,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
       waveform.current.setAttribute('d', waveformPath(model.signal, frame));
       lagPoints.current.forEach((point, j) => {
         point.setAttribute('cx', 242 - j * LAG * 224 / (SIGNAL_WINDOW - 1));
-        point.setAttribute('cy', 286 - model.signal[frame - j * LAG] * 24);
+        point.setAttribute('cy', 286 - model.signal[frame - j * LAG] * SIGNAL_HEIGHT);
       });
       temporalPoint.current.setAttribute('cx', 567 + model.signal[frame - LAG] * 19);
       temporalPoint.current.setAttribute('cy', 446 - model.signal[frame - 2 * LAG] * 14);
@@ -107,7 +112,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
       manifold.draw(frame);
     }
     function tick(now) {
-      if (last) remainder += Math.min(now - last, 100) * 0.03;
+      if (last) remainder += Math.min(now - last, 100) * SIMULATION.sampleRate / 1000;
       last = now;
       const steps = Math.floor(remainder);
       if (steps) {
@@ -153,7 +158,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
     <div className="nf-diagram">
       <svg viewBox="0 0 1000 550" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
         <title id={`${id}-title`}>Extracting state space of a signal from time series</title>
-        <desc id={`${id}-desc`}>An illustrative noiseless AR(4) signal with two oscillatory modes. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; recovered modal phases trace a toroidal manifold.</desc>
+        <desc id={`${id}-desc`}>Noise-driven AR(4) simulation using the NeuralFieldManifold notebook parameters. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
@@ -202,7 +207,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
         <circle ref={temporalPoint} r="4" fill={ACCENT} />
         <path d="M713,426 L791,342" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
         <text x="874" y="161" textAnchor="middle" className="nf-label">Formulation of manifold<tspan x="874" dy="24">properties</tspan></text>
-        <text x="874" y="392" textAnchor="middle" className="nf-caption">Lag-derived phases</text>
+        <text x="874" y="392" textAnchor="middle" className="nf-caption">x(t), x(t − τ), x(t − 2τ)</text>
       </svg>
       <div className="nf-manifold" ref={host} aria-hidden="true" />
     </div>
