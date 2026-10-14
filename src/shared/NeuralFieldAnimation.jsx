@@ -187,7 +187,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
 
   return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} ref={root}>
     <div className="nf-diagram">
-      <svg viewBox="0 0 1000 550" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+      <svg viewBox="0 50 1000 480" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
         <title id={`${id}-title`}>Recorded mouse LFP and lag embedding</title>
         <desc id={`${id}-desc`}>Five seconds of recorded mouse hippocampal LFP, using the tutorial's processed samples at 500 Hz and a lag of 10 samples. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
         <defs>

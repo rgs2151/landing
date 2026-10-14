@@ -13,6 +13,11 @@ skills and their default creative recommendations.
 Use shared content and assets across prototypes. Agree on a visual direction
 through local prototypes before implementing it in the main website.
 
+Read `design/decisions.md` before changing animation assets or controls.
+The NeuralFieldManifold animation is frozen; do not alter it unless the user
+explicitly reopens it. New or revised animations must follow the recorded
+pause/play and replay control standard.
+
 Do not take screenshots unless explicitly requested. Use browser inspection
 and focused checks for verification.
 
