@@ -10,22 +10,16 @@ Apply only the requested changes; preserve unrelated layout, fonts, navigation,
 media, and accepted decisions. User instructions take precedence over design
 skills and their default creative recommendations.
 
-Use shared content and assets across prototypes. Agree on a visual direction
-through local prototypes before implementing it in the main website.
-Every prototype must be polished as an intended final product. Do not defer
-visible defects as mockup issues. Preserve A when iterating in B. Project details
-in B open within the composition, not in modal dialogs or backdrop overlays.
-The individual project animations are finalized; reuse them without redesigning.
-
-Prototype C is frozen at commit `8a28b01`. Prototype D is frozen at `ffe4525`.
-Prototype E is frozen at `d135339`. Continue new iterations in prototype F at
-`/prototype/f`, preserving E's layout with prerecorded splash previews.
-F owns its layout and scoped styles; do not edit frozen prototypes or
-change their rendered output through shared modules. Keep F-only changes scoped to F, and
-reuse shared content and assets without duplicating or redesigning them.
-D, E and F's tool previews start at 75%
-opacity and reach full opacity on hover; papers and the profile remain fully
-opaque at rest. Keep new tool placements toward the composition's outer edge.
+The accepted F design is now the main website at `/`, implemented in `src/site/`.
+There are no active prototype routes. `src/prototypes/README.md` records the
+iteration history; old implementations are recoverable from Git.
+Preserve the accepted design and reuse shared content and animation assets.
+Project details open within the composition, not in modal dialogs or overlays.
+The individual project animations are finalized; do not redesign them implicitly.
+Tool previews start at 75% opacity and reach full opacity on hover; papers and
+the profile remain fully opaque at rest. Keep new tool placements toward the
+composition's outer edge. Future design explorations must be explicitly scoped
+and polished, not rough mockups, before promotion into the main website.
 
 Read `design/decisions.md` before changing animation assets or controls.
 The NeuralFieldManifold animation is frozen; do not alter it unless the user
@@ -53,8 +47,7 @@ not force pushes; retain necessary checks appropriate to the requested change.
 Working project blurbs live in `src/content/`. The accepted versions in
 `src/content/neural-field-manifold.md` and `src/content/robust-steering.md` are
 frozen unless explicitly reopened by the user. Preserve their exact wording
-across prototypes and the main website. Preserve the iteration A snapshot in
-`src/content/iterations/iteration-a.md`.
+across the website. Historical copy iterations remain in Git history.
 
 Chat shorthand does not authorize renaming a project or its content files.
 When revising a blurb, include the complete resulting paragraph in chat so

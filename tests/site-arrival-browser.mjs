@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import playwright from '/tmp/landing-browser-check/node_modules/playwright/index.js';
 
+const base = process.env.SITE_URL || 'http://localhost:5173';
 const browser = await playwright.chromium.launch({
   executablePath: '/home/dev/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell',
   args: ['--enable-unsafe-swiftshader'],
@@ -9,8 +10,8 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('http://localhost:5173/prototype/e');
-  await page.waitForFunction(() => document.querySelectorAll('.svg-asset[data-ready="true"]').length === 5);
+  await page.goto(base);
+  await page.waitForFunction(() => document.querySelectorAll('.landing-video video[data-ready="true"]').length === 11);
   await page.getByRole('button', { name: 'Pause composition', exact: true }).click();
   await page.locator('[data-menu="packages"]').hover();
   assert.equal(await page.locator('#pb-packages-menu a[href="#pylba"] span').textContent(), 'pyLBA: Linear Ballistic Accumulators');
@@ -78,12 +79,6 @@ try {
   await page.locator('#pb-packages-menu a[href="#neuraljaxlib"]').click();
   await page.waitForSelector('.pb-tool-gallery [data-ready="true"]');
   assert(await page.locator('[data-arriving="true"]').evaluateAll(nodes => nodes.every(n => getComputedStyle(n).opacity === '0' && getComputedStyle(n).transitionDuration === '0s')), 'Reduced motion skips travel and fade');
-  await page.goto('http://localhost:5173/prototype/d#neuraljaxlib');
-  await page.waitForSelector('.pb-tool-gallery [data-ready="true"]');
-  assert.equal(await page.locator('[data-arriving="true"]').count(), 0, 'D keeps its original folding');
-  await page.locator('[data-menu="packages"]').hover();
-  assert.equal(await page.locator('#pb-packages-menu img').count(), 1, 'D retains nav logo');
-  assert((await page.locator('#pb-packages-menu a[href="#pylba"] span').textContent()).includes('Models in Python'), 'D retains its title');
   assert.deepEqual(errors, []);
-  console.log('Passed: E nav labels, page-title icons, five project arrivals, delayed fades, left stack, back navigation, reduced motion, D preservation. No screenshots.');
+  console.log('Passed: Navigation labels, page-title icons, five project arrivals, delayed fades, left stack, back navigation, reduced motion. No screenshots.');
 } finally { await browser.close(); }

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
-import clips from '../../../public/assets/images/previews/clips.json';
+import clips from '../../public/assets/images/previews/clips.json';
 
 const Clock = createContext(null);
 const sheets = new Map();

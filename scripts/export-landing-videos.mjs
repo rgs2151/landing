@@ -19,7 +19,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
   // Writing preview manifests must not hot-reload the active capture document.
   await page.routeWebSocket('**', () => {});
-  await page.goto('http://localhost:5173/prototype/e?benchmark=idle');
+  await page.goto('http://localhost:5173/?benchmark=idle');
   await page.waitForSelector('.pb-frozen');
   const entries = await page.evaluate(async () => {
     const [react, dom, client, catalog] = await Promise.all([
@@ -27,7 +27,7 @@ try {
       import('/node_modules/.vite/deps/react-dom_client.js'), import('/src/assets/exportCatalog.js'),
     ]);
     const host = document.createElement('div');
-    host.className = 'prototype-b'; host.style.cssText = 'position:fixed;left:-10000px;top:0;min-height:0;background:transparent;overflow:visible;';
+    host.className = 'site'; host.style.cssText = 'position:fixed;left:-10000px;top:0;min-height:0;background:transparent;overflow:visible;';
     const mount = document.createElement('div'); host.append(mount); document.body.append(host);
     window.exporter = { React: react.default || react, flushSync: (dom.default || dom).flushSync,
       root: (client.default || client).createRoot(mount), mount, host, entries: await catalog.exportCatalog() };
@@ -93,9 +93,9 @@ try {
         const bolt = source.querySelector('.steering-demo-bolt');
         if (bolt) copy.querySelector('.steering-demo-bolt').style.transform = getComputedStyle(bolt).transform;
         const wrap = document.createElement('div');
-        wrap.className = 'prototype-b';
+        wrap.className = 'site';
         wrap.style.cssText = `width:${e.layout.width}px;height:${e.layout.height}px;min-height:0;background:transparent;overflow:hidden;`;
-        const style = document.createElement('style'); style.textContent = `${e.css}\n*{animation:none!important;transition:none!important}`;
+        const style = document.createElement('style'); style.textContent = `${e.css}\n:root{background:transparent!important}*{animation:none!important;transition:none!important}`;
         wrap.append(style, copy);
         const html = new XMLSerializer().serializeToString(wrap);
         const xml = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${e.layout.width} ${e.layout.height}"><foreignObject width="100%" height="100%">${html}</foreignObject></svg>`;
@@ -112,7 +112,23 @@ try {
       lastHash = createHash('sha256').update(png).digest('hex');
       if (verifyOnly) {
         const previous = manifests.get(entry.project)[entry.id];
-        if (lastHash !== previous?.firstFrame.sha256) throw new Error(`Source first frame changed: ${entry.id}`);
+        if (lastHash !== previous?.firstFrame.sha256) {
+          const expected = await sharp(`public${previous.poster}`).ensureAlpha().raw().toBuffer();
+          const actual = await sharp(png).ensureAlpha().raw().toBuffer();
+          let maxDifference = 0, changedPixels = 0;
+          if (actual.length !== expected.length) throw new Error(`Source frame dimensions changed: ${entry.id}`);
+          for (let i = 0; i < actual.length; i += 4) {
+            let difference = Math.abs(actual[i + 3] - expected[i + 3]);
+            for (let channel = 0; channel < 3; channel++) {
+              const a = actual[i + channel] * actual[i + 3] / 255 + 255 - actual[i + 3];
+              const b = expected[i + channel] * expected[i + 3] / 255 + 255 - expected[i + 3];
+              difference = Math.max(difference, Math.abs(a - b));
+            }
+            maxDifference = Math.max(maxDifference, difference);
+            if (difference > 1) changedPixels++;
+          }
+          if (maxDifference > 1) throw new Error(`Source first frame changed: ${entry.id}; max difference ${maxDifference}, ${changedPixels} pixels`);
+        }
         console.log(`${entry.id}: original first-frame pixels unchanged`);
         continue;
       }

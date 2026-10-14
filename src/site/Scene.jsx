@@ -1,15 +1,15 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, ChevronDown, Pause, Play, RotateCcw } from 'lucide-react';
-import { profile, paper, robustSteering, neuralFieldManifold } from '../../content/site';
-import ProjectVideo from '../../shared/ProjectVideo';
-import ToolDetail from '../../shared/ToolDetail';
-import NeuralFieldAnimation, { NeuralFieldSignal, NeuralFieldAutoregressive, NeuralFieldManifold } from '../../shared/NeuralFieldAnimation';
-import RobustSteeringAnimation, { RobustSteeringLandscape, RobustSteeringConversation } from '../../shared/RobustSteeringAnimation';
-import './styles.css';
+import { profile, paper, robustSteering, neuralFieldManifold } from '../content/site';
+import ProjectVideo from '../shared/ProjectVideo';
+import ToolDetail from '../shared/ToolDetail';
+import NeuralFieldAnimation from '../shared/NeuralFieldAnimation';
+import RobustSteeringAnimation from '../shared/RobustSteeringAnimation';
+import ScenePortrait from './ScenePortrait';
 import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
-import { FreezePreview, TravelingPortrait, useOrbits } from './SceneMotion';
-import ProjectTitle from '../../shared/ProjectTitle';
-import useProjectArrival from '../../shared/useProjectArrival';
+import { FreezePreview, useOrbits } from './SceneMotion';
+import ProjectTitle from '../shared/ProjectTitle';
+import useProjectArrival from '../shared/useProjectArrival';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
@@ -23,17 +23,6 @@ const selectedFromHash = (tools = NO_TOOLS) => {
   const id = location.hash.slice(1);
   return projects[id] || tools.some(tool => tool.id === id) || id === 'about' ? id : null;
 };
-export const pieces = [
-  { id: 'nature-0', project: 'cooperation', clip: 0, x: 205, y: -15, width: 270, angle: -8 },
-  { id: 'nature-1', project: 'cooperation', clip: 1, x: 755, y: 105, width: 125, angle: 11 },
-  { id: 'nature-2', project: 'cooperation', clip: 2, x: 920, y: 430, width: 95, angle: -12 },
-  { id: 'nature-3', project: 'cooperation', clip: 3, x: 755, y: 443, width: 65, angle: 8 },
-  { id: 'landscape', project: 'robust-steering', Component: RobustSteeringLandscape, x: 845, y: 175, width: 270, angle: 5 },
-  { id: 'conversation', project: 'robust-steering', Component: RobustSteeringConversation, x: 450, y: 495, width: 350, angle: -3 },
-  { id: 'signal', project: 'neural-field-manifold', Component: NeuralFieldSignal, x: 505, y: 100, width: 150, angle: -8 },
-  { id: 'autoregressive', project: 'neural-field-manifold', Component: NeuralFieldAutoregressive, x: 785, y: 525, width: 310, angle: 5 },
-  { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 65, y: 365, width: 380, angle: -6 },
-].map(piece => ({ ...piece, width: piece.width * 1.2 }));
 
 function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
   const [menu, setMenu] = useState(null);
@@ -121,11 +110,10 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
       {id === 'neural-field-manifold' && <NeuralFieldAnimation />}
     </div>
     <div className="pb-blurb">{content.blurb.split(/\n\s*\n/).map((paragraph,index) => <p key={index}>{paragraph}</p>)}</div>
-    {content.abstractLicense && <p><small><a href={content.abstractLicense.url} rel="license">{content.abstractLicense.label}</a></small></p>}
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, sidebarCopyright = false, aboutProfile = profile, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
+export default function Scene({ scenePieces, motion, Portrait = ScenePortrait, profileEntry = false, projectArrival = false, centeredStack = false, sidebarCopyright = false, aboutProfile = profile, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
@@ -142,7 +130,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
   const portraitSlot = useRef(null);
   const origin = useRef(null);
   const opener = useRef(null);
-  const diagnostic = new URLSearchParams(location.search).get('benchmark');
+  const diagnostic = import.meta.env.DEV ? new URLSearchParams(location.search).get('benchmark') : null;
   const active = hovered;
   const stackX = (24 - (viewport.width - 1200 * scale) / 2) / scale;
   const stackY = (viewport.height - 360 - 92) / scale;
@@ -205,15 +193,15 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     return () => { window.removeEventListener('popstate', pop); window.removeEventListener('keydown', escape); };
   }, [selected, tools]);
 
-  if (!desktop) return <main className="prototype-b pb-mobile">
+  if (!desktop) return <main className="site pb-mobile">
     <img src={profile.photo} alt={profile.name} /><h1>{profile.name}</h1><p>{profile.statement}</p>
     <p>{profile.email}<br /><a href={profile.github}>{profile.githubLabel}</a></p>
     <p>Open on a computer for the full experience.</p>
   </main>;
 
-  return <main className={`prototype-b${variant === 'b' ? '' : ` prototype-${variant}`}${className ? ` ${className}` : ''}`} data-selected={selected || ''}>
+  return <main className="site" data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} omitAccepted={variant === 'd' || variant === 'e' || variant === 'f'} />
+      <Navigation selected={selected} open={open} hover={hover} tools={tools} labels={navigationLabels} omitAccepted />
     </header>
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
@@ -258,7 +246,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted={variant === 'd' || variant === 'e' || variant === 'f'} aboutProfile={aboutProfile} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} tools={tools} omitAccepted aboutProfile={aboutProfile} />
       </section>}
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}

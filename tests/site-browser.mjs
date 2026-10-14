@@ -3,6 +3,8 @@ import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import playwright from '/tmp/landing-browser-check/node_modules/playwright/index.js';
 
+const base = process.env.SITE_URL || 'http://localhost:5173';
+const approved = JSON.parse(readFileSync('tests/fixtures/approved-site.json'));
 const projects = ['neuraljaxlib', 'neural-field-manifold', 'robust-steering', 'pylba'];
 const clips = Object.assign({}, ...projects.map(project => JSON.parse(readFileSync(`public/assets/projects/${project}/previews.json`))));
 assert.equal(Object.keys(clips).length, 11);
@@ -18,29 +20,27 @@ const browser = await playwright.chromium.launch({
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const errors = []; page.on('pageerror', error => errors.push(error.message));
-  async function ready(variant = 'f') {
-    if (variant === 'f') await page.waitForFunction(() => document.querySelectorAll('.landing-video video[data-ready="true"]').length === 11);
-    else {
-      await page.waitForFunction(() => document.querySelectorAll('.svg-asset[data-ready="true"]').length === 5);
-      await page.waitForSelector('.nf-animation[data-frame]');
-    }
+  async function ready() {
+    await page.waitForFunction(() => document.querySelectorAll('.landing-video video[data-ready="true"]').length === 11);
     await page.waitForTimeout(300);
   }
   for (const width of [1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
-    const layouts = [];
-    for (const variant of ['e', 'f']) {
-      await page.goto(`http://localhost:5173/prototype/${variant}`); await ready(variant);
-      layouts.push(await page.locator('.pb-fragment').evaluateAll(nodes => nodes.map(node => ({
-        id: node.dataset.piece, transform: node.style.transform, width: node.offsetWidth, height: node.offsetHeight,
-        tilt: node.style.getPropertyValue('--pb-angle'), opacity: getComputedStyle(node).opacity,
-      }))));
+    await page.goto(base); await ready();
+    const layout = await page.locator('.pb-fragment').evaluateAll(nodes => nodes.map(node => ({
+      id: node.dataset.piece, width: node.style.width, height: node.offsetHeight, transform: node.style.transform,
+      angle: node.style.getPropertyValue('--pb-angle'), opacity: getComputedStyle(node).opacity, zIndex: getComputedStyle(node).zIndex,
+    })));
+    assert.deepEqual(layout, approved.splash.pieces, `Approved geometry preserved at ${width}px`);
+    if (width === 1440) {
+      const fonts = await page.evaluate(() => ({
+        title: { text: document.querySelector('.pb-title').textContent, font: getComputedStyle(document.querySelector('.pb-title')).font },
+        navFont: getComputedStyle(document.querySelector('.pb-navigation')).font,
+        bodyLineHeight: getComputedStyle(document.body).lineHeight,
+      }));
+      const { pieces, ...expected } = approved.splash;
+      assert.deepEqual(fonts, expected);
     }
-    assert.deepEqual(layouts[1].filter(row => row.id !== 'neuraljax-gan'), layouts[0].filter(row => row.id !== 'neuraljax-gan'), `Unchanged geometry preserved at ${width}px`);
-    const gan = layouts[1].find(row => row.id === 'neuraljax-gan');
-    assert.equal(gan.width, Math.round(174.096 * 1.3));
-    assert.equal(gan.transform, 'translate(-40px, 470px) rotate(0deg) scale(1)');
-    assert.equal(gan.tilt, '-6deg');
   }
   assert.equal(await page.locator('.pb-fragment svg').count(), 0, 'No live SVG previews');
   const pixels = await page.locator('.landing-video video').evaluateAll(videos => videos.map(video => {
@@ -78,6 +78,28 @@ try {
   assert.equal(await page.locator('.pb-frozen .landing-video > img').count(), 11, 'One snapshot per video, no duplicate posters');
   assert.equal(await page.locator('.pb-tool-gallery .landing-video').count(), 0, 'Detail gallery retains live sources');
   await page.getByRole('button', { name: 'Return to composition', exact: true }).click(); await ready();
+  for (const id of ['cooperation', 'robust-steering', 'neural-field-manifold', 'pylba', 'neuraljaxlib', 'about']) {
+    await page.goto(`${base}/#${id}`);
+    await page.waitForSelector('.pb-reading h2');
+    const actual = await page.evaluate(() => {
+      const node = document.querySelector('.pb-reading');
+      return {
+        heading: node.querySelector('h2').textContent, authors: node.querySelector('.pb-authors')?.textContent,
+        abstract: [...node.querySelectorAll('.pb-blurb p,.pb-about p')].map(n => n.textContent),
+        font: getComputedStyle(node.querySelector('p')).font,
+        links: [...node.querySelectorAll('a:not([rel="license"])')].map(n => ({ text: n.textContent, href: n.getAttribute('href') })),
+      };
+    });
+    assert.deepEqual(JSON.parse(JSON.stringify(actual)), approved[id], id);
+    assert.equal(await page.locator('[rel="license"]').count(), 0);
+    if (id === 'neural-field-manifold') await page.waitForSelector('.nf-manifold canvas');
+    if (id === 'robust-steering') assert.equal(await page.locator('.rs-animation').count(), 1);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(base);
+  await page.waitForSelector('.pb-mobile');
+  assert.equal(await page.locator('.landing-video').count(), 0);
+  assert.equal(await page.locator('.pb-mobile img').evaluate(img => img.complete && img.naturalWidth > 0), true);
   assert.deepEqual(errors, []);
-  console.log('Passed: source hashes, 11 transparent videos, E/F geometry at three sizes, reduced motion, playback, pause/replay, steering loop, frozen snapshots, live detail gallery. No screenshots or performance tests.');
+  console.log('Passed: source hashes, 11 transparent videos, approved geometry at three sizes, reduced motion, playback, pause/replay, steering loop, frozen snapshots, all page content and typography, mobile fallback. No screenshots or performance tests.');
 } finally { await browser.close(); }

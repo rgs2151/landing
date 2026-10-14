@@ -19,7 +19,7 @@ For example, `neuraljaxlib/fragments.js` exports `autoencoder`, paired with
 
 NeuralJAXlib's current `cnn` and `gan` entries use the approved brain MRI
 variants. The original MNIST CNN and Fashion-MNIST GAN remain in their original
-vendor folders and are used within F's abstract. All five NeuralJAXlib splash
+vendor folders and are used within the abstract. All five NeuralJAXlib splash
 videos omit the title pixels while preserving artwork geometry; detail figures
 retain their titles. The source variant map is `neuraljaxlib/variants.js`.
 
@@ -30,8 +30,8 @@ project pages continue using these accepted sources without visual changes.
 
 The four Nature previews already play prerecorded raster frames. They retain
 their existing files/player under `public/assets/images/previews/`; their
-original/full-width videos remain under `public/assets/videos/`. Frozen earlier
-prototypes retain their original rendering paths.
+original/full-width videos remain under `public/assets/videos/`. Earlier
+prototype rendering paths remain in Git history, not in the running website.
 
 ## Export After Approval
 
@@ -39,7 +39,7 @@ prototypes retain their original rendering paths.
    accepted compact framing. Add its source paths in `scripts/preview-sources.mjs`.
 2. With Vite running on port 5173, run `node scripts/export-landing-videos.mjs`.
    To update selected clips only, use `ASSETS=landscape,conversation` (manifest IDs).
-3. Run `node tests/prototype-f-browser.mjs` for functional checks, not benchmarks.
+3. Run `node tests/site-browser.mjs` for functional checks, not benchmarks.
 
 The exporter requires FFmpeg and the local Playwright/Sharp test tooling under
 `/tmp/landing-browser-check`. It renders the actual components at deterministic
@@ -53,7 +53,7 @@ The manifold uses a 4x source buffer, 960px output width and CRF 10. Other previ
 settings remain unchanged. `VERIFY_ONLY=1 ASSETS=signal,autoregressive` checks
 unchanged sibling first-frame pixels without regenerating their media.
 
-`landingPreviews.jsx` is the shared native video player. F requires an exported
+`landingPreviews.jsx` is the shared native video player. The main site requires an exported
 preview for every live-source fragment, with no live-renderer fallback. Original
 layout aspect ratios are preserved independently of codec dimension rounding.
 Videos respect composition pause/replay, reduced motion, visibility, and folding

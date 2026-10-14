@@ -1,8 +1,12 @@
-# Prototype B Performance
+# Historical Performance Reports
 
-For the current F comparison, see [Prototype F Performance](prototype-f-performance.md).
-The preceding baseline is [Prototype E Performance](prototype-e-performance.md).
-Everything below describes historical B measurements, not the current splash.
+All measurements in this folder are historical, not benchmarks of the promoted
+main website. [Prototype F Performance](prototype-f-performance.md) describes
+the initial F at `eb6eb7b`; its preceding baseline is
+[Prototype E Performance](prototype-e-performance.md). Prototype-only harnesses
+and design notes referenced below were removed at promotion and remain in Git
+history. Recover the corresponding commit before reproducing those measurements.
+No new performance benchmarks were run during promotion.
 
 Measured results live in [prototype-b-costs.csv](prototype-b-costs.csv).
 [prototype-b-costs.json](prototype-b-costs.json) contains every sample, browser

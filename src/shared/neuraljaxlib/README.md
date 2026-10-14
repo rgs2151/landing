@@ -7,7 +7,7 @@ composite renderer that keeps those same five assets intact in an HTML grid row.
 the original vector logo, used inline at text height rather than rasterized.
 The source MIT license is included.
 
-## Brain MRI Variants (F)
+## Brain MRI Variants
 
 `vendor/cnn_brain_mri/` and `vendor/gan_brain_mri/` contain the additionally
 approved source animations and samples. `brain-provenance.json` records source
@@ -17,11 +17,11 @@ The sibling repository is never edited by this import.
 
 `NeuralJAXBrainGallery` substitutes those two panels in the existing composite;
 the other three panels, dimensions and headings are preserved. Original
-`vendor/cnn/` (MNIST) and `vendor/gan/` (Fashion-MNIST) remain intact. F places
-them as left/right floats within the unchanged abstract. Earlier prototypes
-continue using the original gallery.
+`vendor/cnn/` (MNIST) and `vendor/gan/` (Fashion-MNIST) remain intact. The main site
+places them as left/right floats within the unchanged abstract. Earlier
+prototypes are preserved in Git history.
 
-F's five splash exports hide only the headings, keeping their original layout
+The five splash exports hide only the headings, keeping their original layout
 space so artwork does not move or rescale. The content gallery and abstract
 figures retain their titles and standard controls. Videos/posters retain the
 same canonical filenames; `src/assets/neuraljaxlib/variants.js` maps them to
@@ -49,7 +49,7 @@ standard pause/play/replay controls, and uses each asset's design width: 300px
 for standalone figures, 1248px for the composite. This prevents double scaling
 from inflating non-scaling SVG strokes. Only white outer SVG backings are made
 transparent; meaningful white regions and black image grids are unchanged.
-These high-quality renderers use no iframe or injected script. F's landing
+These high-quality renderers use no iframe or injected script. The landing
 previews are transparent videos exported from them; see
 `src/assets/README.md` for the export policy and project-grouped media files.
 
@@ -62,7 +62,7 @@ source parity tests without screenshots.
 Metadata and verbatim README/gallery excerpts live in `src/content/neuraljaxlib.*`.
 The framework abstract is intentionally deferred for a separate copy iteration.
 `src/shared/tools.js` pairs content with these assets for the common detail renderer.
-Prototype D owns placement only; full pages and splash fragments use the same
+`src/site/App.jsx` owns placement; full pages and preview exports use shared
 asset components. There are no NeuralJAXlib-specific branches in the page renderer.
 The optional tool `Gallery` slot places a composite above all copy without
 repeating its individual figures. PyLBA keeps its existing wrapped-figure layout.

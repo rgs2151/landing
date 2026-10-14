@@ -1,12 +1,12 @@
-import PrototypeB from '../b/PrototypeB';
-import { spread } from '../c/PrototypeC';
-import { createLocalMotion } from '../c/localMotion';
-import ScenePortrait from '../c/ScenePortrait';
-import { tools } from '../../shared/tools';
-import { neuraljaxlibRevision } from '../../content/neuraljaxlib';
-import { biography } from '../../content/site';
-import { landingPreviews } from '../../assets/landingPreviews';
-import { NeuralJAXBrainGallery, neuraljaxAnimations } from '../../shared/neuraljaxlib/animations';
+import Scene from './Scene';
+import { researchPieces } from './pieces';
+import { createLocalMotion } from './localMotion';
+import ScenePortrait from './ScenePortrait';
+import { tools } from '../shared/tools';
+import { neuraljaxlibRevision } from '../content/neuraljaxlib';
+import { biography } from '../content/site';
+import { landingPreviews } from '../assets/landingPreviews';
+import { NeuralJAXBrainGallery, neuraljaxAnimations } from '../shared/neuraljaxlib/animations';
 import './styles.css';
 
 const placements = {
@@ -17,17 +17,10 @@ const placements = {
   'neuraljax-gan': { x: -40, y: 470, width: 226.3248, angle: -6 },
   'neuraljax-transformer': { x: 200, y: 610, width: 190, angle: 7 },
 };
-const researchPlacements = {
-  'nature-0': { y: 35, width: 280.8 },
-  autoregressive: { x: 345, y: 120 },
-  conversation: { x: 420, y: 470 },
-  manifold: { x: 105, y: 295 },
-  signal: { x: 790, y: 485 },
-};
-const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[piece.id] })), ...tools.flatMap(tool => tool.figures.map(figure => ({
+const scenePieces = [...researchPieces, ...tools.flatMap(tool => tool.figures.map(figure => ({
   id: figure.id, project: tool.id, kind: 'tool', Component: figure.Animation, ...placements[figure.id],
 })))].map(piece => {
-  if (!piece.Component) return piece;
+  if (piece.clip !== undefined) return piece;
   const Component = landingPreviews[piece.id];
   if (!Component) throw new Error(`Export a landing preview before adding ${piece.id}`);
   return { ...piece, Component };
@@ -46,7 +39,7 @@ const previewTools = tools.map(tool => ({ ...tool,
   navigationLogo: false,
 })).sort((a, b) => b.year - a.year);
 
-export default function PrototypeF() {
-  return <PrototypeB scenePieces={scenePieces} motion={createLocalMotion} variant="f" className="prototype-c"
+export default function App() {
+  return <Scene scenePieces={scenePieces} motion={createLocalMotion}
     Portrait={ScenePortrait} profileEntry projectArrival centeredStack sidebarCopyright aboutProfile={biography} tools={previewTools} navigationLabels={navigationLabels} />;
 }

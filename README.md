@@ -1,94 +1,83 @@
 # Rudramani Singha Website
 
-This repository contains the React landing page for `singha.io` plus a single Docker image that builds the Vite site and serves it with nginx.
+The accepted interactive website, built with React and Vite and served by nginx
+in a single Docker container. The final F design is now the homepage at `/`.
 
-## Files
+## Local Development
 
-- `index.html`: Vite HTML entrypoint and metadata
-- `src/main.jsx`: React homepage
-- `public/stylesheet.css`: Main stylesheet
-- `public/images/`: Hero and work images
-- `public/scripts/`: Notebook artifacts referenced by the site
-- `Dockerfile`: nginx container for the landing page
-- `compose.yml`: local/server Compose entrypoint for the landing container
-- `nginx.conf`: static nginx config with custom 404 support
-- `public/favicon.ico`: Site favicon
-- `public/CNAME`: Custom domain mapping (`singha.io`)
-
-## Local Preview
-
-Fast local preview:
-
-```bash
+```sh
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, usually `http://localhost:5173`.
+Open the URL printed by Vite, normally `http://localhost:5173/`. Research,
+packages and About use hash links, such as `/#neuraljaxlib`, within the scene.
+There are no separate prototype routes.
 
-Preserved directions A, B and C are at `/prototype/a`, `/prototype/b` and
-`/prototype/c`. C and D are frozen; D remains at `/prototype/d`.
-E is frozen at `/prototype/e`. The current iteration F is at `/prototype/f`,
-preserving E's layout and content while using prerecorded splash previews.
-These local design routes are excluded from the production
-build; the homepage remains unchanged. Shared copy and media paths are
-in `src/content/site.js`; shared interactive visuals are in `src/shared/`.
-The A findings and B decisions are in `design/prototype-b.md`; C's layout and
-local-motion decisions are in `design/prototype-c.md`. D's additions are recorded
-in `design/prototype-d.md`. E's baseline is recorded in `design/prototype-e.md`;
-F's cache and fidelity checks are in `design/prototype-f.md`.
-
-Tool additions use one shared structure:
-
-- `src/content/<tool>.js` and `.md`: metadata and copy.
-- `src/shared/<tool>/`: original assets, renderers, license and provenance.
-- `src/shared/tools.js`: ordered figures paired with their text.
-- `src/shared/ToolDetail.jsx`: shared title, author, links and wrapped figures.
-- `src/prototypes/f/PrototypeF.jsx`: current splash placement; D and E remain frozen.
-
-PyLBA and NeuralJAXlib use this structure. F's low-resolution transparent videos
-are exported from the same high-quality sources used in project content;
-the full gallery is unchanged. Asset organization and regeneration are documented
-in [the asset guide](src/assets/README.md). Imported
-source and cached data are documented in `src/shared/neuraljaxlib/README.md`.
-Its current copy is taken from the source README/gallery, pending abstract review.
-
-Build locally:
-
-```bash
+```sh
 npm run build
+npm run preview
 ```
 
-## Paper Media
+The preview command serves the actual production build. Browser and model checks
+are documented in [tests/README.md](tests/README.md); no screenshots or performance
+benchmarks are required for ordinary feedback.
 
-Original supplementary videos are in `public/assets/videos/`. Run
-`bash scripts/build-paper-videos.sh` with FFmpeg installed to regenerate the
-desktop strip, mobile grid, and posters. Shorter clips hold their final frame
-until the longest clip finishes. The page loads only the matching layout near
-the viewport, pauses offscreen, and respects reduced-motion preferences.
+## Repository Layout
 
-The Nature logo comes from the journal's website header; the GitHub mark comes
-from [Primer Octicons](https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg).
-
-## Docker / Compose
-
-Build and run the production container locally:
-
-```bash
-docker compose up --build
+```text
+src/
+  main.jsx                 React entry point
+  site/                    Main scene, placements, portrait, motion and CSS
+  content/                 Shared copy, authors, project metadata and links
+  assets/                  Project fragment/composite entry points and video player
+  shared/                  High-quality animation implementations and detail views
+  prototypes/README.md     Completed iteration history only
+public/
+  assets/projects/         Project-grouped preview videos, posters and manifests
+  assets/videos/           Original and composite paper videos
+  assets/images/previews/  Prerecorded Nature preview frames
+  assets/data/             Cached recording used by the neural-field animation
+  images/                  Profile and original website images
+design/
+  decisions.md             Accepted design and animation rules
+  references/              Scientific references, source fixtures and provenance
+reports/                   Historical performance measurements
+tests/                     Current model, browser and source-parity checks
+scripts/                   Explicit asset import, cache and export commands
 ```
 
-Open `http://localhost:8080`.
+The old page iterations are recoverable from Git; see
+[the prototype log](src/prototypes/README.md). Their code and routes are no longer
+part of the app. Existing `pb-`/`pc-` CSS class names were retained to minimize
+migration risk; they belong to the single production scene, not separate pages.
 
-Detached mode:
+## Animation Assets
 
-```bash
+Content pages use the approved high-quality renderers and composites. The splash
+uses transparent prerecorded videos, plus the existing Nature frame-sheet player.
+See [the asset guide](src/assets/README.md) for grouped folders and export commands.
+Do not regenerate approved media or edit sibling repositories without approval.
+
+Original Nature supplementary videos are in `public/assets/videos/`.
+`bash scripts/build-paper-videos.sh` regenerates their composite strips and posters;
+`node scripts/build-splash-previews.mjs` regenerates the smaller Nature previews.
+The Nature mark comes from the journal; the GitHub mark is from Primer Octicons.
+Source licenses and attribution remain with the content/assets.
+
+## Docker And Hosting
+
+```sh
 docker compose up --build -d
 docker compose logs -f
 docker compose down
 ```
 
-On every push to `expansion`, GitHub Actions publishes:
+The container serves the production site at `http://localhost:8080`.
+The Docker build includes the two cached steering-data JSON files under
+`design/references/robust-steering-animation/`, in addition to `src/` and `public/`.
+
+Every push to `expansion` publishes these images through GitHub Actions:
 
 ```text
 ghcr.io/rgs2151/landing:expansion
@@ -96,23 +85,16 @@ ghcr.io/rgs2151/landing:latest
 ghcr.io/rgs2151/landing:sha-<commit>
 ```
 
-A server/infrastructure repository should pull the image instead of copying this source code:
+The server repository should pull the image and route `singha.io` to its port 80:
 
 ```yaml
 services:
   landing:
-    image: ghcr.io/rgs2151/landing:expansion
+    image: ghcr.io/rgs2151/landing:latest
     restart: unless-stopped
     expose:
       - "80"
 ```
 
-Route `singha.io` to container port `80`. Docker Hub is optional; GHCR is the default because the code and Actions pipeline already live on GitHub.
-
-## Domain
-
-Custom domain is configured via `CNAME`:
-
-```text
-singha.io
-```
+Publishing an image does not itself restart the server container. Its deployment
+must pull and recreate the service. Domain metadata remains `singha.io`.

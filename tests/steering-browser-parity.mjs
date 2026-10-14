@@ -9,7 +9,7 @@ const browser = await playwright.chromium.launch({ executablePath: process.env.C
 try {
   const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, reducedMotion: 'reduce' });
   const errors = []; page.on('pageerror', error => errors.push(error.message));
-  await page.goto(process.env.SITE_URL || 'http://localhost:5173/prototype/a');
+  await page.goto(process.env.SITE_URL || 'http://localhost:5173');
   await page.evaluate(async fixture => {
     const { default: React } = await import('/node_modules/.vite/deps/react.js');
     const { default: { createRoot } } = await import('/node_modules/.vite/deps/react-dom_client.js');
@@ -98,8 +98,9 @@ try {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => window.stopSteeringTest());
   assert.equal(await page.locator('.rs-animation iframe').count(),0);
-  await page.getByRole('button',{name:'Open Robust steering: conversation',exact:true}).click();
-  const full = page.locator('dialog .rs-animation');
+  await page.locator('[data-menu="research"]').hover();
+  await page.locator('#pb-research-menu a[href="#robust-steering"]').click();
+  const full = page.locator('.pb-reading .rs-animation');
   assert.equal(await full.locator('.rs-stage').getAttribute('data-paused'),'true');
   assert.equal(await full.locator('.steering-demo-question-text').textContent(),'J');
   const before = await full.locator('.steering-demo-question-text').boundingBox();
@@ -116,8 +117,6 @@ try {
   await full.getByRole('button',{name:'Replay robust steering animation',exact:true}).click();
   assert.equal(await full.locator('.steering-demo-question-text').textContent(),'J');
   assert.equal(await full.locator('.rs-stage').getAttribute('data-paused'),'true');
-  assert.equal(await page.locator('.pa-model .steering-demo-scene').count(),0);
-  assert.equal(await page.locator('.pa-steering-conversation .steering-demo-state').count(),0);
   assert.deepEqual(errors,[]);
   console.log(`Passed: frozen/native text, glitch characters, SVG paths, geometry and computed styles at ${times.length} timestamps; independent native fragments at multiple sizes; no screenshots.`);
 } finally { await browser.close(); }

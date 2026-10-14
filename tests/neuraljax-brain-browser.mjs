@@ -12,7 +12,7 @@ const browser = await playwright.chromium.launch({
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const errors = []; page.on('pageerror', error => errors.push(error.message));
-  await page.goto('http://localhost:5173/prototype/f#neuraljaxlib');
+  await page.goto('http://localhost:5173/#neuraljaxlib');
   await page.waitForFunction(() => document.querySelectorAll('.pb-project .svg-asset[data-ready="true"]').length === 3);
   for (const width of [1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 }); await page.waitForTimeout(300);
@@ -70,10 +70,6 @@ try {
       } finally { controls.forEach(c => c.destroy()); hosts.forEach(h => h.remove()); }
     }, { id, name }), `${id}: exact source-renderer parity`);
   }
-  await page.goto('http://localhost:5173/prototype/e#neuraljaxlib');
-  await page.waitForSelector('.pb-tool-gallery .svg-asset[data-ready="true"]');
-  assert.doesNotMatch(await page.locator('[data-gallery-panel="cnn"] svg').getAttribute('aria-label'), /brain MRI/i);
-  assert.equal(await page.locator('.pb-abstract-figure').count(), 0);
   assert.deepEqual(errors, []);
-  console.log('Passed: audited brain-source parity, five-panel titles, legacy figures, exact abstract, line-three/six floats without text overlap at three widths, frozen E unchanged. No screenshots.');
+  console.log('Passed: audited brain-source parity, five-panel titles, legacy figures, exact abstract, line-three/six floats without text overlap at three widths. No screenshots.');
 } finally { await browser.close(); }

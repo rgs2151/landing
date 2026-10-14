@@ -3,7 +3,7 @@ import abstract from './neuraljaxlib-abstract.md?raw';
 import logo from '../shared/neuraljaxlib/logo.svg';
 import { profile } from './site';
 
-// Preserve the README/gallery copy used by frozen prototype D.
+// Source README/gallery descriptions; the accepted abstract is exported below.
 export const neuraljaxlib = {
   id: 'neuraljaxlib',
   title: 'NeuralJAXlib',

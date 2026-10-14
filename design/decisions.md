@@ -1,5 +1,17 @@
 # Design Decisions
 
+## Main Website
+
+The user approved F as the main website. Runtime code is in `src/site/`, served
+at `/` in development and production. The A-F routes and implementation folders
+were removed after production parity checks. `src/prototypes/README.md` records
+history and recovery commits. References below to prototype stages describe
+the origin of accepted decisions, not active routes.
+
+The visible CC line beneath the Nature abstract was removed as requested;
+source licensing metadata and provenance remain intact. Content and all other
+accepted interactions, layouts and media are unchanged by promotion.
+
 ## Landing Media Policy
 
 From F onward, freeze the shared high-quality fragment and composite renderers

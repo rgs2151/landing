@@ -1,8 +1,7 @@
 import { cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { profile } from '../../content/site';
-import { createDriftMotion } from './sceneDrift';
+import { createLocalMotion } from './localMotion';
 
-export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion = createDriftMotion }) {
+export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion = createLocalMotion }) {
   const animations = useRef([]);
   useEffect(() => {
     if (!desktop || !root.current) return;
@@ -85,47 +84,4 @@ export function FreezePreview({ frozen, children }) {
   return captured && frozen
     ? <div key="frozen" className="pb-frozen" ref={node => { if (node && snapshot.current) node.replaceChildren(snapshot.current); }} />
     : <div key="live" ref={live}>{cloneElement(children, { snapshotRef })}</div>;
-}
-
-export function TravelingPortrait({ selected, slot, origin, viewport, reduced, close }) {
-  const root = useRef(null), previous = useRef(null);
-  useLayoutEffect(() => {
-    const node = root.current;
-    const from = node.style.visibility === 'visible' ? node.getBoundingClientRect() : null;
-    let destination = { x: 72, y: viewport.height - 370, width: 112, height: 140 };
-    if (selected === 'about' && slot.current) {
-      const box = slot.current.getBoundingClientRect();
-      const transform = getComputedStyle(slot.current.closest('.pb-reading')).transform;
-      const offset = transform === 'none' ? 0 : new DOMMatrixReadOnly(transform).m41;
-      destination = { x: box.x - offset, y: box.y, width: box.width, height: box.height };
-    }
-    node.getAnimations().forEach(animation => animation.cancel());
-    Object.assign(node.style, { left: `${destination.x}px`, top: `${destination.y}px`, width: `${destination.width}px`, height: `${destination.height}px` });
-    if (!selected && !previous.current) {
-      node.style.visibility = 'hidden';
-      return;
-    }
-    node.style.visibility = 'visible';
-    const source = from || (selected === 'about' && origin.current ? {
-      x: origin.current.x + origin.current.width / 2 - 56,
-      y: origin.current.y + origin.current.height / 2 - 70, width: 112, height: 140,
-    } : { ...destination, y: destination.y - 55 });
-    const animation = node.animate([
-      { transform: `translate(${source.x - destination.x}px,${source.y - destination.y}px) scale(${source.width / destination.width},${source.height / destination.height}) rotate(${from ? 0 : -9}deg)`, opacity: from ? 1 : 0 },
-      { transform: 'translate(0,0) scale(1) rotate(0deg)', opacity: selected ? 1 : 0 },
-    ], { duration: reduced ? 0 : 650, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'both' });
-    animation.onfinish = () => { if (!selected) node.style.visibility = 'hidden'; };
-    previous.current = selected;
-    const followScroll = () => {
-      if (selected !== 'about' || !slot.current) return;
-      const box = slot.current.getBoundingClientRect();
-      node.style.top = `${box.y}px`; node.style.left = `${box.x}px`;
-    };
-    window.addEventListener('scroll', followScroll, { passive: true });
-    return () => window.removeEventListener('scroll', followScroll);
-  }, [selected, slot, origin, viewport.width, viewport.height, reduced]);
-  return <div className="pb-traveling-portrait" ref={root} style={{ visibility: 'hidden' }} aria-hidden={!selected}>
-    <img src={profile.photo} alt={profile.name} />
-    {selected && selected !== 'about' && <button onClick={close} aria-label="Return to landing page" title="Return to landing page" />}
-  </div>;
 }

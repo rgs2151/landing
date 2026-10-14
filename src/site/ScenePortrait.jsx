@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { profile } from '../../content/site';
+import { profile } from '../content/site';
 
 export default function ScenePortrait({ selected, slot, canvas, scale, viewport, reduced, close, open, hover, paused, hovered, replay, transitioning }) {
   const root = useRef(null), content = useRef(null), travel = useRef(null), floating = useRef(null);
