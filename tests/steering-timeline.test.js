@@ -12,7 +12,7 @@ const timeline = context.SteeringTimeline.create(examples);
 test('cycles through every recorded language and transitions back to English', () => {
   let start = 0;
   for (const entry of timeline.entries) {
-    const snapshot = timeline.sample(start + 2500);
+    const snapshot = timeline.sample(start + 2150);
     assert.equal(snapshot.entry.language, entry.language);
     assert.equal(snapshot.question, entry.question);
     assert.equal(snapshot.answer, entry.baseline);
@@ -40,8 +40,32 @@ test('asks and answers incrementally, erasing before retyping without a blank re
   assert.equal(typing.answer, examples[0].baseline);
   for (let time = 1; time < timeline.duration * 2; time += 13) {
     const snapshot = timeline.sample(time);
-    if (!snapshot.first) assert(snapshot.question || snapshot.answer);
+    assert(snapshot.question || snapshot.answer);
     assert(snapshot.corruption === 0 || snapshot.phase === 'steering' || snapshot.phase === 'steered');
+  }
+});
+
+test('finishes sequential question and answer typing inside the doubled swipe', () => {
+  let start = timeline.entries[0].duration;
+  for (const entry of [...timeline.entries.slice(1), timeline.entries[0]]) {
+    const asking = timeline.sample(start + 1399);
+    assert.equal(asking.answer, asking.previous.steered || asking.previous.baseline);
+    assert.equal(asking.answerTyping, false);
+    assert.equal(timeline.sample(start + 1400).question, entry.question);
+    const ready = timeline.sample(start + 2100);
+    assert.equal(ready.question, entry.question);
+    assert.equal(ready.answer, entry.baseline);
+    assert.equal(ready.answerTyping, false);
+    assert(ready.swipe < 1);
+    assert.equal(timeline.sample(start + 1100).swipe, 0.5);
+    assert.equal(timeline.sample(start + 2199).corruption, 0);
+    const end = timeline.sample(start + 2200);
+    assert.equal(end.swipe, 1);
+    if (entry.steered) {
+      assert.equal(end.phase, 'steering');
+      assert(timeline.sample(start + 2201).corruption > 0);
+    }
+    start += entry.duration;
   }
 });
 

@@ -56,10 +56,12 @@ for every language and the corruption frames so the layout does not shift.
 
 The cycle is English, Chinese, French, Japanese, Swahili, Telugu, then English
 again. The initial English question and answer type while the direction appears.
-Every later transition swipes the field and heading, quickly backspaces the old
+Every later transition swipes the field and heading over 2200ms, quickly backspaces the old
 question and types the new one, then backspaces and types the answer. The previous
 answer remains visible while the question changes. Only the response uses the
-Spanish corruption effect, after the native-language answer has been shown.
+Spanish corruption effect. Both text rows finish during the swipe; steering begins
+immediately when the swipe completes and lasts 2800ms. There is no red state dot
+or expanding pulse between these steps.
 English returns through the same transition, without a blank scene or hard reset.
 Typing and deletion use Unicode grapheme clusters, including Telugu combining marks.
 

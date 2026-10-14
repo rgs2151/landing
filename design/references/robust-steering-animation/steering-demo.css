@@ -8,7 +8,7 @@
 .steering-demo-language span:last-child { color: #8B1E1E; }
 .steering-demo-state-map { display: block; width: 100%; height: auto; overflow: visible; }
 .steering-demo-state-map text { font-family: Arial, Helvetica, sans-serif; font-size: calc(var(--demo-text-size) * var(--demo-svg-scale-inverse, 1)); font-weight: 400; }
-.steering-demo-direction, .steering-demo-direction-labels, .steering-demo-state-dot, .steering-demo-state-ripple { opacity: 0; }
+.steering-demo-direction, .steering-demo-direction-labels { opacity: 0; }
 .steering-demo-direction-line { stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--demo-direction, 0)); }
 .steering-demo-controller rect { fill: var(--demo-controller-fill, #fff); }
 .steering-demo-controller text { fill: var(--demo-controller-ink, #111); }

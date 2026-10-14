@@ -18,8 +18,6 @@
   const directionHead = find("direction-head");
   const directionLabels = find("direction-labels");
   const shiftMask = find("shift-mask");
-  const dot = find("state-dot");
-  const ripple = find("state-ripple");
   const baseMask = find("base-mask");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const glyphs = Array.from("▓▒░<>/\\#¿!?");
@@ -275,7 +273,7 @@
     }
     const progress = (start, span) => clamp((time - start) / span);
     const english = entry.language === "en";
-    const offset = first ? 0 : 1100;
+    const offset = first ? 0 : 2200;
     box.dataset.stage = snapshot.swipe < 1 && !first ? "shift" : english ? "direction" : "conversation";
     state.style.opacity = 1;
     const points = english ? progress(offset + 400, 300) : 0;
@@ -295,12 +293,7 @@
     shiftMask.setAttribute("width", swipe * 280);
     baseMask.setAttribute("x", 30 + swipe * 280);
     baseMask.setAttribute("width", (1 - swipe) * 280);
-    const expand = ease(progress(2600, 650));
     find("stimulation").style.opacity = 1;
-    const dotIn = english ? 0 : progress(1800, 250);
-    dot.style.opacity = dotIn * (1 - expand);
-    ripple.style.opacity = !english && expand > 0 && expand < 1 ? 1 - expand : 0;
-    ripple.setAttribute("r", 5 + expand * 180);
     scene.style.opacity = 1;
     scene.style.clipPath = "none";
   }
