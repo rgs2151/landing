@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/rgs2151/NeuralJAXlib",
-  "adaptation": "ES module exports/imports only. Shared source includes the RNN clientWidth sizing fix and intact-panel composite.",
+  "adaptation": "ES module exports/imports. Shared source includes the RNN clientWidth sizing fix and intact-panel composite. Website-only composite layout trims height to 270 and tucks the RNN legend below its circle; upstream sync awaits user approval.",
   "files": {
     "cnn/animation.js": {
       "source": "407e8823cfcbb4fd39e0a0e68406049ee2a0dbfc100599555f0cd09d47cba2c5",
@@ -44,7 +44,7 @@
     },
     "composite/animation.js": {
       "source": "0d6f88161ff7d94a91e4fee34537ec4328414510012693a2f416837ff4030188",
-      "imported": "2422465cb154009cbf88471d4c192b169201b76290fe93d29a99c9eaa7b50614"
+      "imported": "3f98308d7c9e4049436ae4a5c7acf85524fc0824af69290d8db828f3bdb3cfaa"
     }
   }
 }

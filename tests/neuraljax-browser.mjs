@@ -95,6 +95,22 @@ try {
     });
     assert(typography.fonts.every(size => Math.abs(size - typography.target) < .1), `RNN, PCA and transformer labels match headings at ${width}px`);
     assert(typography.cnnStroke <= 4.5 && typography.rnnStroke <= 2, 'Strokes never inflate beyond standalone thickness');
+    const spacing = await page.locator('.pb-tool-gallery .svg-asset').evaluate(node => {
+      const rect = selector => node.querySelector(selector).getBoundingClientRect().toJSON();
+      return {
+        root: node.getBoundingClientRect().toJSON(),
+        cnn: rect('[data-gallery-panel="cnn"] svg'),
+        gan: rect('[data-gallery-panel="gan"] svg'),
+        rnn: rect('[data-gallery-panel="rnn"] svg'),
+        legend: rect('[data-gallery-panel="rnn"] > :last-child'),
+        transformer: rect('[data-gallery-panel="transformer"]'),
+        controls: rect('.svg-asset-controls'),
+      };
+    });
+    assert(Math.abs(spacing.root.bottom - spacing.cnn.bottom) < 1 && Math.abs(spacing.root.bottom - spacing.gan.bottom) < 1, 'Composite ends at CNN/GAN bottoms');
+    assert(Math.abs(spacing.legend.top - spacing.rnn.bottom - 6 * spacing.rnn.width / 240) < 1, 'RNN legend sits directly beneath its circle');
+    assert(spacing.legend.bottom <= spacing.cnn.bottom, 'RNN legend fits within CNN/GAN height');
+    assert(spacing.controls.left >= spacing.transformer.left && spacing.controls.right <= spacing.transformer.right && spacing.controls.bottom <= spacing.cnn.bottom, 'Controls sit inside the Transformer column and composite height');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   }
   {
@@ -140,7 +156,8 @@ try {
       controller.pause();
       const Animation = id === 'composite' ? NeuralJAXGallery : neuraljaxAnimations.find(asset => asset.key === id).Animation;
       const normalized = node => {
-        if (id === 'composite') return [...node.querySelectorAll('[data-gallery-panel]')].map(panel => panel.innerHTML).join('\n');
+        // Composite spacing is intentionally local; compare intact artwork and labels.
+        if (id === 'composite') return [...node.querySelectorAll('[data-gallery-panel]')].map(panel => panel.querySelector('svg').outerHTML + panel.textContent).join('\n');
         const svg = node.querySelector('svg').cloneNode(true);
         if (svg.style.backgroundColor === 'white' || svg.style.backgroundColor === 'rgb(255, 255, 255)') svg.style.background = 'transparent';
         svg.querySelectorAll('text').forEach(text => { if (text.style.fontSize) text.removeAttribute('font-size'); });

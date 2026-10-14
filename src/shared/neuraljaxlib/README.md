@@ -39,7 +39,11 @@ The optional tool `Gallery` slot places a composite above all copy without
 repeating its individual figures. PyLBA keeps its existing wrapped-figure layout.
 
 The corrected composite uses five 240px-wide panels with 12px gaps and a shared
-heading/plot/legend grid. Headings and labels share an 18px design scale; PCA
+heading/plot grid. Headings and labels share an 18px design scale; PCA
 labels are normalized only within the row. The original RNN legend stays with
-its panel. No SVG is transplanted into another SVG viewport. Both repositories
-use the same corrected renderer, and the obsolete source GIF was removed.
+its panel, tucked directly below the circle. The website-only composite is
+1248 x 270, ending at the CNN/GAN plots, with inset controls beneath Transformer.
+No SVG is transplanted into another SVG viewport. This local spacing revision
+has not been synced to the source repository; wait for user approval before
+any upstream changes or export generation. Reimporting the composite would
+overwrite this local layout adjustment.

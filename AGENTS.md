@@ -28,6 +28,10 @@ The NeuralFieldManifold animation is frozen; do not alter it unless the user
 explicitly reopens it. New or revised animations must follow the recorded
 pause/play and replay control standard.
 
+Keep animation revisions local to this website until the user confirms the
+result. Do not sync revisions, regenerate exports, or edit sibling repositories
+without explicit approval.
+
 Do not take screenshots unless explicitly requested. Use browser inspection
 and focused checks for verification.
 

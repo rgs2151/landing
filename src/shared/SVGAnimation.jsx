@@ -85,7 +85,7 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
 
   const stopped = paused || (reduced && !motionOverride);
   return <div className="svg-asset" ref={root} data-asset={asset.id} data-ready={ready} data-playing={playing}
-    style={{ height: dimensions.height + (compact ? 0 : 40) }}>
+    style={{ height: dimensions.height + (compact || asset.controlsInset ? 0 : 40) }}>
     <div className="svg-asset-mount" ref={mount} style={{ width: designWidth, transform: `scale(${dimensions.scale})` }} />
     {failed && <span role="alert">Animation unavailable</span>}
     {!compact && <div className="svg-asset-controls">
