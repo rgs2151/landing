@@ -8,6 +8,7 @@ import { biography } from '../content/site';
 import { landingPreviews } from '../assets/landingPreviews';
 import { NeuralJAXBrainGallery, neuraljaxAnimations } from '../shared/neuraljaxlib/animations';
 import './styles.css';
+import './mobile.css';
 
 const placements = {
   pylba: { x: 970, y: 0, width: 175, angle: -5 },

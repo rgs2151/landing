@@ -26,6 +26,9 @@ The accepted F design is now the main website at `/`, implemented in `src/site/`
 There are no active prototype routes. `src/prototypes/README.md` records the
 iteration history; old implementations are recoverable from Git.
 Preserve the accepted design and reuse shared content and animation assets.
+Phone layouts live in `src/site/MobileScene.jsx` and `src/site/mobile.css`, below
+901px. Keep their placements/styles isolated; mobile work must not alter the
+accepted desktop geometry. Both layouts reuse the same content and source assets.
 Project details open within the composition, not in modal dialogs or overlays.
 The individual project animations are finalized; do not redesign them implicitly.
 Tool previews start at 75% opacity and reach full opacity on hover; papers and

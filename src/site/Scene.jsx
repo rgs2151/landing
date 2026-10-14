@@ -10,6 +10,7 @@ import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
 import { FreezePreview, useOrbits } from './SceneMotion';
 import ProjectTitle from '../shared/ProjectTitle';
 import useProjectArrival from '../shared/useProjectArrival';
+import MobileScene from './MobileScene';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
@@ -24,7 +25,7 @@ const selectedFromHash = (tools = NO_TOOLS) => {
   return projects[id] || tools.some(tool => tool.id === id) || id === 'about' ? id : null;
 };
 
-function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
+function Navigation({ selected, open, hover, tools, labels, omitAccepted, touch = false }) {
   const [menu, setMenu] = useState(null);
   const root = useRef(null);
   useEffect(() => {
@@ -34,13 +35,13 @@ function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
   }, []);
   useEffect(() => setMenu(null), [selected]);
   return <nav className="pb-navigation" aria-label="Main navigation" ref={root}
-    onPointerLeave={() => { setMenu(null); hover(null); }}
+    onPointerLeave={event => { if (!touch || event.pointerType === 'mouse') { setMenu(null); hover(null); } }}
     onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setMenu(null); hover(null); } }}
     onKeyDown={event => { if (event.key === 'Escape' && menu) { event.stopPropagation(); setMenu(null); root.current.querySelector(`[data-menu="${menu}"]`)?.focus(); } }}>
-    <div className="pb-nav-group" onPointerEnter={() => setMenu('research')}>
+    <div className="pb-nav-group" onPointerEnter={event => { if (!touch || event.pointerType === 'mouse') setMenu('research'); }}>
       <button data-menu="research" aria-expanded={menu === 'research'} aria-controls="pb-research-menu"
         onFocus={() => setMenu(current => current === 'research' ? current : null)}
-        onClick={() => setMenu('research')}
+        onClick={() => setMenu(current => touch && current === 'research' ? null : 'research')}
         onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); setMenu('research'); requestAnimationFrame(() => root.current.querySelector('.pb-dropdown a')?.focus()); } }}>{labels.research}<ChevronDown size={14} /></button>
       <div id="pb-research-menu" className="pb-dropdown" hidden={menu !== 'research'}>
         {Object.keys(projects).map(id => <a key={id} href={`#${id}`} aria-current={selected === id ? 'page' : undefined}
@@ -50,8 +51,8 @@ function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
         </a>)}
       </div>
     </div>
-    <div className="pb-nav-group" onPointerEnter={() => setMenu('packages')}>
-      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu('packages')}
+    <div className="pb-nav-group" onPointerEnter={event => { if (!touch || event.pointerType === 'mouse') setMenu('packages'); }}>
+      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu(current => touch && current === 'packages' ? null : 'packages')}
         onKeyDown={event => { if (tools.length && event.key === 'ArrowDown') { event.preventDefault(); setMenu('packages'); requestAnimationFrame(() => root.current.querySelector('#pb-packages-menu a')?.focus()); } }}>{labels.packages}<ChevronDown size={14} /></button>
       <div id="pb-packages-menu" className={`pb-dropdown${tools.length ? '' : ' pb-packages'}`} hidden={menu !== 'packages'}>
         {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
@@ -85,11 +86,11 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, tools, omitAccepted, aboutProfile = profile }) {
+function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, portraitPhoto = false, tools, omitAccepted, aboutProfile = profile }) {
   const tool = tools.find(tool => tool.id === id);
   if (tool) return <ToolDetail tool={tool} headingRef={headingRef} />;
   if (id === 'about') return <article className="pb-about">
-    {portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
+    {portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden={portraitPhoto ? undefined : true}>{portraitPhoto && <img src={profile.photo} alt={profile.name} />}</div>}
     <h2 tabIndex={-1} ref={headingRef}>{profile.name}</h2>
     {!portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
     <p>{aboutProfile.role} <a href={aboutProfile.institutionUrl}>{aboutProfile.institution}</a>{aboutProfile.affiliation} {aboutProfile.statement}</p>
@@ -193,11 +194,10 @@ export default function Scene({ scenePieces, motion, Portrait = ScenePortrait, p
     return () => { window.removeEventListener('popstate', pop); window.removeEventListener('keydown', escape); };
   }, [selected, tools]);
 
-  if (!desktop) return <main className="site pb-mobile">
-    <img src={profile.photo} alt={profile.name} /><h1>{profile.name}</h1><p>{profile.statement}</p>
-    <p>{profile.email}<br /><a href={profile.github}>{profile.githubLabel}</a></p>
-    <p>Open on a computer for the full experience.</p>
-  </main>;
+  if (!desktop) return <MobileScene selected={selected} open={open} close={close}
+    scenePieces={scenePieces} tools={tools} aboutProfile={aboutProfile}
+    labels={navigationLabels} Navigation={Navigation} ProjectDetail={ProjectDetail}
+    paused={paused} setPaused={setPaused} replay={replay} setReplay={setReplay} reduced={reduced} />;
 
   return <main className="site" data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>

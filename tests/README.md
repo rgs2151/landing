@@ -6,6 +6,7 @@ With the development server running:
 npm run test:neural-field
 npm run test:steering
 node tests/site-browser.mjs
+node tests/mobile-browser.mjs
 node tests/site-arrival-browser.mjs
 node tests/neuraljax-brain-browser.mjs
 node tests/steering-browser-parity.mjs
@@ -21,3 +22,9 @@ For the production build, run `npm run build` and `npm run preview`, then set
 `SITE_URL` to its URL for `site-browser.mjs` and `site-arrival-browser.mjs`.
 The two source-parity tests require the development server for module imports.
 Old variant-specific tests can be recovered from Git history.
+
+The mobile check covers touch navigation, 320-844px widths including landscape,
+all frozen project copy/links, figure enlargement, browser history, returning to
+the same collage scroll position, playback controls, and switching to desktop.
+The desktop baseline remains unchanged. These are browser-emulated checks, not
+claims of testing on physical iOS or Android devices.

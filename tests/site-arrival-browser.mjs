@@ -29,6 +29,18 @@ try {
     ['robust-steering', 2, null, 'research'],
     ['pylba', 1, null, 'packages'],
   ]) {
+    // Capture the initial state in the browser, before a cold gallery mount can
+    // delay the next Playwright round trip past the entire fade.
+    await page.evaluate(() => {
+      window.arrivalStartOpacity = null;
+      const observer = new MutationObserver(() => {
+        const nodes = [...document.querySelectorAll('.pb-fragment[data-arriving="true"]')];
+        if (!nodes.length) return;
+        window.arrivalStartOpacity = nodes.map(node => Number(getComputedStyle(node).opacity));
+        observer.disconnect();
+      });
+      observer.observe(document.querySelector('.pb-canvas'), { attributes: true, subtree: true });
+    });
     if (piece) await page.locator(`[data-piece="${piece}"] .pb-orbit`).click();
     else {
       await page.locator(`[data-menu="${menu}"]`).hover();
@@ -38,7 +50,7 @@ try {
     await page.waitForSelector('.pb-fragment[data-arriving="true"]');
     assert.equal(await arrivals.count(), count);
     assert(await arrivals.evaluateAll(nodes => nodes.every(n => n.dataset.project === document.querySelector('main').dataset.selected)));
-    assert(await arrivals.evaluateAll(nodes => nodes.every(n => Number(getComputedStyle(n).opacity) > .5)), 'Travel stays visible before its delayed fade');
+    assert(await page.evaluate(() => window.arrivalStartOpacity?.every(opacity => opacity > .5)), 'Travel stays visible before its delayed fade');
     assert(await arrivals.locator('.pb-orbit').evaluateAll(nodes => nodes.every(n => getComputedStyle(n).pointerEvents === 'none')));
     await page.waitForTimeout(1000);
     const landing = await page.evaluate(() => {

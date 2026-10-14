@@ -14,6 +14,11 @@ Open the URL printed by Vite, normally `http://localhost:5173/`. Research,
 packages and About use hash links, such as `/#neuraljaxlib`, within the scene.
 There are no separate prototype routes.
 
+Phone and tablet widths below 901px use a touch-first vertical collage with the
+same project pages and assets. Wide figures can be enlarged and panned. Mobile
+layout lives in `src/site/MobileScene.jsx` and `src/site/mobile.css`; the desktop
+scene and its approved placements are independent.
+
 ```sh
 npm run build
 npm run preview

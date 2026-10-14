@@ -12,6 +12,21 @@ The visible CC line beneath the Nature abstract was removed as requested;
 source licensing metadata and provenance remain intact. Content and all other
 accepted interactions, layouts and media are unchanged by promotion.
 
+## Phone Layout
+
+Below 901px, `src/site/MobileScene.jsx` supplies a separate vertical, touch-first
+collage using the same content, preview files, Nature frame player, navigation,
+and full project renderers. Mobile placement and styling live separately from
+the frozen desktop artboard. Tapping opens a readable page; return restores the
+collage scroll position. Wide composites can be enlarged and panned without
+changing their internal geometry. About uses the original color photo.
+
+Offscreen previews pause; video previews load near the viewport; opening a detail
+unmounts the splash players. Phones whose decoder discards WebM transparency use
+the existing transparent poster for that preview, keeping the live detail asset.
+Reduced motion, pause/replay, browser history, and direct project links work on
+both layouts. Do not change desktop geometry to solve mobile layout issues.
+
 ## Landing Media Policy
 
 From F onward, freeze the shared high-quality fragment and composite renderers

@@ -97,9 +97,9 @@ try {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base);
-  await page.waitForSelector('.pb-mobile');
-  assert.equal(await page.locator('.landing-video').count(), 0);
-  assert.equal(await page.locator('.pb-mobile img').evaluate(img => img.complete && img.naturalWidth > 0), true);
+  await page.waitForSelector('.pm-mobile');
+  assert.equal(await page.locator('.pm-piece').count(), 15);
+  assert.equal(await page.locator('.pm-portrait img').evaluate(img => img.complete && img.naturalWidth > 0), true);
   assert.deepEqual(errors, []);
-  console.log('Passed: source hashes, 11 transparent videos, approved geometry at three sizes, reduced motion, playback, pause/replay, steering loop, frozen snapshots, all page content and typography, mobile fallback. No screenshots or performance tests.');
+  console.log('Passed: source hashes, 11 transparent videos, approved geometry at three sizes, reduced motion, playback, pause/replay, steering loop, frozen snapshots, all page content and typography, mobile composition. No screenshots or performance tests.');
 } finally { await browser.close(); }
