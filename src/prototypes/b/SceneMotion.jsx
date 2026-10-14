@@ -34,22 +34,26 @@ export function useOrbits(root, { desktop, paused, selected, hovered, reduced, r
 }
 
 // Preserve the accepted frame as inert DOM; discard the running React/WebGL tree.
-// SVG and text need no rasterization. Only canvases become small bitmap images.
+// SVG and text need no rasterization. Canvases and videos become small bitmaps.
 function cloneFrame(source) {
   const clone = source.cloneNode(true);
   let emptyCanvas = false;
-  const originals = source.querySelectorAll('canvas');
-  clone.querySelectorAll('canvas').forEach((canvas, index) => {
+  const originals = source.querySelectorAll('canvas, video');
+  clone.querySelectorAll('canvas, video').forEach((canvas, index) => {
     const original = originals[index];
+    const width = original.videoWidth || original.width;
+    const height = original.videoHeight || original.height;
+    if (!width || !height) { emptyCanvas = true; return; }
     const bitmap = document.createElement('canvas');
-    bitmap.width = Math.min(original.width, 160);
-    bitmap.height = Math.max(1, Math.round(original.height * bitmap.width / original.width));
+    bitmap.width = Math.min(width, 160);
+    bitmap.height = Math.max(1, Math.round(height * bitmap.width / width));
     const context = bitmap.getContext('2d');
     context.drawImage(original, 0, 0, bitmap.width, bitmap.height);
     if (!context.getImageData(0, 0, bitmap.width, bitmap.height).data.some((value, i) => i % 4 === 3 && value > 0)) emptyCanvas = true;
     const image = document.createElement('img');
     image.src = bitmap.toDataURL('image/webp', .8);
     image.alt = ''; image.className = 'pb-frozen-canvas';
+    if (original.tagName === 'VIDEO') canvas.parentElement.querySelector('img')?.remove();
     canvas.replaceWith(image);
   });
   clone.setAttribute('aria-hidden', 'true');
@@ -67,7 +71,7 @@ export function FreezePreview({ frozen, children }) {
     const capture = () => {
       const node = live.current;
       if (!node) return;
-      const waiting = node.querySelector('.nf-animation[aria-label], .pb-nature-preview canvas:not([data-ready="true"]), .svg-asset[data-ready="false"]');
+      const waiting = node.querySelector('.nf-animation[aria-label], .pb-nature-preview canvas:not([data-ready="true"]), .svg-asset[data-ready="false"], .landing-video video:not([data-ready="true"])');
       if (waiting && attempts++ < 120) { frame = requestAnimationFrame(capture); return; }
       snapshotRef.current?.();
       snapshot.current = cloneFrame(node);

@@ -22,11 +22,13 @@ standard pause/play/replay controls, and uses each asset's design width: 300px
 for standalone figures, 1248px for the composite. This prevents double scaling
 from inflating non-scaling SVG strokes. Only white outer SVG backings are made
 transparent; meaningful white regions and black image grids are unchanged.
-No iframe, injected script, canvas rendering or video conversion is used.
+These high-quality renderers use no iframe or injected script. F's landing
+previews are transparent videos exported from them; see
+`src/assets/README.md` for the export policy and project-grouped media files.
 
 Each instance has an independent clock, with the source timing preserved.
 Standalone GAN rendering retains its 30fps limit. Hidden, offscreen, inactive and
-reduced-motion views do not advance. Folded previews retain inert SVG snapshots;
+reduced-motion views do not advance. Earlier prototypes retain inert SVG snapshots;
 the running renderer is destroyed. A deterministic `elapsedMs` prop supports
 source parity tests without screenshots.
 

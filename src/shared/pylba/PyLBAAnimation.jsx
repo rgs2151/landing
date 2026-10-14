@@ -24,7 +24,7 @@ function svgContent(prefix) {
   return Array.from(template.childNodes, render);
 }
 
-export default function PyLBAAnimation({ compact = false, active = true, snapshotRef }) {
+export default function PyLBAAnimation({ compact = false, active = true, snapshotRef, elapsedMs }) {
   const prefix = `pylba-${useId().replaceAll(':', '')}`;
   const content = useMemo(() => svgContent(prefix), [prefix]);
   const svg = useRef(null);
@@ -33,7 +33,7 @@ export default function PyLBAAnimation({ compact = false, active = true, snapsho
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [visible, setVisible] = useState(false);
   const [foreground, setForeground] = useState(() => !document.hidden);
-  const playing = active && visible && foreground && !paused && !reduced;
+  const playing = active && visible && foreground && !paused && !reduced && elapsedMs === undefined;
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
@@ -53,6 +53,7 @@ export default function PyLBAAnimation({ compact = false, active = true, snapsho
     if (playing) svg.current.unpauseAnimations();
     else svg.current.pauseAnimations();
   }, [playing]);
+  useEffect(() => { if (elapsedMs !== undefined) svg.current.setCurrentTime(elapsedMs / 1000); }, [elapsedMs]);
   useEffect(() => {
     if (!snapshotRef) return;
     // FreezePreview clones inert SVG: capture animated opacity before removing SMIL.

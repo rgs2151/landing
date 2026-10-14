@@ -1,5 +1,23 @@
 # Design Decisions
 
+## Landing Media Policy
+
+From F onward, freeze the shared high-quality fragment and composite renderers
+for project content, then export small transparent videos for landing previews.
+Do not recreate simulations or mount live SVG/WebGL animation trees on the
+landing. Preserve each accepted fragment's framing, labels, timing, alpha,
+placement and interactions. Preview compression is not pixel-identical to SVG.
+
+Group by project: source entry points in `src/assets/<project>/`, videos and
+posters in `public/assets/projects/<project>/`, with matching basenames and a
+manifest recording source hashes and export settings. See `src/assets/README.md`.
+Already-prerecorded Nature previews retain their accepted frame-sheet player.
+Folded previews become static snapshots. Pause/replay, reduced motion and
+offscreen/document-hidden handling apply to video playback as well.
+
+No further performance benchmarks unless requested. Verify exports with focused
+playback, transparency and geometry checks; no screenshots.
+
 ## Detail Figure Layout
 
 Place project links immediately below the author information. Figures that do

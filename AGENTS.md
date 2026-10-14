@@ -19,8 +19,8 @@ The individual project animations are finalized; reuse them without redesigning.
 
 Prototype C is frozen at commit `8a28b01`. Prototype D is frozen at `ffe4525`.
 Prototype E is frozen at `d135339`. Continue new iterations in prototype F at
-`/prototype/f`, initially an exact copy of E with cached GAN/autoencoder splash
-previews. F owns its layout and scoped styles; do not edit frozen prototypes or
+`/prototype/f`, preserving E's layout with prerecorded splash previews.
+F owns its layout and scoped styles; do not edit frozen prototypes or
 change their rendered output through shared modules. Keep F-only changes scoped to F, and
 reuse shared content and assets without duplicating or redesigning them.
 D, E and F's tool previews start at 75%
@@ -31,6 +31,13 @@ Read `design/decisions.md` before changing animation assets or controls.
 The NeuralFieldManifold animation is frozen; do not alter it unless the user
 explicitly reopens it. New or revised animations must follow the recorded
 pause/play and replay control standard.
+
+When an animation is approved, retain its shared high-quality fragments and
+composite for project content, and export low-resolution transparent videos for
+the landing page. Never mount live simulations as new landing previews. Keep
+matching fragment/video/poster names grouped by project; see `src/assets/README.md`.
+Preserve geometry, timing, transparency and controls when exporting. Do not run
+performance benchmarks unless requested; use focused functional verification.
 
 Keep animation revisions local to this website until the user confirms the
 result. Do not sync revisions, regenerate exports, or edit sibling repositories

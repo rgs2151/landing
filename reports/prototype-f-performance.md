@@ -1,5 +1,8 @@
 # Prototype F: Cached GAN And Autoencoder
 
+Historical measurements of commit `eb6eb7b`, before F switched all live splash
+previews to WebM. These numbers do not describe the current all-video version.
+
 E is frozen at `d135339`. F changes only these two splash renderers. All
 content, placement, dimensions, tilt, opacity, interactions, and project-page
 animations are preserved. The donut remains live and unchanged.
@@ -62,7 +65,7 @@ fidelity decision.
   one extra alpha-rounding step. Final frame checks and the 30-second interaction
   run use the final sheets; playback implementation and dimensions are identical.
 
-Reproduce sequentially with Vite running:
+Reproduce from commit `eb6eb7b`, sequentially with Vite running:
 
 ```sh
 node tests/prototype-f-browser.mjs

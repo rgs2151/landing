@@ -1,0 +1,131 @@
+{
+  "signal": {
+    "id": "signal",
+    "project": "neural-field-manifold",
+    "name": "signal",
+    "src": "/assets/projects/neural-field-manifold/videos/signal.webm",
+    "poster": "/assets/projects/neural-field-manifold/posters/signal.webp",
+    "revision": "2e961b13e650",
+    "width": 300,
+    "height": 198,
+    "layoutWidth": 250,
+    "layoutHeight": 165,
+    "duration": 39680,
+    "loopStart": 0,
+    "fps": 15.02016129032258,
+    "frames": 596,
+    "bytes": 1691638,
+    "firstFrame": {
+      "visible": 2766,
+      "transparent": 56634,
+      "sha256": "2f971c5c67b69f7f6f4b82467c04b164222375a3aeeb108634b4652cd18a0cb0"
+    },
+    "lastFrameHash": "3dff884d12238cf0db5c214df1be509fe978a0aa6d2e60ad723fbda4622bd32a",
+    "fragment": "src/assets/neural-field-manifold/fragments.js#signal",
+    "composite": "src/assets/neural-field-manifold/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/NeuralFieldAnimation.jsx",
+        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+      },
+      {
+        "path": "src/shared/neuralFieldModel.js",
+        "sha256": "a246beaff5eddcb8eb48fefc167938253b2f55f8b220b247254d6f3558cbc0db"
+      },
+      {
+        "path": "src/shared/neural-field-animation.css",
+        "sha256": "2cc18b50006f33ec24f8083793f468d025efe21f0b38f78075fde5c67ec0c6f8"
+      },
+      {
+        "path": "public/assets/data/mouse-lfp.json",
+        "sha256": "d70ca4c1f84301cb818656b547813230c8f4d370a596410a0dd68a812ddb74cc"
+      }
+    ]
+  },
+  "autoregressive": {
+    "id": "autoregressive",
+    "project": "neural-field-manifold",
+    "name": "autoregressive",
+    "src": "/assets/projects/neural-field-manifold/videos/autoregressive.webm",
+    "poster": "/assets/projects/neural-field-manifold/posters/autoregressive.webp",
+    "revision": "20197c50c5b9",
+    "width": 450,
+    "height": 222,
+    "layoutWidth": 375,
+    "layoutHeight": 185,
+    "duration": 39680,
+    "loopStart": 0,
+    "fps": 15.02016129032258,
+    "frames": 596,
+    "bytes": 237334,
+    "firstFrame": {
+      "visible": 5428,
+      "transparent": 94472,
+      "sha256": "329f553ae02982a65cac79e665c1a8d761fa699d0661f7b57eb3425dab1d0b57"
+    },
+    "lastFrameHash": "302dcbb008909c18953c29ab9de18cee13fdb16f080aa53af669fb1d4f7a3a41",
+    "fragment": "src/assets/neural-field-manifold/fragments.js#autoregressive",
+    "composite": "src/assets/neural-field-manifold/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/NeuralFieldAnimation.jsx",
+        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+      },
+      {
+        "path": "src/shared/neuralFieldModel.js",
+        "sha256": "a246beaff5eddcb8eb48fefc167938253b2f55f8b220b247254d6f3558cbc0db"
+      },
+      {
+        "path": "src/shared/neural-field-animation.css",
+        "sha256": "2cc18b50006f33ec24f8083793f468d025efe21f0b38f78075fde5c67ec0c6f8"
+      },
+      {
+        "path": "public/assets/data/mouse-lfp.json",
+        "sha256": "d70ca4c1f84301cb818656b547813230c8f4d370a596410a0dd68a812ddb74cc"
+      }
+    ]
+  },
+  "manifold": {
+    "id": "manifold",
+    "project": "neural-field-manifold",
+    "name": "manifold",
+    "src": "/assets/projects/neural-field-manifold/videos/manifold.webm",
+    "poster": "/assets/projects/neural-field-manifold/posters/manifold.webp",
+    "revision": "0712524dc189",
+    "width": 480,
+    "height": 454,
+    "layoutWidth": 270,
+    "layoutHeight": 255,
+    "duration": 39680,
+    "loopStart": 0,
+    "fps": 15.02016129032258,
+    "frames": 596,
+    "bytes": 808694,
+    "firstFrame": {
+      "visible": 37717,
+      "transparent": 180203,
+      "sha256": "cb5a543602ec927d9fd3eb83658f9626fad119401a8da2dd6923a0d22c733ff3"
+    },
+    "lastFrameHash": "cc874249bc6264a9bfca1d755a54cfc5948210a7d684c81929bd7263efec24b4",
+    "fragment": "src/assets/neural-field-manifold/fragments.js#manifold",
+    "composite": "src/assets/neural-field-manifold/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/NeuralFieldAnimation.jsx",
+        "sha256": "2ef25677e38bf6a0d79c36686632ab29603b50e374563ee1ebe9ffcfcc318e4f"
+      },
+      {
+        "path": "src/shared/neuralFieldModel.js",
+        "sha256": "a246beaff5eddcb8eb48fefc167938253b2f55f8b220b247254d6f3558cbc0db"
+      },
+      {
+        "path": "src/shared/neural-field-animation.css",
+        "sha256": "2cc18b50006f33ec24f8083793f468d025efe21f0b38f78075fde5c67ec0c6f8"
+      },
+      {
+        "path": "public/assets/data/mouse-lfp.json",
+        "sha256": "d70ca4c1f84301cb818656b547813230c8f4d370a596410a0dd68a812ddb74cc"
+      }
+    ]
+  }
+}

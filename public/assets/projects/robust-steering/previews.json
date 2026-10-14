@@ -1,0 +1,96 @@
+{
+  "landscape": {
+    "id": "landscape",
+    "project": "robust-steering",
+    "name": "landscape",
+    "src": "/assets/projects/robust-steering/videos/landscape.webm",
+    "poster": "/assets/projects/robust-steering/posters/landscape.webp",
+    "revision": "c0d219d1ecaf",
+    "width": 416,
+    "height": 452,
+    "layoutWidth": 344,
+    "layoutHeight": 373,
+    "duration": 85000,
+    "loopStart": 42500,
+    "fps": 20,
+    "frames": 1700,
+    "bytes": 1549774,
+    "firstFrame": {
+      "visible": 102385,
+      "transparent": 85647,
+      "sha256": "e3ef60a23e7b60026705fa5d3b452b934430f9bc54d1bebb0d6d23f3fe6558b5"
+    },
+    "lastFrameHash": "57e170d27fe9d15bf529eb9c5f2baaeb0e7186dfb37581f6e841f1a8efa0dfe1",
+    "fragment": "src/assets/robust-steering/fragments.js#landscape",
+    "composite": "src/assets/robust-steering/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/RobustSteeringAnimation.jsx",
+        "sha256": "d2ba818cdb5e25aeab640abfbd0ff972fa4ccc587d46265485cbff403b812892"
+      },
+      {
+        "path": "src/shared/robustSteeringModel.js",
+        "sha256": "e1ba8046fe951c9c7a78ef940f1d2303690696eb351cee48c8cce07e9de24445"
+      },
+      {
+        "path": "src/shared/robust-steering-animation.css",
+        "sha256": "85ddf270ecbdd752ef4d6658dff7caa06c731bfaa03dba3cff6b14e4cf5478a3"
+      },
+      {
+        "path": "design/references/robust-steering-animation/mgsm-examples.json",
+        "sha256": "a0065a901789adbf4db8acaab2a974c54da551151ee4da7d4bb2625bd5cef11c"
+      },
+      {
+        "path": "design/references/robust-steering-animation/steering-landscapes.json",
+        "sha256": "181bc84255a5f113025ee7b6ad98185144deb20bdb1353c5945b9bc859e1672c"
+      }
+    ]
+  },
+  "conversation": {
+    "id": "conversation",
+    "project": "robust-steering",
+    "name": "conversation",
+    "src": "/assets/projects/robust-steering/videos/conversation.webm",
+    "poster": "/assets/projects/robust-steering/posters/conversation.webp",
+    "revision": "a1253307682a",
+    "width": 512,
+    "height": 334,
+    "layoutWidth": 416,
+    "layoutHeight": 270,
+    "duration": 85000,
+    "loopStart": 42500,
+    "fps": 20,
+    "frames": 1700,
+    "bytes": 2404036,
+    "firstFrame": {
+      "visible": 3690,
+      "transparent": 167318,
+      "sha256": "8ec2d14b57b812760d8292ae0d9e4bd650ebb474db3cd6f7d0ea60e1cea636e3"
+    },
+    "lastFrameHash": "e4fe88c4014b09247261010a663ca6853503f2317d16de2d12e6fb6cac556ef7",
+    "fragment": "src/assets/robust-steering/fragments.js#conversation",
+    "composite": "src/assets/robust-steering/composite.js",
+    "sources": [
+      {
+        "path": "src/shared/RobustSteeringAnimation.jsx",
+        "sha256": "d2ba818cdb5e25aeab640abfbd0ff972fa4ccc587d46265485cbff403b812892"
+      },
+      {
+        "path": "src/shared/robustSteeringModel.js",
+        "sha256": "e1ba8046fe951c9c7a78ef940f1d2303690696eb351cee48c8cce07e9de24445"
+      },
+      {
+        "path": "src/shared/robust-steering-animation.css",
+        "sha256": "85ddf270ecbdd752ef4d6658dff7caa06c731bfaa03dba3cff6b14e4cf5478a3"
+      },
+      {
+        "path": "design/references/robust-steering-animation/mgsm-examples.json",
+        "sha256": "a0065a901789adbf4db8acaab2a974c54da551151ee4da7d4bb2625bd5cef11c"
+      },
+      {
+        "path": "design/references/robust-steering-animation/steering-landscapes.json",
+        "sha256": "181bc84255a5f113025ee7b6ad98185144deb20bdb1353c5945b9bc859e1672c"
+      }
+    ]
+  }
+}

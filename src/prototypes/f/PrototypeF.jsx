@@ -5,7 +5,7 @@ import ScenePortrait from '../c/ScenePortrait';
 import { tools } from '../../shared/tools';
 import { neuraljaxlibRevision } from '../../content/neuraljaxlib';
 import { biography } from '../../content/site';
-import { cachedNeuraljaxPreviews } from '../../shared/neuraljaxlib/CachedPreviews';
+import { landingPreviews } from '../../assets/landingPreviews';
 import './styles.css';
 
 const placements = {
@@ -24,8 +24,13 @@ const researchPlacements = {
   signal: { x: 790, y: 485 },
 };
 const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[piece.id] })), ...tools.flatMap(tool => tool.figures.map(figure => ({
-  id: figure.id, project: tool.id, kind: 'tool', Component: cachedNeuraljaxPreviews[figure.id] || figure.Animation, ...placements[figure.id],
-})))];
+  id: figure.id, project: tool.id, kind: 'tool', Component: figure.Animation, ...placements[figure.id],
+})))].map(piece => {
+  if (!piece.Component) return piece;
+  const Component = landingPreviews[piece.id];
+  if (!Component) throw new Error(`Export a landing preview before adding ${piece.id}`);
+  return { ...piece, Component };
+});
 const navigationLabels = { research: 'Research Publications', packages: 'Tools & Packages' };
 const previewTools = tools.map(tool => ({ ...tool,
   ...(tool.id === 'neuraljaxlib' ? neuraljaxlibRevision : {}),

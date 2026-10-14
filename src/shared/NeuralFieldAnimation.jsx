@@ -28,7 +28,7 @@ export function NeuralFieldManifold(props) {
   return <NeuralFieldAnimation {...props} part="manifold" />;
 }
 
-function createManifold(host, model, strokeWidth) {
+function createManifold(host, model, strokeWidth, capture = false) {
   const LAG = model.lag;
   const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
   camera.position.set(3.2, 3.1, 4.9).multiplyScalar(1.2);
@@ -36,7 +36,7 @@ function createManifold(host, model, strokeWidth) {
   camera.updateMatrixWorld();
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: capture });
   } catch {
     // Keep the scientific view usable when WebGL is disabled.
     const canvas = document.createElement('canvas');
@@ -139,7 +139,7 @@ export default function NeuralFieldAnimation(props) {
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, maxFps }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, maxFps, elapsedMs }) {
   const full = part === 'full';
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
@@ -150,9 +150,10 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
   const temporalPoint = useRef(null);
   const controller = useRef(null);
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const exporting = elapsedMs !== undefined;
 
   useEffect(() => {
-    const manifold = host.current ? createManifold(host.current, model, MANIFOLD_STROKE_WIDTH) : null;
+    const manifold = host.current ? createManifold(host.current, model, MANIFOLD_STROKE_WIDTH, exporting) : null;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const initialFrame = Math.floor(model.signal.length / 2);
     let frame = initialFrame;
@@ -204,6 +205,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       setPlaying(value) { playing = value; sync(); },
       replay() { frame = initialFrame; remainder = 0; draw(); },
       allowMotion() { motionAllowed = true; sync(); },
+      seek(ms) { frame = advanceFrame(initialFrame, Math.floor(ms * model.sampleRate * PLAYBACK_SPEED / 1000), model.signal.length, 2 * LAG); draw(); },
     };
     // A compact placement can paint its current frame once before freezing it.
     if (snapshotRef) snapshotRef.current = draw;
@@ -226,9 +228,10 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       manifold?.dispose(); controller.current = null;
       if (snapshotRef) snapshotRef.current = null;
     };
-  }, [model, LAG, part, snapshotRef, maxFps]);
+  }, [model, LAG, part, snapshotRef, maxFps, exporting]);
 
-  useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
+  useEffect(() => { controller.current?.setPlaying(active && !paused && !exporting); }, [active, paused, exporting]);
+  useEffect(() => { if (exporting) controller.current?.seek(elapsedMs); }, [elapsedMs, exporting]);
 
   return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} data-part={part} ref={root}>
     <div className="nf-diagram">
