@@ -31,7 +31,7 @@ try {
     assert.equal(await page.locator('[data-menu="research"]').textContent(), 'Research Publications');
     assert.equal(await page.locator('[data-menu="packages"]').textContent(), 'Tools & Packages');
     assert.equal(await page.locator('[data-piece="neuraljax-rnn"]').evaluate(n => n.style.width), '180px');
-    assert.equal(await page.locator('[data-piece="neuraljax-autoencoder"]').evaluate(n => n.style.width), '210.6px');
+    assert.equal(await page.locator('[data-piece="neuraljax-autoencoder"]').evaluate(n => n.style.width), '189.54px');
     assert(await page.evaluate(() => {
       const canvas = document.querySelector('.pb-canvas');
       const name = canvas.querySelector('.pc-name-button');

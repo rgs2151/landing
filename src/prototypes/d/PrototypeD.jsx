@@ -6,10 +6,10 @@ import { tools } from '../../shared/tools';
 import './styles.css';
 
 const placements = {
-  pylba: { x: 930, y: 0, width: 175, angle: 7 },
+  pylba: { x: 930, y: 0, width: 175, angle: 5 },
   'neuraljax-cnn': { x: 785, y: 565, width: 140, angle: 10 },
   'neuraljax-rnn': { x: -20, y: 245, width: 180, angle: 9 },
-  'neuraljax-autoencoder': { x: 1025, y: 145, width: 210.6, angle: -7 },
+  'neuraljax-autoencoder': { x: 1025, y: 145, width: 189.54, angle: -5.6 },
   'neuraljax-gan': { x: 10, y: 470, width: 181.35, angle: -6 },
   'neuraljax-transformer': { x: 200, y: 610, width: 190, angle: 7 },
 };
