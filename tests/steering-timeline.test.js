@@ -2,15 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import { SteeringTimeline, timeline, sampleSteering } from '../src/shared/robustSteeringModel.js';
 
 const base = new URL('../design/references/robust-steering-animation/', import.meta.url);
 const examples = JSON.parse(readFileSync(new URL('mgsm-examples.json', base))).examples;
 const context = { Intl };
-runInNewContext(readFileSync(new URL('steering-timeline.js', base), 'utf8'), context);
-const timeline = context.SteeringTimeline.create(examples);
+runInNewContext(readFileSync(new URL('frozen-9c6a434/steering-timeline.js', base), 'utf8'), context);
+
+test('native timeline exactly matches the frozen reference across two cycles', () => {
+  const reference = context.SteeringTimeline.create(examples);
+  for (let time = 0; time < timeline.duration * 2; time += 13) {
+    assert.equal(JSON.stringify(timeline.sample(time)), JSON.stringify(reference.sample(time)));
+    assert.equal(sampleSteering(time).characters.length, sampleSteering(0).characters.length);
+  }
+});
 
 test('shared easing accelerates and settles without changing phase boundaries', () => {
-  const { ease } = context.SteeringTimeline;
+  const { ease } = SteeringTimeline;
   assert.equal(ease(0), 0);
   assert.equal(ease(0.5), 0.5);
   assert.equal(ease(1), 1);

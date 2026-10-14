@@ -11,11 +11,11 @@ Initial animation supplied by the user through the controller project page.
 - Local export: `public/assets/videos/robust-steering.gif`
 - Export properties: 776 x 549, 249 frames, 20.75 seconds, 326159 bytes.
 
-The source files here began as snapshots and now include the approved local
-animation edits. The upstream commit above identifies the original. `source-page.html` is
-reference markup from the full page, not a standalone local preview. The live
-animation uses inline SVG and plain JavaScript. It also inherits the page's
-box-sizing reset, `--muted` and `--teal` colors, and `.sr-only` utility.
+The finalized pre-port sources are preserved byte-for-byte in `frozen-9c6a434/`,
+including the former iframe wrapper and its inputs. This archive is immutable,
+not imported into the live website. The live implementation is native React/SVG
+with HTML text, in `src/shared/RobustSteeringAnimation.jsx`,
+`src/shared/robustSteeringModel.js` and `src/shared/robust-steering-animation.css`.
 
 The upstream animation introduces an activation landscape and language-steering
 direction, stores it in a controller, shifts the landscape, and transfers the
@@ -24,18 +24,13 @@ to Spanish while the mathematical answer is preserved. The upstream source
 identifies its activations and question/response example as schematic, not
 recorded benchmark outputs.
 
-Prototype A runs the adapted JavaScript and SVG, not the GIF or MP4.
-`src/shared/RobustSteeringAnimation.jsx` imports these local sources,
-extracts only the animation markup using DOMParser, and runs it in a sandboxed
-inline frame. There is no remote embed and no video request. The fixed internal
-viewport preserves the source composition at thumbnail and reading sizes.
-
-The wrapper supplies the inherited colors/reset and pauses the thumbnail while
-a project is open. The full view uses the standard React/Lucide inset controls;
-the source buttons are hidden and driven through the sandbox message bridge.
-Replay returns to the initial state without changing the user's pause choice.
-Reduced-motion starts paused, with explicit play available. Removing the frame
-also disposes all its animation work.
+The site uses native components, not GIF/MP4, iframe, injected scripts or messaging.
+The full view composes shared landscape and conversation components. Each fragment
+mounts only its own component; hidden copies of the other side are not rendered.
+The fixed internal coordinates preserve the accepted composition and scale uniformly.
+All views share standard React/Lucide controls, pause while inactive/offscreen, and
+stop requestAnimationFrame work on unmount. Replay preserves the user's pause choice.
+Reduced-motion starts paused, with explicit play available.
 Previous media exports remain archived but are no longer used by the prototype.
 
 Approved local changes: omit the animation heading, controller box and both
@@ -50,7 +45,7 @@ The current frame is 776 x 380, capped at its native width in the project view.
 The 20px bottom trim moves the inset controls upward without changing content geometry.
 `RobustSteeringLandscape` and `RobustSteeringConversation` expose the two halves
 through the same React `compact` / `active` interface as the neural-field fragments.
-They remain iframe-backed viewport views of this shared source, not native React/SVG.
+They are native React/SVG views, sharing the full animation's components and model.
 The language headings use the normal 20px text size in bold above the
 plot. Question and model response share an aligned icon/text layout, with a
 40px row gap. The model itself aligns with the first response line; lightning
@@ -108,6 +103,17 @@ node scripts/cache-mgsm-examples.mjs /home/dev/controller/code
 node --test tests/steering-timeline.test.js
 ```
 
-`steering-timeline.js` provides the deterministic, pausable sequence used by the
+`src/shared/robustSteeringModel.js` provides the deterministic, pausable sequence used by the
 renderer and tests. Only the small selected cache is included in this website;
 the controller repository and full experiment outputs remain outside it.
+
+## Verification
+
+`npm run test:steering` compares the native timeline to the frozen reference over
+two complete cycles and checks content, routes, easing and phase boundaries.
+`node tests/steering-browser-parity.mjs` mounts an instrumented reference iframe
+only inside the test browser and compares 31 exact timestamps without screenshots:
+text, glitch spans, heading clips, cached paths, icon geometry, computed styles and
+visible positions (0.06px tolerance). It also checks fragment mounting, playback,
+pause/replay and the real project view. The test accepts `SITE_URL`,
+`PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` environment overrides for other machines.

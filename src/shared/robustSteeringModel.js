@@ -1,5 +1,6 @@
-// Shared by the isolated animation and its focused Node tests.
-globalThis.SteeringTimeline = (() => {
+import examples from '../../design/references/robust-steering-animation/mgsm-examples.json' with { type: 'json' };
+
+export const SteeringTimeline = (() => {
   const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
   const units = text => [...segmenter.segment(text || '')].map(item => item.segment);
   const clamp = value => Math.max(0, Math.min(1, value));
@@ -62,3 +63,32 @@ globalThis.SteeringTimeline = (() => {
   }
   return { create, ease };
 })();
+
+export const timeline = SteeringTimeline.create(examples.examples);
+export const ease = SteeringTimeline.ease;
+const glyphs = Array.from('▓▒░<>/\\#¿!?');
+const count = Math.max(...timeline.entries.flatMap(entry => [entry.units.baseline.length, entry.units.steered.length]));
+
+export function sampleSteering(elapsed) {
+  const snapshot = timeline.sample(elapsed);
+  const { entry, phase, time, first } = snapshot;
+  const progress = (start, span) => ease((time - start) / span);
+  const offset = first ? 0 : 2200;
+  const english = entry.language === 'en';
+  const points = english ? progress(offset + 400, 300) : 0;
+  const drawn = english ? progress(offset + 1000, 850) : 0;
+  const stored = progress(offset + 2800, 1100);
+  const answer = timeline.units(snapshot.answer);
+  const front = snapshot.corruption * (Math.max(entry.units.baseline.length, entry.units.steered.length) + 5);
+  return { ...snapshot, drawn, stored,
+    directionOpacity: points * (1 - progress(offset + 3700, 200)),
+    labelsOpacity: points * (1 - progress(offset + 2800, 300)),
+    characters: Array.from({ length: count }, (_, i) => {
+      const changing = phase === 'steering' && i <= front && i > front - 5;
+      let char = answer[i] || '';
+      if (phase === 'steering') char = i <= front - 5 ? entry.units.steered[i] || '' : entry.units.baseline[i] || '';
+      if (changing) char = glyphs[(i * 7 + Math.floor(elapsed / 65)) % glyphs.length];
+      return { char, changing };
+    }),
+  };
+}

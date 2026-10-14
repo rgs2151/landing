@@ -9,12 +9,20 @@ and `RobustSteeringConversation`, accepting the same `compact` and `active` prop
 as the neural-field fragments. Prototype A places these separately; either opens
 the full project view. Standalone views retain pause/replay controls.
 
-Unlike the native React/SVG neural-field assets, steering still uses an isolated
-SVG/HTML iframe. Its two fragments are transparent viewport views of the same
-renderer, timeline, content and cached geometry, not independently copied animations.
-The unused side is hidden without changing layout measurements. Each placement
-has its own playback state. A native React port is a separate task, not part of
-this extraction. Do not describe these fragments as native SVG components.
+Steering now uses native React, SVG and HTML text, with no iframe, script injection
+or message bridge. Full and fragment views compose the same `Landscape` and
+`Conversation` components, timeline, content and cached geometry. A fragment mounts
+only its own half. Each placement has its own playback state; `active` suspends it
+without losing position. Controls, reduced motion and offscreen handling are shared.
+
+The accepted pre-port implementation is preserved byte-for-byte under
+`design/references/robust-steering-animation/frozen-9c6a434/`, for reference/testing
+only. Do not modify or import this archive into the site. Native implementations
+are `RobustSteeringAnimation.jsx`, `robustSteeringModel.js` and
+`robust-steering-animation.css` in `src/shared/`. Fixed internal coordinates and
+text heights preserve the accepted geometry, while each outer view scales uniformly.
+The optional `elapsedMs` prop supports deterministic seeking for parity checks.
+Content, appearance and timing are finalized; do not redesign during maintenance.
 
 ## Animation Controls
 
