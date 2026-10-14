@@ -104,11 +104,12 @@ function usePlayback(root, active, elapsedMs, maxFps) {
 export function RobustSteeringLandscape(props) { return <RobustSteeringAnimation {...props} part="landscape" />; }
 export function RobustSteeringConversation(props) { return <RobustSteeringAnimation {...props} part="conversation" />; }
 
-export default function RobustSteeringAnimation({ compact = false, active = true, onClose, part = 'full', elapsedMs, maxFps }) {
+export default function RobustSteeringAnimation({ compact = false, active = true, onClose, part = 'full', elapsedMs, maxFps, previewPadding = 0 }) {
   const root = useRef(null);
   const playback = usePlayback(root, active, elapsedMs, maxFps);
   const snapshot = sampleSteering(playback.elapsed);
-  const view = part === 'landscape' ? { x: 20, y: 12, width: 320, height: compact ? 349 : 397 }
+  const padding = compact && part === 'landscape' ? previewPadding : 0;
+  const view = part === 'landscape' ? { x: 20 - padding, y: 12 - padding, width: 320 + padding * 2, height: (compact ? 349 : 397) + padding * 2 }
     : part === 'conversation' ? { x: 350, y: 50, width: 416, height: compact ? 270 : 310 }
     : { x: 0, y: 0, width: 776, height: 380 };
   useEffect(() => {

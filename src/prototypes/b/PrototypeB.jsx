@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, ChevronDown, Pause, Play, RotateCcw } from 'lucide-react';
 import { profile, paper, robustSteering, neuralFieldManifold } from '../../content/site';
 import ProjectVideo from '../../shared/ProjectVideo';
@@ -112,6 +112,8 @@ export default function PrototypeB() {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(selectedFromHash);
   const [hovered, setHovered] = useState(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const lastSelection = useRef(selected);
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [replay, setReplay] = useState(0);
@@ -127,7 +129,18 @@ export default function PrototypeB() {
   const active = hovered;
   const stackX = (24 - (viewport.width - 1200 * scale) / 2) / scale;
   const stackY = (viewport.height - 360 - 92) / scale;
-  useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic });
+  useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning });
+  useLayoutEffect(() => {
+    if (lastSelection.current === selected) { setTransitioning(false); return; }
+    lastSelection.current = selected;
+    setHovered(null);
+    setTransitioning(!reduced);
+    const timer = setTimeout(() => setTransitioning(false), reduced ? 0 : 750);
+    return () => clearTimeout(timer);
+  }, [selected, reduced]);
+  function hover(project) {
+    if (!selected && !transitioning) setHovered(project);
+  }
   useEffect(() => {
     const media = matchMedia('(min-width: 901px)');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -182,7 +195,7 @@ export default function PrototypeB() {
 
   return <main className="prototype-b" data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      <Navigation selected={selected} open={open} hover={setHovered} />
+      <Navigation selected={selected} open={open} hover={hover} />
     </header>
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
@@ -192,7 +205,7 @@ export default function PrototypeB() {
       </div>}
     </aside>}
     <section className="pb-stage" ref={scene} data-open={Boolean(selected)} aria-label="Interactive research composition" onPointerLeave={() => setHovered(null)}>
-      <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-active={active || ''} data-paused={paused || Boolean(selected)}>
+      <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-about={selected === 'about'} data-transitioning={transitioning} data-active={active || ''} data-paused={paused || Boolean(selected)}>
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
           <h1 className="pb-title" tabIndex={-1}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></h1>
         </div>
@@ -204,14 +217,16 @@ export default function PrototypeB() {
           const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
           const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
           return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-matching={matching}
-            style={{ width: piece.width, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : piece.angle}deg) scale(${factor})` }}
+            style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : 0}deg) scale(${factor})` }}
             aria-label={`${names[piece.project]}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
             tabIndex={selected ? -1 : 0} aria-hidden={selected ? true : undefined} aria-controls="pb-reading"
-            onClick={event => selected ? close() : open(piece.project,event.currentTarget)} onPointerEnter={() => { if (!selected) setHovered(piece.project); }} onPointerLeave={() => setHovered(null)} onFocus={() => { if (!selected) setHovered(piece.project); }} onBlur={() => setHovered(null)}>
+            onClick={event => { if (!transitioning) selected ? close() : open(piece.project,event.currentTarget); }} onPointerEnter={() => hover(piece.project)} onPointerLeave={() => hover(null)} onFocus={() => hover(piece.project)} onBlur={() => hover(null)}>
             <div className="pb-orbit" data-project={piece.project} data-x={piece.x + piece.width / 2} data-y={piece.y + piece.width / 2} key={replay}>
+              <div className="pb-tilt">
               <FreezePreview frozen={frozen}>
-                {piece.Component ? <piece.Component compact active={!paused} maxFps={30} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
+                {piece.Component ? <piece.Component compact active={!paused} maxFps={30} previewPadding={piece.id === 'landscape' ? 12 : 0} manifoldStrokeWidth={piece.id === 'manifold' ? 2 : 1} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
               </FreezePreview>
+              </div>
             </div>
           </button>;
         })}</NaturePreviewClock>

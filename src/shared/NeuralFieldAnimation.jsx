@@ -1,6 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import * as THREE from 'three';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { loadNeuralFieldModel, advanceFrame, traceRanges, PLAYBACK_SPEED, SIGNAL_WINDOW, SIGNAL_HEIGHT, waveformPath } from './neuralFieldModel';
 import './neural-field-animation.css';
 
@@ -24,7 +27,7 @@ export function NeuralFieldManifold(props) {
   return <NeuralFieldAnimation {...props} part="manifold" />;
 }
 
-function createManifold(host, model) {
+function createManifold(host, model, strokeWidth) {
   const LAG = model.lag;
   const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
   camera.position.set(3.2, 3.1, 4.9).multiplyScalar(1.2);
@@ -48,7 +51,7 @@ function createManifold(host, model) {
         const { width, height } = canvas;
         context.clearRect(0, 0, width, height);
         context.strokeStyle = ACCENT;
-        context.lineWidth = 1.6;
+        context.lineWidth = 1.6 * strokeWidth;
         context.beginPath();
         for (const { start, count } of traceRanges(frame, model.signal.length, LAG)) {
           for (let i = start; i < start + count; i++) {
@@ -69,12 +72,16 @@ function createManifold(host, model) {
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
   const position = new THREE.BufferAttribute(model.points, 3);
-  const geometries = [new THREE.BufferGeometry(), new THREE.BufferGeometry()];
-  const material = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.78 });
+  const thick = strokeWidth > 1;
+  const geometries = thick ? [new LineGeometry(), new LineGeometry()] : [new THREE.BufferGeometry(), new THREE.BufferGeometry()];
+  const options = { color: ACCENT, transparent: true, opacity: 0.78 };
+  const material = thick ? new LineMaterial({ ...options, linewidth: strokeWidth }) : new THREE.LineBasicMaterial(options);
   geometries.forEach(geometry => {
-    geometry.setAttribute('position', position);
-    scene.add(new THREE.Line(geometry, material));
+    if (thick) geometry.setPositions(model.points);
+    else geometry.setAttribute('position', position);
+    scene.add(thick ? new Line2(geometry, material) : new THREE.Line(geometry, material));
   });
+  const segments = thick ? geometries[0].attributes.instanceStart.data.array.slice() : null;
   const pointGeometry = new THREE.SphereGeometry(0.065, 12, 8);
   const pointMaterial = new THREE.MeshBasicMaterial({ color: 0x191919 });
   const point = new THREE.Mesh(pointGeometry, pointMaterial);
@@ -92,7 +99,14 @@ function createManifold(host, model) {
       const ranges = traceRanges(frame, model.signal.length, LAG);
       geometries.forEach((geometry, index) => {
         const range = ranges[index];
-        geometry.setDrawRange(range?.start || 0, range?.count || 0);
+        if (thick) {
+          // Reuse the GPU buffers; only upload the visible history's segments.
+          const count = Math.max(0, (range?.count || 0) - 1);
+          const buffer = geometry.attributes.instanceStart.data;
+          buffer.array.set(segments.subarray((range?.start || 0) * 6, ((range?.start || 0) + count) * 6));
+          buffer.needsUpdate = true;
+          geometry.instanceCount = count;
+        } else geometry.setDrawRange(range?.start || 0, range?.count || 0);
       });
       point.visible = frame >= 2 * LAG;
       point.position.fromArray(model.points, frame * 3);
@@ -124,7 +138,7 @@ export default function NeuralFieldAnimation(props) {
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, manifoldStrokeWidth = 1, maxFps }) {
   const full = part === 'full';
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
@@ -137,13 +151,14 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
-    const manifold = host.current ? createManifold(host.current, model) : null;
+    const manifold = host.current ? createManifold(host.current, model, manifoldStrokeWidth) : null;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const initialFrame = Math.floor(model.signal.length / 2);
     let frame = initialFrame;
     let raf = 0;
     let last = 0;
     let remainder = 0;
+    let lastPaint = -Infinity;
     let visible = false;
     let playing = true;
     let motionAllowed = !reducedMotion.matches;
@@ -172,7 +187,10 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       if (steps) {
         remainder -= steps;
         frame = advanceFrame(frame, steps, model.signal.length, 2 * LAG);
-        draw();
+        if (!maxFps || now - lastPaint >= 1000 / maxFps - .5) {
+          draw();
+          lastPaint = now;
+        }
       }
       raf = requestAnimationFrame(tick);
     }
@@ -207,7 +225,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       manifold?.dispose(); controller.current = null;
       if (snapshotRef) snapshotRef.current = null;
     };
-  }, [model, LAG, part, snapshotRef]);
+  }, [model, LAG, part, snapshotRef, manifoldStrokeWidth, maxFps]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
 

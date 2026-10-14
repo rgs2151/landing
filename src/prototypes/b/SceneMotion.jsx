@@ -1,28 +1,40 @@
 import { cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { profile } from '../../content/site';
 
-export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic }) {
+export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning }) {
   const animations = useRef([]);
   useEffect(() => {
     if (!desktop || !root.current) return;
     animations.current = [...root.current.querySelectorAll('.pb-orbit')].map((node, index) => {
       const x = Number(node.dataset.x) - 600, y = Number(node.dataset.y) - 350;
-      const keyframes = Array.from({ length: 49 }, (_, frame) => {
-        const angle = Math.sin(frame / 48 * Math.PI * 2) * .075;
-        return { transform: `translate(${x * (Math.cos(angle) - 1) - y * Math.sin(angle)}px, ${x * Math.sin(angle) + y * (Math.cos(angle) - 1)}px) rotate(${Math.sin(angle) * 8}deg)` };
+      const phase = Math.atan2(y, x);
+      const radiusX = 270 + index % 3 * 40, radiusY = 160 + index % 3 * 25;
+      const keyframes = Array.from({ length: 121 }, (_, frame) => {
+        const angle = phase + frame / 120 * Math.PI * 2;
+        return { transform: `translate(${radiusX * Math.cos(angle) - x}px, ${radiusY * Math.sin(angle) - y}px) scale(${.9 + .1 * Math.sin(angle)})` };
       });
-      const animation = node.animate(keyframes, { duration: 22000 + index * 1900, iterations: Infinity });
-      animation.currentTime = index * 1400;
-      return { animation, project: node.dataset.project };
+      const animation = node.animate(keyframes, { duration: 48000 + index * 2300, iterations: Infinity });
+      return { animation, node, settle: null };
     });
-    return () => animations.current.forEach(({ animation }) => animation.cancel());
+    return () => animations.current.forEach(({ animation, settle }) => { animation.cancel(); settle?.cancel(); });
   }, [desktop, root, replay]);
   useEffect(() => {
-    animations.current.forEach(({ animation, project }) => {
-      if (paused || selected || reduced || hovered === project || (diagnostic && diagnostic !== 'all' && diagnostic !== 'motion')) animation.pause();
+    animations.current.forEach(({ animation }) => {
+      if (paused || selected || reduced || hovered || transitioning || (diagnostic && diagnostic !== 'all' && diagnostic !== 'motion')) animation.pause();
       else animation.play();
     });
-  }, [desktop, paused, selected, hovered, reduced, replay, diagnostic]);
+  }, [desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning]);
+  useEffect(() => {
+    animations.current.forEach(item => {
+      const from = getComputedStyle(item.node).transform;
+      item.settle?.cancel();
+      const to = selected ? 'translate(0px, 0px) scale(1)' : getComputedStyle(item.node).transform;
+      item.settle = item.node.animate([{ transform: from }, { transform: to }], {
+        duration: reduced ? 0 : 700, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both',
+      });
+      if (!selected) item.settle.onfinish = () => item.settle?.cancel();
+    });
+  }, [desktop, selected, reduced, replay]);
 }
 
 // Preserve the accepted frame as inert DOM; discard the running React/WebGL tree.

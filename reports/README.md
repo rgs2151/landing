@@ -4,7 +4,34 @@ Measured results live in [prototype-b-costs.csv](prototype-b-costs.csv).
 [prototype-b-costs.json](prototype-b-costs.json) contains every sample, browser
 version, viewport, preview sizes, source-frame counts, and the measurement date.
 
-## Current Results
+## Focus And Depth Iteration
+
+[prototype-b-focus.json](prototype-b-focus.json) records the black-splash/depth
+iteration: three 1500ms samples per condition, 1440x900, headless Chromium with
+SwiftShader. Both conditions hold the same hovered scene, with its orbits
+paused and internal figures running. The control disables only opacity dimming.
+
+| Condition | FPS | P95 frame interval | Main-thread ms/s |
+| --- | ---: | ---: | ---: |
+| Hover, dimming disabled | 60.0 | 16.8ms | 476.19 |
+| Hover, dimming enabled | 60.0 | 16.7ms | 451.35 |
+
+No measurable frame-cadence penalty from opacity dimming in this local test.
+The task-time difference is not evidence that dimming improves performance.
+This measures settled hover, not the transition or the entire orbit cycle.
+There is no blur filter. The thicker manifold uses triangle-based wide lines
+and costs more to render than the previous native one-pixel lines; the preview
+redraw cap is now 30 FPS while playback speed remains unchanged. Full diagrams
+retain their original renderer settings and timing.
+
+Reproduce: `node tests/prototype-b-motion.mjs`. This also checks depth ordering,
+full-loop continuity, hover straightening, pointer lock during unfolding,
+axis-label bounds and the hidden About stack, without screenshots.
+
+## Earlier Per-Asset Baseline
+
+The following measurements and the costs CSV/JSON predate the black splash,
+full orbits and thicker manifold. They are historical, not current totals.
 
 Three repetitions, 1000ms samples, after settling. All cases measured 60 FPS;
 the 95th-percentile frame interval was 16.7-16.8ms. Values below are median total
@@ -63,7 +90,7 @@ Only the splash uses cheaper renderings:
 - Footage: all original frames and 15 FPS timing, cached in WebP frame sheets.
   The dominant clip uses 320px frames; the three smaller clips use 160, 128 and
   96px. `assets` in the JSON records exact file bytes and raw decoded pixel sizes.
-- Steering: 30 rendered updates per second in the two small previews. The clock
+- Steering and neural-field fragments: at most 30 rendered updates per second. The clock
   and phase durations are unchanged. Full-size steering has no added frame cap.
 - Folded previews: inert SVG/text clones and small bitmap copies of canvases.
   The live React components unmount, their observers/RAF loops stop, and the
@@ -87,9 +114,8 @@ browser memory. Costs are not additive: several animations can share paint and
 layout work. Small differences near idle are measurement noise.
 
 The large original-video slowdown and the first frame-sheet experiment are
-documented in `design/prototype-b.md`. The current CSV measures the current
-implementation; it does not claim a controlled before/after comparison with
-an earlier revision.
+documented in `design/prototype-b.md`. The costs CSV records the earlier
+implementation; it is not a controlled comparison with the new focus/depth iteration.
 
 ## Reproduce
 

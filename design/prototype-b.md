@@ -26,8 +26,8 @@ unchanged; verifying its domain is a separate content decision.
 
 ## B Decisions
 
-- A white continuous stage integrates the accepted transparent/white assets
-  without filtering or recoloring them. Black display lettering uses the existing
+- The splash is black with white display lettering and white-backed scientific
+  previews. Reading pages remain white. Display lettering uses the existing
   Impact stack for the large name; reading text and navigation use Arial, as
   confirmed by the user. Existing reading text sizes remain. Dark red stays the accent.
 - Project figures and actual Nature footage form the composition. No new particle
@@ -58,10 +58,16 @@ unchanged; verifying its domain is a separate content decision.
 
 ## Orbital And Profile Iteration
 
-- Keep the large name static and unadorned on hover. Artwork follows slow arcs
-  around a common center. Hover pauses the related group's orbit at its current
-  position; other pieces settle inward slightly. Leaving resumes motion without
-  restarting the path. There is no latched hover selection or click-to-toggle fan.
+- Keep the large name static and unadorned on hover. Artwork completes full
+  elliptical loops in 48-66 seconds around the name, with subtle depth scaling.
+  Hover pauses all orbital motion, straightens the related project's pieces,
+  and reduces other pieces to 25% opacity while preserving the name's opacity.
+  Leaving resumes the same paths. There is no latched hover selection.
+- Equation and manifold previews sit above the name, with one dominant footage
+  preview also in front. The conversation and three smaller footage previews
+  sit behind. Overlap is intentional; the nav remains an unobstructed way to
+  reach every project. Tilt has its own wrapper so it cannot displace the orbit
+  or create a moving hover target. Fold/unfold transitions ignore pointer input.
 - Preview widths: footage 270/125/95/65px, manifold 380px, waveform 150px,
   equation 310px, landscape 270px, conversation 350px. The user confirmed that
   the smaller "ARR" referred to the waveform, not the equation. These are current
@@ -73,6 +79,7 @@ unchanged; verifying its domain is a separate content decision.
   folds back. About omits the small identity/contact row and repeated footer name.
   Entry from the splash About link starts the portrait transition from that click;
   entry from a project uses the already-visible portrait on the stack.
+- About hides the complete artwork stack. Its return arrow stays available.
 - Clicking the stacked portrait returns to the landing composition, never About.
   All return paths hide the portrait, including history, Escape and hash changes.
 - B overrides the inherited body-font variable locally so paragraphs, author
@@ -81,6 +88,11 @@ unchanged; verifying its domain is a separate content decision.
 - Preview sheets carry content-hash revisions and checked tile dimensions. Each
   tile is one complete resized source frame, not a crop of the four-video strip.
   Mismatched sheets fall back to the poster instead of displaying adjacent frames.
+- B's landscape preview adds 12px of framing padding to retain both axis labels.
+  Its manifold preview uses a real 2px Three.js wide line, not the unsupported
+  WebGL native-line width setting. Neural-field previews redraw at most 30 FPS
+  without slowing recorded-data playback. These are opt-in preview settings;
+  full diagrams and prototype A retain their finalized output.
 - Frozen previews are inert DOM/bitmap snapshots, not hidden live components.
   Full project content and animation output remain unchanged. The native assets
   only gain opt-in preview sampling/capture support and unmount cleanup guards.
