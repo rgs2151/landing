@@ -14,11 +14,16 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
 - The largest footage preview is 20% smaller than C's initial 270px version and
   swaps upper positions with the 125px preview. The large preview is behind the
   name; the small upper-left preview stays in front, clear of the initial R.
-- Equation/lag axes move to the waveform's former upper position (505,100);
-  the waveform moves to the former equation position (785,525). Other assets
-  retain their accepted positions. This pair was explicitly confirmed by the user.
-- A single persistent portrait lives beside the name at scene coordinates
-  (770,305), sized 80x100, with subtle local motion. It travels to the bottom-left
+- Equation/lag axes stay above the name; the waveform stays at the lower right.
+  Previews spread toward the left and corners to leave room for the enlarged
+  portrait and reduce overlap. Their sizes and internal animations are unchanged.
+  The steering landscape occupies the lower-right corner; the conversation
+  remains below the name, and the manifold sits farther left.
+- A single persistent square portrait lives 20 scene pixels beside the visible
+  name lettering, aligned with its top and matching its full two-line height.
+  The entire square source photo is visible, including hands, with subtle local
+  motion. Square frames also prevent cropping in projects and About.
+  It travels to the bottom-left
   stack for projects, to the About photo slot for About, and directly home when
   returning to the splash. Do not remount or duplicate the portrait between views.
 - About shows the portrait in color, hides all folded artwork, and retains the

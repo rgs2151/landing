@@ -21,10 +21,13 @@ export default function ScenePortrait({ selected, slot, canvas, scale, viewport,
       const offset = transform === 'none' ? 0 : new DOMMatrixReadOnly(transform).m41;
       target = { x: box.x - offset, y: box.y, width: box.width, height: box.height };
     } else if (selected) {
-      target = { x: 72, y: viewport.height - 370, width: 112, height: 140 };
+      target = { x: 72, y: viewport.height - 370, width: 112, height: 112 };
     } else {
       const box = canvas.current.getBoundingClientRect();
-      target = { x: box.x + 770 * scale, y: box.y + 305 * scale, width: 80 * scale, height: 100 * scale };
+      const title = canvas.current.querySelector('.pb-title');
+      const right = Math.max(...Array.from(title.children, line => line.offsetLeft + line.offsetWidth));
+      const size = title.offsetHeight * scale;
+      target = { x: box.x + (title.offsetLeft + right + 20) * scale, y: box.y + title.offsetTop * scale, width: size, height: size };
     }
     travel.current?.cancel();
     floating.current.pause();

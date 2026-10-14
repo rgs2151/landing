@@ -5,10 +5,15 @@ import './styles.css';
 
 // Restore the pre-orbit spread and size balance; reuse all accepted assets/views.
 const placements = {
-  'nature-0': { x: 755, y: 105, width: 216 },
-  'nature-1': { x: 205, y: -15 },
-  autoregressive: { x: 505, y: 100 },
-  signal: { x: 785, y: 525 },
+  'nature-0': { x: 720, y: -10, width: 216 },
+  'nature-1': { x: 150, y: 15 },
+  'nature-2': { x: 65, y: 210 },
+  'nature-3': { x: 1050, y: 125 },
+  autoregressive: { x: 365, y: 50 },
+  signal: { x: 785, y: 575 },
+  manifold: { x: 0, y: 355 },
+  landscape: { x: 940, y: 445 },
+  conversation: { x: 400, y: 510 },
 };
 const spread = pieces.map(piece => ({ ...piece, width: piece.width / 1.2, ...placements[piece.id] }));
 

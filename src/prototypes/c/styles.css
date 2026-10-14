@@ -1,7 +1,8 @@
 .prototype-c .pb-fragment[data-piece="nature-0"] { z-index: 6; }
 .prototype-c .pb-fragment[data-piece="nature-1"] { z-index: 8; }
 .prototype-c .pc-portrait-content { width: 100%; height: 100%; }
-.prototype-c .pc-scene-portrait img { transition: filter 350ms; }
+.prototype-c .pc-scene-portrait img { object-fit: contain; transition: filter 350ms; }
+.prototype-c .pb-about-photo-slot { height: 180px; }
 .prototype-c .pc-scene-portrait[data-location="about"] img { filter: none; }
 @media (prefers-reduced-motion: reduce) {
   .prototype-c .pc-scene-portrait img { transition: none; }

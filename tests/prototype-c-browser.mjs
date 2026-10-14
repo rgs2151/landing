@@ -25,9 +25,17 @@ try {
     assert.deepEqual(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.map(n=>parseFloat(n.style.width))),[216,125,95,65,270,350,150,310,380]);
     assert.deepEqual(await page.locator('[data-piece="nature-0"],[data-piece="nature-1"],[data-piece="signal"],[data-piece="autoregressive"]').evaluateAll(nodes=>nodes.map(node=>{
       const m=new DOMMatrixReadOnly(node.style.transform);return [node.dataset.piece,m.m41,m.m42];
-    })),[['nature-0',755,105],['nature-1',205,-15],['signal',785,525],['autoregressive',505,100]]);
+    })),[['nature-0',720,-10],['nature-1',150,15],['signal',785,575],['autoregressive',365,50]]);
     assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'home');
     assert.equal(await page.locator('.pc-scene-portrait img').count(),1);
+    assert(await page.evaluate(()=>{
+      const portrait=document.querySelector('.pc-scene-portrait'), image=portrait.querySelector('img');
+      const box=portrait.getBoundingClientRect(), title=document.querySelector('.pb-title').getBoundingClientRect();
+      const right=Math.max(...Array.from(document.querySelectorAll('.pb-title span'),n=>n.getBoundingClientRect().right));
+      return Math.abs(box.width-box.height)<1 && Math.abs(box.height-title.height)<1
+        && Math.abs(box.y-title.y)<1 && box.x>right
+        && image.naturalWidth===image.naturalHeight && getComputedStyle(image).objectFit==='contain';
+    }),'Full square photo matches the two-line name height and sits beside it');
     assert(await page.evaluate(()=>{
       const title=document.querySelector('.pb-title'),span=title.querySelector('span'),range=document.createRange();
       range.setStart(span.firstChild,0);range.setEnd(span.firstChild,1);
