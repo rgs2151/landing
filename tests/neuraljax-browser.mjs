@@ -67,14 +67,34 @@ try {
   assert.equal(await page.locator('.pb-tool-body .pb-tool-media').count(), 0, 'Figures are no longer repeated within paragraphs');
   for (const [width, height] of [[1024,768], [1440,900], [1920,1080]]) {
     await page.setViewportSize({ width, height });
+    await page.waitForTimeout(80);
     assert(await page.locator('.pb-tool-gallery').evaluate(node => {
-      const row = node.querySelector('.svg-asset-mount > svg');
-      const plots = [...row.children].filter(child => child.tagName.toLowerCase() === 'svg');
+      const row = node.querySelector('[data-gallery-row]');
+      const panels = [...row.children];
+      const headings = panels.map(panel => panel.firstElementChild.getBoundingClientRect());
+      const plots = panels.map(panel => panel.querySelector('svg').getBoundingClientRect());
       const box = node.getBoundingClientRect(), rowBox = row.getBoundingClientRect();
-      return plots.length === 5 && plots.every((plot, i) => Number(plot.getAttribute('y')) === 24 && (!i || Number(plot.getAttribute('x')) >= Number(plots[i-1].getAttribute('x')) + Number(plots[i-1].getAttribute('width'))))
+      return panels.length === 5 && headings.every((heading, i) => Math.abs(heading.top - headings[0].top) < 1 && (!i || heading.left > headings[i-1].right))
+        && plots.every(plot => Math.abs(plot.width - plots[0].width) < 1)
         && rowBox.right <= box.right + 1
         && node.previousElementSibling.classList.contains('pb-project-links');
     }), `Five-panel row immediately below links at ${width}px`);
+    const typography = await page.locator('.pb-tool-gallery').evaluate(node => {
+      const panels = Object.fromEntries([...node.querySelectorAll('[data-gallery-panel]')].map(panel => [panel.dataset.galleryPanel, panel]));
+      const heading = panels.cnn.firstElementChild;
+      const target = heading.getBoundingClientRect().height / 24 * 18;
+      const effectiveFont = text => {
+        const matrix = text.getScreenCTM();
+        return parseFloat(getComputedStyle(text).fontSize) * Math.hypot(matrix.a, matrix.b);
+      };
+      const fonts = [panels.rnn.querySelector('svg text'), panels.autoencoder.querySelector('svg text'), panels.transformer.querySelector('svg text')].map(effectiveFont);
+      const mountScale = new DOMMatrixReadOnly(getComputedStyle(node.querySelector('.svg-asset-mount')).transform).a;
+      const rowScale = new DOMMatrixReadOnly(getComputedStyle(node.querySelector('[data-gallery-row]')).transform).a;
+      const stroke = selector => parseFloat(getComputedStyle(node.querySelector(selector)).strokeWidth) * mountScale * rowScale;
+      return { target, fonts, cnnStroke: stroke('[data-gallery-panel="cnn"] rect[vector-effect]'), rnnStroke: stroke('[data-gallery-panel="rnn"] path[vector-effect]') };
+    });
+    assert(typography.fonts.every(size => Math.abs(size - typography.target) < .1), `RNN, PCA and transformer labels match headings at ${width}px`);
+    assert(typography.cnnStroke <= 4.5 && typography.rnnStroke <= 2, 'Strokes never inflate beyond standalone thickness');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   }
   {
@@ -120,6 +140,7 @@ try {
       controller.pause();
       const Animation = id === 'composite' ? NeuralJAXGallery : neuraljaxAnimations.find(asset => asset.key === id).Animation;
       const normalized = node => {
+        if (id === 'composite') return [...node.querySelectorAll('[data-gallery-panel]')].map(panel => panel.innerHTML).join('\n');
         const svg = node.querySelector('svg').cloneNode(true);
         if (svg.style.backgroundColor === 'white' || svg.style.backgroundColor === 'rgb(255, 255, 255)') svg.style.background = 'transparent';
         svg.querySelectorAll('text').forEach(text => { if (text.style.fontSize) text.removeAttribute('font-size'); });
@@ -140,6 +161,11 @@ try {
   await page.goto('http://localhost:5173/prototype/d#neuraljaxlib');
   await page.waitForSelector('.pb-tool h2');
   assert.equal(await page.locator('.pb-tool h2').textContent(), 'NeuralJAXlib', 'Direct hash opens tool');
+  await page.goto('file:///home/dev/NeuralJAXwork/gallery/assets/composite.html');
+  await page.waitForSelector('[data-gallery-panel="rnn"] svg');
+  assert.equal(await page.locator('[data-gallery-panel]').count(), 5, 'Corrected source bundle contains five intact panels');
+  assert.equal(await page.evaluate(() => gallery.width), 1248);
+  assert.equal(await page.locator('[data-gallery-panel="rnn"] svg text').first().getAttribute('font-size'), '19.05');
   assert.deepEqual(errors, []);
   console.log('Passed: five SVGs, three viewport sizes, opacity, live clocks, logo/year, shared details, pause/replay, reduced motion, inert stack and original-source SVG parity. No screenshots.');
 } finally { await browser.close(); }

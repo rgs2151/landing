@@ -17,7 +17,7 @@ export const neuraljaxAnimations = definitions.map(definition => {
 
 let galleryModule;
 const galleryAsset = {
-  id: 'gallery', label: 'NeuralJAXlib', fps: 60,
+  id: 'gallery', label: 'NeuralJAXlib', fps: 60, designWidth: 1248,
   load: () => galleryModule ??= import('./vendor/composite/animation').then(module => ({ render: module.default })),
 };
 export function NeuralJAXGallery(props) {

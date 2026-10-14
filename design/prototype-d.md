@@ -37,7 +37,7 @@ to the production homepage.
   New fragments sit above the state-space assets on the splash so their hover
   targets remain reachable. RNN leads in the upper-left; CNN sits below the waveform.
   All five share the tool's hover state and open `/prototype/d#neuraljaxlib`.
-- The detail page uses the original five-panel composite in one row immediately
+- The detail page uses the corrected five-panel composite in one row immediately
   below the links, with one shared pause/play and replay control. README/gallery
   text follows unchanged. These are source excerpts, not a new abstract.
   The Flax/PyTorch-informed abstract is a later, separate discussion.
@@ -48,3 +48,9 @@ to the production homepage.
   They share React lifecycle/control integration, not copied animations per view.
   RNN label sizing uses the untransformed SVG viewport, preventing inverse scaling
   of "now" when a preview is small or tilted.
+- The composite preserves standalone SVGs in a 1248 x 300 HTML grid rather
+  than transplanting them into nested SVG viewports. Its 240px panels share
+  heading/plot/legend tracks. RNN, PCA and transformer labels match the 18px
+  heading scale; the RNN legend is reused. The adapter uses the full 1248px
+  design width to prevent inflated CNN/RNN strokes. Standalone assets, splash
+  placements and content remain unchanged by this composite correction.

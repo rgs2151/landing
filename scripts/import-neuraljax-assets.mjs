@@ -18,7 +18,6 @@ for (const [id, name] of Object.entries({ ...families, composite: 'Gallery' })) 
         .replace(`window.mount${name}`, 'const mount')
         .replace(/\}\)\(\);\s*$/, '  return mount;\n})();\n');
       if (adapted === original || adapted.includes(`window.mount${name}`)) throw new Error(`Unrecognized renderer: ${id}`);
-      if (id === 'rnn') adapted = adapted.replace('svg.getBoundingClientRect().width', 'svg.clientWidth');
       if (id === 'composite') {
         const imports = Object.entries(families).map(([family, label]) =>
           `import mount${label} from '../${family}/animation.js';\nimport ${family === 'autoencoder' ? 'AE' : family.toUpperCase()}_SAMPLES from '../${family}/samples.js';`
@@ -41,7 +40,7 @@ copyFileSync(join(source, 'logo/neuraljaxlib.svg'), join(destination, 'logo.svg'
 copyFileSync(join(source, 'LICENSE'), join(destination, 'LICENSE'));
 writeFileSync(join(destination, 'provenance.json'), JSON.stringify({
   repository: 'https://github.com/rgs2151/NeuralJAXlib',
-  adaptation: 'ES module exports/imports; RNN label sizing uses untransformed clientWidth. Cached data, geometry and timing otherwise unchanged.',
+  adaptation: 'ES module exports/imports only. Shared source includes the RNN clientWidth sizing fix and intact-panel composite.',
   files: hashes,
 }, null, 2) + '\n');
 console.log('Imported five canonical SVG renderers, cached samples, logo and license.');

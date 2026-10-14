@@ -4,6 +4,7 @@ import './svg-animation.css';
 
 // React owns the lifecycle; the supplied renderer owns only its SVG subtree.
 export default function SVGAnimation({ asset, compact = false, active = true, snapshotRef, elapsedMs }) {
+  const designWidth = asset.designWidth || 300;
   const root = useRef(null), mount = useRef(null), controller = useRef(null);
   const elapsed = useRef(0), frame = useRef(0);
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
@@ -33,7 +34,7 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
     observer.observe(root.current);
     const resize = new ResizeObserver(() => {
       if (!root.current || !mount.current) return;
-      const scale = root.current.clientWidth / 300;
+      const scale = root.current.clientWidth / designWidth;
       setDimensions({ scale, height: mount.current.offsetHeight * scale });
     });
     resize.observe(root.current); resize.observe(mount.current);
@@ -47,7 +48,7 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
       preference.removeEventListener('change', motionChange);
       document.removeEventListener('visibilitychange', visibilityChange);
     };
-  }, []);
+  }, [designWidth]);
 
   useEffect(() => {
     if (!ready || elapsedMs === undefined) return;
@@ -85,7 +86,7 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
   const stopped = paused || (reduced && !motionOverride);
   return <div className="svg-asset" ref={root} data-asset={asset.id} data-ready={ready} data-playing={playing}
     style={{ height: dimensions.height + (compact ? 0 : 40) }}>
-    <div className="svg-asset-mount" ref={mount} style={{ transform: `scale(${dimensions.scale})` }} />
+    <div className="svg-asset-mount" ref={mount} style={{ width: designWidth, transform: `scale(${dimensions.scale})` }} />
     {failed && <span role="alert">Animation unavailable</span>}
     {!compact && <div className="svg-asset-controls">
       <button type="button" disabled={!ready} title={stopped ? 'Play' : 'Pause'} aria-label={`${stopped ? 'Play' : 'Pause'} ${asset.label} animation`}

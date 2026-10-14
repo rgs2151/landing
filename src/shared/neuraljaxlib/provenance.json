@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/rgs2151/NeuralJAXlib",
-  "adaptation": "ES module exports/imports; RNN label sizing uses untransformed clientWidth. Cached data, geometry and timing otherwise unchanged.",
+  "adaptation": "ES module exports/imports only. Shared source includes the RNN clientWidth sizing fix and intact-panel composite.",
   "files": {
     "cnn/animation.js": {
       "source": "407e8823cfcbb4fd39e0a0e68406049ee2a0dbfc100599555f0cd09d47cba2c5",
@@ -11,7 +11,7 @@
       "imported": "d206d7516f3a32c21a49bde2fae6453984e15c297d7db58818d5b9fe6e09e777"
     },
     "rnn/animation.js": {
-      "source": "db2fbeb7a3a9f115eb4b4a8c25bc8060ef9029ab78cd185daf66257feca420b5",
+      "source": "ac07e7d9a3cd65c11c25227cf3758100110a456023ff0682a593e1a6523fa48d",
       "imported": "356e646f0b481b32ef95a1b0daceb295e728cb0a1f633ae9a8c77f5e783b7852"
     },
     "rnn/samples.js": {
@@ -43,8 +43,8 @@
       "imported": "1d35f70d259d4833fd4d2d7e6323028f7d4885b3ed6884d4a5ecb7d6915998ae"
     },
     "composite/animation.js": {
-      "source": "6a1ab442c8f543fb2d87a0b2b7e919563122a42e323a286600b0800def428877",
-      "imported": "a05ff5b8ef6afd10d2a84ea72e4be9a06f4fe5af3e8595916677abe01b29c822"
+      "source": "0d6f88161ff7d94a91e4fee34537ec4328414510012693a2f416837ff4030188",
+      "imported": "2422465cb154009cbf88471d4c192b169201b76290fe93d29a99c9eaa7b50614"
     }
   }
 }
