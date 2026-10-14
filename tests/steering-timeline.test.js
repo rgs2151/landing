@@ -9,6 +9,27 @@ const context = { Intl };
 runInNewContext(readFileSync(new URL('steering-timeline.js', base), 'utf8'), context);
 const timeline = context.SteeringTimeline.create(examples);
 
+test('cached steering routes follow visible contours between distant points', () => {
+  const { fields } = JSON.parse(readFileSync(new URL('steering-landscapes.json', base)));
+  assert.deepEqual(fields.map(field => field.language), examples.map(entry => entry.language));
+  for (const field of fields) {
+    assert.equal(field.paths.length, 9);
+    if (field.language === 'en') { assert.equal(field.route, null); continue; }
+    const { d, start, end, angle } = field.route;
+    assert(Math.hypot(end[0] - start[0], end[1] - start[1]) >= 130);
+    assert(Number.isFinite(angle));
+    const vertices = new Set(field.paths.flatMap(path => path.d.match(/-?\d+\.\d+,-?\d+\.\d+/g) || []).map(pair => pair.split(',').map(Number).join(',')));
+    const points = d.slice(1).split('L');
+    assert.equal(points[0], start.join(','));
+    assert.equal(points.at(-1), end.join(','));
+    for (const point of points) {
+      assert(vertices.has(point));
+      const [x,y] = point.split(',').map(Number);
+      assert(x >= 44 && x <= 296 && y >= 32 && y <= 284);
+    }
+  }
+});
+
 test('cycles through every recorded language and transitions back to English', () => {
   let start = 0;
   for (const entry of timeline.entries) {

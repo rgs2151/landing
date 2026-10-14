@@ -3,9 +3,9 @@
 .steering-demo-layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 28px; padding: 12px 20px 40px; align-items: center; }
 .steering-demo-state { width: 100%; max-width: 340px; justify-self: center; opacity: 0; }
 .steering-demo-language { height: 38px; overflow: hidden; margin-bottom: 0; text-align: center; font-size: var(--demo-text-size); line-height: 38px; font-weight: 700; }
-.steering-demo-language > div { transform: translateY(calc(var(--demo-swipe, 0) * -38px)); }
-.steering-demo-language span { display: block; height: 38px; }
-.steering-demo-language span:last-child { color: #8B1E1E; }
+.steering-demo-language > div { position: relative; height: 38px; margin-inline: 8.823529%; }
+.steering-demo-language span { position: absolute; inset: 0; display: block; height: 38px; clip-path: inset(0 0 0 calc(var(--demo-swipe, 0) * 100%)); }
+.steering-demo-language span:last-child { color: #8B1E1E; clip-path: inset(0 calc((1 - var(--demo-swipe, 0)) * 100%) 0 0); }
 .steering-demo-state-map { display: block; width: 100%; height: auto; overflow: visible; }
 .steering-demo-state-map text { font-family: Arial, Helvetica, sans-serif; font-size: calc(var(--demo-text-size) * var(--demo-svg-scale-inverse, 1)); font-weight: 400; }
 .steering-demo-direction, .steering-demo-direction-labels { opacity: 0; }

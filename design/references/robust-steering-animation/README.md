@@ -61,7 +61,15 @@ question and types the new one, then backspaces and types the answer. The previo
 answer remains visible while the question changes. Only the response uses the
 Spanish corruption effect. Both text rows finish during the swipe; steering begins
 immediately when the swipe completes and lasts 2800ms. There is no red state dot
-or expanding pulse between these steps.
+or expanding pulse between these steps. Headings use the same left-to-right wipe
+as the landscape. During steering, a teal line grows along a cached contour from
+a red point to a distant teal point; the arrowhead appears on arrival.
+
+`steering-landscapes.json` caches the unchanged seeded KDE landscapes and the
+contour-following routes. Regenerate with `node scripts/cache-steering-landscapes.mjs`.
+The generator selects seeded starts and distant endpoints on visible contour arcs;
+the browser only draws these stored paths. These are synthetic illustrations, not
+measured model-state trajectories. The English direction introduction is unchanged.
 English returns through the same transition, without a blank scene or hard reset.
 Typing and deletion use Unicode grapheme clusters, including Telugu combining marks.
 
