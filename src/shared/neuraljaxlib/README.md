@@ -7,6 +7,33 @@ composite renderer that keeps those same five assets intact in an HTML grid row.
 the original vector logo, used inline at text height rather than rasterized.
 The source MIT license is included.
 
+## Brain MRI Variants (F)
+
+`vendor/cnn_brain_mri/` and `vendor/gan_brain_mri/` contain the additionally
+approved source animations and samples. `brain-provenance.json` records source
+and imported hashes; adaptation is limited to ES module exports. Refresh only
+on explicit approval with `node scripts/import-neuraljax-brain-assets.mjs`.
+The sibling repository is never edited by this import.
+
+`NeuralJAXBrainGallery` substitutes those two panels in the existing composite;
+the other three panels, dimensions and headings are preserved. Original
+`vendor/cnn/` (MNIST) and `vendor/gan/` (Fashion-MNIST) remain intact. F places
+them as left/right floats within the unchanged abstract. Earlier prototypes
+continue using the original gallery.
+
+F's five splash exports hide only the headings, keeping their original layout
+space so artwork does not move or rescale. The content gallery and abstract
+figures retain their titles and standard controls. Videos/posters retain the
+same canonical filenames; `src/assets/neuraljaxlib/variants.js` maps them to
+their current source variants.
+
+Brain data attribution and training details are preserved in
+`vendor/neuroscience/README.md` (some upstream reproduction links refer to files
+not bundled here). The CNN display uses modified CC BY 4.0 Jun Cheng MRI images;
+the GAN uses the CC0 MPI-Leipzig Mind-Brain-Body dataset. The source documentation
+records preprocessing, original citations and limitations. No models or dataset
+downloads were imported.
+
 Run `node scripts/import-neuraljax-assets.mjs /path/to/NeuralJAXwork` only when
 explicitly updating these assets. The importer changes module export boundaries,
 not geometry, samples, labels, or animation timing. The shared source now includes

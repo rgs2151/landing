@@ -6,6 +6,7 @@ import { tools } from '../../shared/tools';
 import { neuraljaxlibRevision } from '../../content/neuraljaxlib';
 import { biography } from '../../content/site';
 import { landingPreviews } from '../../assets/landingPreviews';
+import { NeuralJAXBrainGallery, neuraljaxAnimations } from '../../shared/neuraljaxlib/animations';
 import './styles.css';
 
 const placements = {
@@ -13,7 +14,7 @@ const placements = {
   'neuraljax-cnn': { x: 785, y: 565, width: 126, angle: 10 },
   'neuraljax-rnn': { x: -20, y: 245, width: 180, angle: 9 },
   'neuraljax-autoencoder': { x: 1025, y: 175, width: 189.54, angle: 5 },
-  'neuraljax-gan': { x: 30, y: 460, width: 145.08, angle: -6 },
+  'neuraljax-gan': { x: 0, y: 490, width: 174.096, angle: -6 },
   'neuraljax-transformer': { x: 200, y: 610, width: 190, angle: 7 },
 };
 const researchPlacements = {
@@ -33,7 +34,13 @@ const scenePieces = [...spread.map(piece => ({ ...piece, ...researchPlacements[p
 });
 const navigationLabels = { research: 'Research Publications', packages: 'Tools & Packages' };
 const previewTools = tools.map(tool => ({ ...tool,
-  ...(tool.id === 'neuraljaxlib' ? neuraljaxlibRevision : {}),
+  ...(tool.id === 'neuraljaxlib' ? {
+    ...neuraljaxlibRevision, Gallery: NeuralJAXBrainGallery,
+    abstractFigures: [
+      { ...neuraljaxAnimations.find(asset => asset.key === 'cnn'), align: 'left', afterLines: 2 },
+      { ...neuraljaxAnimations.find(asset => asset.key === 'gan'), align: 'right', afterLines: 5 },
+    ],
+  } : {}),
   navigationTitle: tool.id === 'pylba' ? 'pyLBA: Linear Ballistic Accumulators' : tool.title,
   year: tool.id === 'neuraljaxlib' ? 2026 : tool.year,
   navigationLogo: false,

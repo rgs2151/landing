@@ -1,1 +1,1 @@
-export { NeuralJAXGallery as default } from '../../shared/neuraljaxlib/animations';
+export { NeuralJAXBrainGallery as default } from '../../shared/neuraljaxlib/animations';

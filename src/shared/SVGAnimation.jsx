@@ -3,7 +3,7 @@ import { Pause, Play, RotateCcw } from 'lucide-react';
 import './svg-animation.css';
 
 // React owns the lifecycle; the supplied renderer owns only its SVG subtree.
-export default function SVGAnimation({ asset, compact = false, active = true, snapshotRef, elapsedMs }) {
+export default function SVGAnimation({ asset, compact = false, active = true, snapshotRef, elapsedMs, hideTitle = false }) {
   const designWidth = asset.designWidth || 300;
   const root = useRef(null), mount = useRef(null), controller = useRef(null);
   const elapsed = useRef(0), frame = useRef(0);
@@ -21,13 +21,15 @@ export default function SVGAnimation({ asset, compact = false, active = true, sn
       if (disposed || !mount.current) return;
       controller.current = render(mount.current, data);
       controller.current.pause();
+      // Export previews without headings, retaining the accepted artwork framing.
+      if (hideTitle) mount.current.firstElementChild.style.visibility = 'hidden';
       // Remove page backings, not meaningful white regions within the artwork.
       const svg = mount.current.querySelector('svg');
       if (svg && getComputedStyle(svg).backgroundColor === 'rgb(255, 255, 255)') svg.style.background = 'transparent';
       setReady(true);
     }).catch(error => { if (!disposed) { setFailed(true); console.error(error); } });
     return () => { disposed = true; cancelAnimationFrame(frame.current); controller.current?.destroy(); controller.current = null; };
-  }, [asset]);
+  }, [asset, hideTitle]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));

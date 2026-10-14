@@ -17,6 +17,12 @@ Projects: `neuraljaxlib`, `neural-field-manifold`, `robust-steering`, `pylba`.
 For example, `neuraljaxlib/fragments.js` exports `autoencoder`, paired with
 `videos/autoencoder.webm` and `posters/autoencoder.webp`.
 
+NeuralJAXlib's current `cnn` and `gan` entries use the approved brain MRI
+variants. The original MNIST CNN and Fashion-MNIST GAN remain in their original
+vendor folders and are used within F's abstract. All five NeuralJAXlib splash
+videos omit the title pixels while preserving artwork geometry; detail figures
+retain their titles. The source variant map is `neuraljaxlib/variants.js`.
+
 The entry points re-export existing implementations in `src/shared/`; they do
 not duplicate source code. High-quality sources include SVG, React/HTML, and
 WebGL for the manifold. Composites remain native, not rendered videos. Existing

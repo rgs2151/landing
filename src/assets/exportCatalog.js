@@ -1,4 +1,5 @@
 import * as neuraljax from './neuraljaxlib/fragments';
+import { vendorNames } from './neuraljaxlib/variants';
 import * as neuralField from './neural-field-manifold/fragments';
 import * as steering from './robust-steering/fragments';
 import * as pylba from './pylba/fragments';
@@ -10,16 +11,17 @@ export async function exportCatalog() {
   const nfmDuration = (nfm.signal.length - 2 * nfm.lag) / (nfm.sampleRate * PLAYBACK_SPEED) * 1000;
   const entries = [];
   for (const name of ['cnn', 'rnn', 'autoencoder', 'gan', 'transformer']) {
+    const vendor = vendorNames[name];
     const [{ default: render }, { default: data }] = await Promise.all([
-      import(`../shared/neuraljaxlib/vendor/${name}/animation.js`),
-      import(`../shared/neuraljaxlib/vendor/${name}/samples.js`),
+      import(`../shared/neuraljaxlib/vendor/${vendor}/animation.js`),
+      import(`../shared/neuraljaxlib/vendor/${vendor}/samples.js`),
     ]);
     const host = document.createElement('div'); host.style.width = '300px';
     document.body.append(host);
     const renderer = render(host, data);
     const duration = renderer.duration * (name === 'cnn' ? data.samples.length : 1);
     renderer.destroy(); host.remove();
-    entries.push({ project: 'neuraljaxlib', name, id: `neuraljax-${name}`, Component: neuraljax[name], duration, sourceWidth: 300, width: name === 'autoencoder' ? 480 : 360, fps: 30 });
+    entries.push({ project: 'neuraljaxlib', name, id: `neuraljax-${name}`, Component: neuraljax[name], duration, sourceWidth: 300, width: name === 'autoencoder' ? 480 : 360, fps: 30, props: { hideTitle: true } });
   }
   for (const name of ['signal', 'autoregressive', 'manifold']) entries.push({
     project: 'neural-field-manifold', name, id: name, Component: neuralField[name], duration: nfmDuration,

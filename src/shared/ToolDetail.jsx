@@ -2,11 +2,15 @@ import { ArrowUpRight } from 'lucide-react';
 import { profile, paper } from '../content/site';
 import ProjectTitle from './ProjectTitle';
 
-function ToolFigure({ figure, showMedia = true }) {
+function ToolFigure({ figure, showMedia = true, inlineFigures = [] }) {
   const Animation = figure.Animation;
   return <div className="pb-tool-body" data-figure={figure.id}>
     {showMedia && <div className="pb-tool-media"><Animation /></div>}
-    <div className="pb-blurb">{figure.text.split(/\n\s*\n/).map((text, index) => {
+    <div className={`pb-blurb${inlineFigures.length ? ' pb-illustrated-abstract' : ''}`}>
+      {inlineFigures.map(({ id, Animation, align, afterLines }) => <div key={id}
+        className="pb-abstract-figure" data-side={align} data-figure={id}
+        style={{ '--figure-offset': `${afterLines}lh` }}><Animation /></div>)}
+      {figure.text.split(/\n\s*\n/).map((text, index) => {
       const citationIndex = figure.citation ? text.indexOf(figure.citation.text) : -1;
       return <p key={index}>{citationIndex < 0 ? text : <>
         {text.slice(0, citationIndex)}
@@ -30,7 +34,7 @@ export default function ToolDetail({ tool, headingRef }) {
       <a href={tool.url} target="_blank" rel="noopener noreferrer">Documentation<ArrowUpRight size={17} /></a>
     </div>
     {Gallery && <div className="pb-tool-gallery"><Gallery /></div>}
-    {tool.abstract ? <ToolFigure figure={{ id: tool.id, text: tool.abstract }} showMedia={false} />
+    {tool.abstract ? <ToolFigure figure={{ id: tool.id, text: tool.abstract }} showMedia={false} inlineFigures={tool.abstractFigures} />
       : tool.figures.map(figure => <ToolFigure key={figure.id} figure={figure} showMedia={!Gallery} />)}
   </article>;
 }

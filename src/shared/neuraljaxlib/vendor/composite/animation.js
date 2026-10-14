@@ -10,7 +10,7 @@ import mountTransformer from '../transformer/animation.js';
 import TRANSFORMER_SAMPLES from '../transformer/samples.js';
 /* Compose intact standalone panels at one design scale, without nested SVG rescaling. */
 export default (function () {
-  const mount = function (root) {
+  const mount = function (root, replacements = {}) {
     const specs = [
       ['cnn', mountCNN, CNN_SAMPLES],
       ['rnn', mountRNN, RNN_SAMPLES],
@@ -32,7 +32,8 @@ export default (function () {
       panel.dataset.galleryPanel = name;
       panel.style.cssText = 'display:grid;grid-template-rows:24px 240px;row-gap:6px;min-width:0;align-items:center';
       row.append(panel);
-      const controller = mount(panel, data);
+      const [renderPanel, panelData] = replacements[name] || [mount, data];
+      const controller = renderPanel(panel, panelData);
       controller.pause();
       const heading = panel.firstElementChild;
       heading.style.cssText = 'grid-row:1;margin:0;font:700 18px/24px Arial,sans-serif;text-align:center;color:inherit;white-space:nowrap';

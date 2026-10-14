@@ -36,18 +36,27 @@ try {
         tilt: node.style.getPropertyValue('--pb-angle'), opacity: getComputedStyle(node).opacity,
       }))));
     }
-    assert.deepEqual(layouts[1], layouts[0], `Geometry preserved at ${width}px`);
+    assert.deepEqual(layouts[1].filter(row => row.id !== 'neuraljax-gan'), layouts[0].filter(row => row.id !== 'neuraljax-gan'), `Unchanged geometry preserved at ${width}px`);
+    const gan = layouts[1].find(row => row.id === 'neuraljax-gan');
+    assert.equal(gan.width, Math.round(145.08 * 1.2));
+    assert.equal(gan.transform, 'translate(0px, 490px) rotate(0deg) scale(1)');
+    assert.equal(gan.tilt, '-6deg');
   }
   assert.equal(await page.locator('.pb-fragment svg').count(), 0, 'No live SVG previews');
   const pixels = await page.locator('.landing-video video').evaluateAll(videos => videos.map(video => {
     const canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d'); ctx.drawImage(video, 0, 0);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let visible = 0, transparent = 0;
+    let visible = 0, transparent = 0, titlePixels = 0;
     for (let i = 3; i < data.length; i += 4) { if (data[i]) visible++; else transparent++; }
-    return { id: video.parentElement.dataset.preview, visible, transparent, paused: video.paused };
+    for (let i = 3; i < canvas.width * 20 * 4; i += 4) if (data[i]) titlePixels++;
+    return { id: video.parentElement.dataset.preview, visible, transparent, titlePixels, paused: video.paused };
   }));
   for (const row of pixels) assert(row.visible && row.transparent && row.paused, JSON.stringify(row));
+  for (const row of pixels.filter(row => row.id.startsWith('neuraljax-'))) {
+    assert.equal(row.titlePixels, 0, `${row.id}: heading band is transparent`);
+    assert.equal(clips[row.id].hideTitle, true);
+  }
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   const videos = page.locator('.landing-video video');

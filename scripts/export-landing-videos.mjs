@@ -17,6 +17,8 @@ const manifests = new Map();
 let runningEncoder;
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
+  // Writing preview manifests must not hot-reload the active capture document.
+  await page.routeWebSocket('**', () => {});
   await page.goto('http://localhost:5173/prototype/e?benchmark=idle');
   await page.waitForSelector('.pb-frozen');
   const entries = await page.evaluate(async () => {
@@ -131,6 +133,7 @@ try {
       poster: `/assets/projects/${entry.project}/posters/${entry.name}.webp`, revision, width, height,
       layoutWidth: layout.width, layoutHeight: layout.height, duration: entry.duration, loopStart: entry.loopStart || 0,
       fps, frames: count, crf: entry.crf ?? 15, exportPixelRatio: entry.props?.exportPixelRatio || null,
+      hideTitle: entry.props?.hideTitle || false,
       bytes: statSync(file).size, firstFrame: firstStats, lastFrameHash: lastHash,
       fragment: `src/assets/${entry.project}/fragments.js#${entry.name}`, composite: `src/assets/${entry.project}/composite.js`, sources: previewSources(entry) };
     manifests.get(entry.project)[entry.id] = item;
