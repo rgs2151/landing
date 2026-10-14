@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useRef, useState } from 'react';
 import { Moon, Sun, Pause, Play } from 'lucide-react';
 import { createRoot } from 'react-dom/client';
+import { profile, paper } from './content/site';
 
 function PaperVideo() {
   const videoRef = useRef(null);
@@ -109,19 +110,19 @@ function LandingPage() {
                 <tr className="row-reset intro-row">
                   <td className="intro-text">
                     <p className="text-center">
-                      <span className="site-name">Rudramani Singha</span>
+                      <span className="site-name">{profile.name}</span>
                     </p>
                     <p>
-                      I am a Data Scientist at the <a href="https://memorylongevity.org/" target="_blank" rel="noopener noreferrer">Program in Memory Longevity</a>, UTSW.
-                      I build models to understand the brain.
+                      {profile.role} <a href={profile.institutionUrl} target="_blank" rel="noopener noreferrer">{profile.institution}</a>{profile.affiliation}
+                      {profile.statement}
                     </p>
                     <p className="contact-block text-center">
-                      <span>rgs2151@columbia.eu</span>
-                      <a href="https://github.com/rgs2151" target="_blank" rel="noopener noreferrer">github.com/rgs2151</a>
+                      <span>{profile.email}</span>
+                      <a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.githubLabel}</a>
                     </p>
                   </td>
                   <td className="intro-photo">
-                    <img alt="Rudramani Singha profile photo" src="images/hero.jpg" className="profile-image" />
+                    <img alt="Rudramani Singha profile photo" src={profile.photo} className="profile-image" />
                   </td>
                 </tr>
               </tbody>
@@ -141,22 +142,24 @@ function LandingPage() {
               <tbody>
                 <tr className="work-row">
                   <td className="work-content-cell">
-                    <h3 className="paper-title">Asymmetric prefrontal representations for leader&ndash;follower dynamics</h3>
+                    <h3 className="paper-title">{paper.title}</h3>
                     <PaperVideo />
                     <p className="paper-links">
                       <span>links:</span>
-                      <a href="https://www.nature.com/articles/s41586-026-10900-1" target="_blank" rel="noopener noreferrer">
-                        <img className="nature-logo" src="/assets/logos/nature.svg" alt="Nature" /> <span>2026</span>
+                      <a href={paper.url} target="_blank" rel="noopener noreferrer">
+                        <img className="nature-logo" src={paper.natureLogo} alt="Nature" /> <span>{paper.year}</span>
                       </a>
-                      <a href="https://github.com/NuttidaLab/MARLAX" target="_blank" rel="noopener noreferrer">
-                        <img className="github-logo" src="/assets/logos/github.svg" alt="GitHub" /> <span>code</span>
+                      <a href={paper.code} target="_blank" rel="noopener noreferrer">
+                        <img className="github-logo" src={paper.githubLogo} alt="GitHub" /> <span>code</span>
                       </a>
                     </p>
                     <p className="paper-authors">
-                      Yuan Cheng, Yusi Chen, Myungji Kwak, Ross P. Kempner, <span className="author-self">Rudramani Singha</span>, Jared Winslow, Runqi Liu, Umais Khan, Tessa Spangler, Alvi Khan, Talmo Pereira, Matthew Whiteway, Evan S. Schaffer, Nuttida Rungratsameetaweemana, Nan Yang, Herbert Zheng Wu
+                      {paper.authors.map((author, index) => <span key={author}>
+                        {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'author-self' : undefined}>{author}</span>
+                      </span>)}
                     </p>
                     <p>
-                      We introduce a mouse paradigm to study cooperative behavior where stable leader-follower roles emerge during joint foraging. Using calcium imaging and optogenetic disruption, the study shows medial prefrontal cortex representations are role-specific and critical for cooperation. I developed the forward-modeling framework paired with multi-agent inverse reinforcement learning to decode latent value functions driving cooperative decisions.
+                      {paper.blurb}
                     </p>
                   </td>
                 </tr>
@@ -170,7 +173,7 @@ function LandingPage() {
                   <td className="footer-cell">
                     <br />
                     <p className="footer-note">
-                      &copy; 2026 Rudramani Singha
+                      &copy; 2026 {profile.name}
                     </p>
                   </td>
                 </tr>
@@ -183,8 +186,11 @@ function LandingPage() {
   );
 }
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <LandingPage />
-  </StrictMode>
-);
+const root = createRoot(document.getElementById('root'));
+if (import.meta.env.DEV && /^\/prototype\/a\/?$/.test(location.pathname)) {
+  import('./prototypes/a/PrototypeA').then(({ default: PrototypeA }) => {
+    root.render(<StrictMode><PrototypeA /></StrictMode>);
+  });
+} else {
+  root.render(<StrictMode><LandingPage /></StrictMode>);
+}

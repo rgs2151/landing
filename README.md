@@ -26,6 +26,10 @@ npm run dev
 
 Open the local URL printed by Vite, usually `http://localhost:5173`.
 
+Prototype A is available at `/prototype/a` during local development. Prototype
+routes are excluded from the production build. Shared copy and media paths are
+in `src/content/site.js`; shared interactive visuals are in `src/shared/`.
+
 Build locally:
 
 ```bash
