@@ -193,8 +193,9 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
-        <text x="14" y="217" fontSize="24" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif" aria-hidden="true">🐭</text>
-        <text x="48" y="217" className="nf-label">LFP</text>
+        <text x="18" y="185" className="nf-label">
+          Local field<tspan x="18" dy="24">potential (<tspan fontSize="24" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif">🐭</tspan>)</tspan>
+        </text>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
         {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
         <path d="M186,221 L291,160" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
