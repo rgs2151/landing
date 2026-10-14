@@ -107,6 +107,11 @@ try {
     await page.locator(`.pb-navigation a[href="#${id}"]`).click();
     await page.waitForTimeout(850);
     assert.equal(await page.locator('.pb-project').count(),1);
+    assert.equal(await page.locator('.pb-authors').evaluate(n=>getComputedStyle(n).fontSize),await page.locator('.pb-blurb p').first().evaluate(n=>getComputedStyle(n).fontSize),'Author names match body text size');
+    assert.deepEqual(await page.locator('.pb-authors > span:has(sup)').evaluateAll(nodes=>nodes.map(n=>n.querySelector('span').textContent)),
+      id==='cooperation'?['Yuan Cheng','Yusi Chen']:id==='robust-steering'?['Kasra Fallah','Rudramani Singha']:[]);
+    assert.equal(await page.locator('.pb-equal').count(),id==='neural-field-manifold'?0:1);
+    if(id==='cooperation') assert.equal(await page.locator('.pb-project a[rel="license"]').getAttribute('href'),'https://creativecommons.org/licenses/by-nc-nd/4.0/');
     assert.equal(await page.locator('.pb-fragment canvas').count(),0);
     assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'stack');
     if(id==='neural-field-manifold') {

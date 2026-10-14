@@ -72,7 +72,7 @@
 .pb-project-links a { display: inline-flex; align-items: center; gap: 8px; }
 .pb-project-links img { width: 20px; height: 20px; object-fit: contain; }
 .pb-project-links a:first-child img { width: 80px; }
-.pb-authors { font-size: 17px; line-height: 1.45; margin: 0 0 18px; }
+.pb-authors { font-size: 21px; line-height: 1.45; margin: 0 0 18px; }
 .pb-self { text-decoration: underline; text-underline-offset: 3px; }
 .pb-equal { font-size: 15px; margin: -8px 0 20px; }
 .pb-blurb { width: 100%; text-align: justify; }

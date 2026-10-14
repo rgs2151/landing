@@ -1,5 +1,6 @@
 import neuralFieldManifoldBlurb from './neural-field-manifold.md?raw';
 import robustSteeringBlurb from './robust-steering.md?raw';
+import natureAbstract from './nature-abstract.md?raw';
 
 export const profile = {
   name: 'Rudramani Singha',
@@ -26,7 +27,9 @@ export const paper = {
     'Evan S. Schaffer', 'Nuttida Rungratsameetaweemana', 'Nan Yang',
     'Herbert Zheng Wu',
   ],
-  blurb: 'We introduce a mouse paradigm to study cooperative behavior where stable leader-follower roles emerge during joint foraging. Using calcium imaging and optogenetic disruption, the study shows medial prefrontal cortex representations are role-specific and critical for cooperation. I developed the forward-modeling framework paired with multi-agent inverse reinforcement learning to decode latent value functions driving cooperative decisions.',
+  equalContribution: ['Yuan Cheng', 'Yusi Chen'],
+  blurb: natureAbstract.trim(),
+  abstractLicense: { label: 'CC BY-NC-ND 4.0', url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/' },
   clips: [6, 7, 8, 9].map(number => ({
     src: `/assets/videos/41586_2026_10900_MOESM${number}_ESM.mp4`,
     poster: `/assets/images/paper-${number}.webp`,

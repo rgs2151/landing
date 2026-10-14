@@ -34,6 +34,7 @@ function ProjectView({ project, onClose }) {
     </span>)}</p>
     {content.equalContribution && <p className="pa-equal">* Equal contribution</p>}
     <p className="pa-blurb">{content.blurb}</p>
+    {content.abstractLicense && <p><small><a href={content.abstractLicense.url} rel="license">{content.abstractLicense.label}</a></small></p>}
   </article>;
 }
 

@@ -51,13 +51,20 @@ try {
     await frame.evaluate(time => document.querySelector('.steering-demo').steeringDemo.seek(time), time);
     const native = await page.locator('#native-test').evaluate(inspect);
     const reference = await frame.locator('body').evaluate(inspect);
+    const questionLanguage = await page.locator('#native-test .steering-demo-question-text').getAttribute('lang');
     for (const name of Object.keys(native)) {
       assert.equal(native[name].text, reference[name].text, `${time} ${name} text`);
       assert.deepEqual(native[name].paths, reference[name].paths, `${time} paths`);
       assert.deepEqual(native[name].glitches, reference[name].glitches, `${time} glitches`);
       assert.deepEqual(native[name].clips, reference[name].clips, `${time} heading clips`);
       assert.deepEqual(native[name].icons, reference[name].icons, `${time} icon geometry`);
-      for (const key of Object.keys(native[name].style)) assert.equal(native[name].style[key], reference[name].style[key], `${time} ${name} ${key}`);
+      for (const key of Object.keys(native[name].style)) {
+        // The approved question-color change is the only deviation from the frozen reference.
+        const expected = name === 'question-text' && key === 'color'
+          ? questionLanguage === 'en' ? 'rgb(17, 17, 17)' : 'rgb(139, 30, 30)'
+          : reference[name].style[key];
+        assert.equal(native[name].style[key], expected, `${time} ${name} ${key}`);
+      }
       if (!name.startsWith('route') || native.route.style.opacity !== '0') native[name].rect.forEach((value,i) => assert(Math.abs(value-reference[name].rect[i]) < .06, `${time} ${name} rect ${i}: ${value} vs ${reference[name].rect[i]}`));
     }
   }

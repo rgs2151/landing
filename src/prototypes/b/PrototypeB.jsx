@@ -106,6 +106,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false }) 
       {id === 'neural-field-manifold' && <NeuralFieldAnimation />}
     </div>
     <div className="pb-blurb">{content.blurb.split(/\n\s*\n/).map((paragraph,index) => <p key={index}>{paragraph}</p>)}</div>
+    {content.abstractLicense && <p><small><a href={content.abstractLicense.url} rel="license">{content.abstractLicense.label}</a></small></p>}
   </article>;
 }
 

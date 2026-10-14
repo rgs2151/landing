@@ -155,12 +155,14 @@ function LandingPage() {
                     </p>
                     <p className="paper-authors">
                       {paper.authors.map((author, index) => <span key={author}>
-                        {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'author-self' : undefined}>{author}</span>
+                        {index > 0 ? ', ' : ''}<span className={author === profile.name ? 'author-self' : undefined}>{author}</span>{paper.equalContribution?.includes(author) && <sup>*</sup>}
                       </span>)}
                     </p>
+                    {paper.equalContribution && <p><small>* Equal contribution</small></p>}
                     <p>
                       {paper.blurb}
                     </p>
+                    {paper.abstractLicense && <p><small><a href={paper.abstractLicense.url} rel="license">{paper.abstractLicense.label}</a></small></p>}
                   </td>
                 </tr>
 

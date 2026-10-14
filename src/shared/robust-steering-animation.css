@@ -20,6 +20,7 @@
 .rs-stage .steering-demo-label { display: block; margin-bottom: 6px; font-size: 20px; line-height: normal; color: #666; }
 .rs-stage .steering-demo-copy p { margin: 0; padding: 0; min-height: 1.45em; font: 400 20px/1.45 Arial, Helvetica, sans-serif; color: #111; overflow-wrap: anywhere; white-space: pre-wrap; }
 .rs-stage .steering-demo-question-text { height: 116px; }
+.rs-stage .steering-demo-question-text:not([lang="en"]) { color: #8b1e1e; }
 .rs-stage .steering-demo-answer-text { height: 29px; }
 .rs-stage .steering-demo-copy p[data-typing="true"]::after { content: ""; display: inline-block; width: 1px; height: 1em; background: currentColor; vertical-align: -.1em; }
 .rs-stage .steering-demo-char.is-glitch { color: #007c7c; display: inline-block; transform: translateY(-2px); text-shadow: 2px 0 rgba(0,124,124,.3); }
