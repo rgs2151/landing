@@ -63,7 +63,7 @@ Spanish corruption effect. Both text rows finish during the swipe; steering begi
 immediately when the swipe completes and lasts 2800ms. There is no red state dot
 or expanding pulse between these steps. Headings use the same left-to-right wipe
 as the landscape. During steering, a teal line grows along a cached contour from
-a red point to a distant teal point; the arrowhead appears on arrival.
+a red point to a distant teal point, without an arrowhead.
 
 `steering-landscapes.json` caches the unchanged seeded KDE landscapes and the
 contour-following routes. Regenerate with `node scripts/cache-steering-landscapes.mjs`.

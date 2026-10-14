@@ -148,7 +148,6 @@
           find("route-" + name).setAttribute("cx", route[name][0]);
           find("route-" + name).setAttribute("cy", route[name][1]);
         });
-        find("route-head").setAttribute("transform", "translate(" + route.end.join(" ") + ") rotate(" + route.angle + ")");
       }
       fieldPair = pair;
     }
@@ -177,7 +176,6 @@
     const steering = snapshot.phase === "steering" || snapshot.phase === "steered";
     find("route").setAttribute("opacity", steering ? "1" : "0");
     find("route-line").setAttribute("stroke-dashoffset", 1 - snapshot.corruption);
-    find("route-head").setAttribute("opacity", snapshot.corruption === 1 ? "1" : "0");
     find("stimulation").style.opacity = 1;
     scene.style.opacity = 1;
     scene.style.clipPath = "none";
