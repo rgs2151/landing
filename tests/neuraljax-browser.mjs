@@ -26,7 +26,18 @@ try {
       assert.equal(await fragment.evaluate(n => getComputedStyle(n).opacity), '0.75');
       const box = await fragment.locator('.pb-orbit').boundingBox();
       assert(box.width > 60 && box.height > 60, `${id}: nonzero size`);
-      assert(box.x >= 0 && box.y >= 0 && box.x + box.width <= width && box.y + box.height <= height, `${id}: on screen at ${width}`);
+      // Transformer has an empty lower SVG region; check its visible art, not that padding.
+      const bottom = id === 'transformer' ? await fragment.locator('.svg-asset-mount svg').evaluate(svg => {
+        const bounds = svg.viewBox.baseVal, matrix = svg.getScreenCTM();
+        return Math.max(...[...svg.querySelectorAll('path,text')].filter(n => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden').flatMap(n => {
+          const b = n.getBBox(), pad = parseFloat(getComputedStyle(n).strokeWidth) / 2 || 0;
+          const left = Math.max(0, b.x - pad), right = Math.min(bounds.width, b.x + b.width + pad);
+          if (right < left) return [];
+          const y = Math.min(bounds.height, b.y + b.height + pad);
+          return [left, right].map(x => new DOMPoint(x, y).matrixTransform(matrix).y);
+        }));
+      }) : box.y + box.height;
+      assert(box.x >= 0 && box.y >= 0 && box.x + box.width <= width && bottom <= height, `${id}: on screen at ${width}`);
       assert(await fragment.locator('svg').first().evaluate(n => n.querySelectorAll('path,rect,circle,text').length > 5));
       assert(await fragment.locator('.pb-orbit').evaluate(n => {
         const box = n.getBoundingClientRect();
