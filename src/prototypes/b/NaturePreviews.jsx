@@ -65,6 +65,6 @@ export default function NaturePreview({ clip, poster }) {
   }, [clip, clock]);
   return <div className="pb-nature-preview">
     <img src={poster} alt="" />
-    <canvas ref={canvas} width={256} height={256} aria-hidden="true" />
+    <canvas ref={canvas} width={clips[clip].size} height={clips[clip].size} aria-hidden="true" />
   </div>;
 }

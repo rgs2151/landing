@@ -32,8 +32,8 @@ unchanged; verifying its domain is a separate content decision.
   confirmed by the user. Existing reading text sizes remain. Dark red stays the accent.
 - Project figures and actual Nature footage form the composition. No new particle
   decoration, fabricated diagrams, stock imagery or rewritten project content.
-- Hover/focus fans the relevant pieces outward. Clicking holds the selection:
-  the pieces gather along the edge and the page opens into an unframed reading area.
+- Hover/focus temporarily holds related orbital movement. Clicking opens an
+  unframed reading area and folds the pieces into the lower-left profile group.
 - The only large splash lettering is Rudramani Singha, opening About. No profile
   card, project headings or venue stamp appears on the splash. The nine fragments
   are interleaved, not grouped by project. Research, Tool Packages and About form
@@ -41,8 +41,8 @@ unchanged; verifying its domain is a separate content decision.
   packages have been supplied, so that dropdown has an honest empty state.
 - On selection, the profile and navigation occupy the left rail. Artwork folds
   into a single bottom-left return stack, not separate project-switching cards.
-  Canvas coordinates stay stable during folding. Preserve the accepted 550ms
-  slide-in reading transition.
+  Canvas coordinates stay stable during folding. The 550ms reading transition
+  enters from the right, not below.
 - Project pages order title, authors, venue/status and code links, full animation,
   then the unchanged abstract. Abstracts use the full article width and justified
   text. NeuralFieldManifold is accepted at NeurIPS 2026; robust steering is under
@@ -54,6 +54,30 @@ unchanged; verifying its domain is a separate content decision.
 - A scene-level pause/replay pair controls the collage. Reading views keep each
   finalized animation's own controls. Hidden/background animations are suspended.
 - All layouts and interactions must be finished. No placeholder-work exception.
+
+## Orbital And Profile Iteration
+
+- Keep the large name static and unadorned on hover. Artwork follows slow arcs
+  around a common center. Hover pauses the related group's orbit at its current
+  position; other pieces settle inward slightly. Leaving resumes motion without
+  restarting the path. There is no latched hover selection or click-to-toggle fan.
+- Preview widths: footage 270/125/95/65px, manifold 380px, waveform 150px,
+  equation 310px, landscape 270px, conversation 350px. The user confirmed that
+  the smaller "ARR" referred to the waveform, not the equation. These are current
+  art-direction choices, not a freeze on future placement feedback.
+- The selected state's categories remain at the top left. Open dropdowns paint
+  above adjacent categories, so moving downward does not activate Tool Packages.
+- Folded artwork sits above the lower-left identity/back row. A single persistent
+  portrait lands on top of the stack, expands into the About photo slot, and
+  folds back. About omits the small identity/contact row and repeated footer name.
+  Entry from the splash name starts the portrait transition from that click;
+  entry from a project uses the already-visible portrait on the stack.
+- Frozen previews are inert DOM/bitmap snapshots, not hidden live components.
+  Full project content and animation output remain unchanged. The native assets
+  only gain opt-in preview sampling/capture support and unmount cleanup guards.
+- Per-asset performance measurements and reproduction instructions live in
+  `reports/`. The sizing-aware frame sheets supersede the uniform 256px previews
+  described in the earlier experiment below.
 
 ## Splash Performance, October 14, 2026
 

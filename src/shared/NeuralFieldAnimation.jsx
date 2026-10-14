@@ -124,7 +124,7 @@ export default function NeuralFieldAnimation(props) {
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef }) {
   const full = part === 'full';
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
@@ -148,6 +148,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
     let playing = true;
     let motionAllowed = !reducedMotion.matches;
     function draw() {
+      if (!root.current) return;
       waveform.current?.setAttribute('d', waveformPath(model.signal, frame));
       lagPoints.current.forEach((point, j) => {
         if (!point) return;
@@ -164,6 +165,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       manifold?.draw(frame);
     }
     function tick(now) {
+      if (!root.current) return;
       if (last) remainder += Math.min(now - last, 100) * model.sampleRate * PLAYBACK_SPEED / 1000;
       last = now;
       const steps = Math.floor(remainder);
@@ -184,7 +186,10 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       replay() { frame = initialFrame; remainder = 0; draw(); },
       allowMotion() { motionAllowed = true; sync(); },
     };
+    // A compact placement can paint its current frame once before freezing it.
+    if (snapshotRef) snapshotRef.current = draw;
     const resize = new ResizeObserver(([entry]) => {
+      if (!root.current) return;
       const { width, height } = entry.contentRect;
       if (width && height && manifold) { manifold.resize(width, height); draw(); }
     });
@@ -200,8 +205,9 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       reducedMotion.removeEventListener('change', onMotion);
       document.removeEventListener('visibilitychange', sync);
       manifold?.dispose(); controller.current = null;
+      if (snapshotRef) snapshotRef.current = null;
     };
-  }, [model, LAG, part]);
+  }, [model, LAG, part, snapshotRef]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
 

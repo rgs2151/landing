@@ -22,9 +22,11 @@ try {
         while(walker.nextNode()) {
           if(!walker.currentNode.textContent.trim())continue;
           const range=document.createRange(); range.selectNode(walker.currentNode);
-          for(const text of range.getClientRects())for(const asset of document.querySelectorAll('.pb-fragment')) {
-            const r=asset.getBoundingClientRect();
-            if(Math.min(text.right,r.right)-Math.max(text.left,r.left)>1 && Math.min(text.bottom,r.bottom)-Math.max(text.top,r.top)>1)collisions.push([walker.currentNode.textContent,asset.getAttribute('aria-label')]);
+          for(const text of range.getClientRects()) {
+            for(const fraction of [.1,.5,.9]) {
+              const hit=document.elementFromPoint(text.left+text.width*fraction,text.top+text.height/2);
+              if(!title.contains(hit))collisions.push(walker.currentNode.textContent);
+            }
           }
         }
       }
@@ -44,19 +46,31 @@ try {
       return pixels.some((value,index)=>index%4!==3&&value<200);
     })),'All four cached clips have nonblank frames');
     assert.equal(await page.locator('dialog,[role="dialog"],iframe').count(),0);
-    const before=await page.locator('.pb-fragment[data-project="robust-steering"]').first().getAttribute('style');
+    const orbit=page.locator('.pb-fragment[data-project="robust-steering"] .pb-orbit').first();
+    const before=await orbit.evaluate(node=>node.getAnimations()[0].playState);
+    const movingTime=await orbit.evaluate(node=>node.getAnimations()[0].currentTime);
+    await page.waitForTimeout(120);
+    assert((await orbit.evaluate(node=>node.getAnimations()[0].currentTime))>movingTime,'Orbital movement runs without hover');
     assert.equal(await page.locator('.pb-identity,.pb-nature-mark,.pb-footer > button').count(),0);
     assert.equal(await page.locator('.pb-title').innerText(),'Rudramani\nSingha');
     await page.locator('[data-menu="research"]').hover();
     await page.locator('.pb-navigation a[href="#robust-steering"]').hover();
-    const after=await page.locator('.pb-fragment[data-project="robust-steering"]').first().getAttribute('style');
-    assert.notEqual(before,after);
+    const after=await orbit.evaluate(node=>node.getAnimations()[0].playState);
+    assert.equal(before,'running'); assert.equal(after,'paused');
+    const heldTime=await orbit.evaluate(async node=>{ const animation=node.getAnimations()[0]; await animation.ready; return animation.currentTime; });
+    await page.waitForTimeout(120);
+    assert.equal(await orbit.evaluate(node=>node.getAnimations()[0].currentTime),heldTime,'Hover holds the group without restarting its orbit');
     for(const id of ['cooperation','robust-steering','neural-field-manifold']) {
       await page.locator('[data-menu="research"]').hover();
       await page.locator(`.pb-navigation a[href="#${id}"]`).click();
       await page.waitForTimeout(800);
       assert.equal(new URL(page.url()).hash,'#'+id);
       assert.equal(await page.locator('dialog,[role="dialog"]').count(),0);
+      assert(await page.locator('.pb-reading').evaluate(node=>{
+        const frame=node.getAnimations()[0].effect.getKeyframes()[0];
+        const matrix=new DOMMatrixReadOnly(frame.transform);
+        return matrix.m41>0&&matrix.m42===0;
+      }),'Reading view enters from the right');
       const data=await page.evaluate(async id=>{
         const site=await import('/src/content/site.js');
         const content=id==='cooperation'?site.paper:id==='robust-steering'?site.robustSteering:site.neuralFieldManifold;
@@ -66,10 +80,24 @@ try {
         return {sameTitle:document.querySelector('#pb-project-heading').textContent===content.title,sameBlurb:document.querySelector('.pb-blurb').textContent.replace(/\s/g,'')===content.blurb.replace(/\s/g,''),overlap:h.bottom>authors.top||authors.bottom>links.top||links.bottom>media.top||media.bottom>blurb.top,overflow:article.right>innerWidth,backgroundPaused:[...document.querySelectorAll('.pb-fragment video')].every(v=>v.paused),focus:document.activeElement.id,fullWidth:Math.abs(blurb.width-article.width)<1,justified:getComputedStyle(document.querySelector('.pb-blurb')).textAlign==='justify',font:getComputedStyle(document.querySelector('.pb-project')).fontFamily};
       },id);
       assert.deepEqual(data,{sameTitle:true,sameBlurb:true,overlap:false,overflow:false,backgroundPaused:true,focus:'pb-project-heading',fullWidth:true,justified:true,font:'Arial, Helvetica, sans-serif'});
+      assert.equal(await page.locator('.pb-fragment .pb-frozen').count(),9);
+      assert.equal(await page.locator('.pb-fragment canvas').count(),0,'Folded views release live canvases');
+      assert(await page.locator('.pb-fragment[data-piece="manifold"] .pb-frozen-canvas').evaluate(async image=>{
+        await image.decode();
+        const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+        const context=canvas.getContext('2d');context.drawImage(image,0,0);
+        return context.getImageData(0,0,canvas.width,canvas.height).data.some((value,index)=>index%4===3&&value>0);
+      }),'Frozen manifold retains visible pixels');
       const stopped = await frames();
       await page.waitForTimeout(150);
       assert.deepEqual(await frames(),stopped,'Collapsed preview playback stops');
       assert.equal(await page.locator('.pb-identity').count(),1);
+      const research=await page.locator('[data-menu="research"]').boundingBox();
+      await page.mouse.move(research.x+40,research.y+research.height/2);
+      const menuTarget=await page.locator('.pb-navigation a[href="#neural-field-manifold"]').boundingBox();
+      await page.mouse.move(research.x+40,menuTarget.y+menuTarget.height/2,{steps:20});
+      assert(await page.locator('#pb-research-menu').isVisible(),'Moving down through Research must not switch to Tool Packages');
+      await page.mouse.move(600,50);
       if(id==='neural-field-manifold') {
         const pixels=await page.locator('.pb-project canvas').evaluate(async canvas=>{
           let result=0;
@@ -90,8 +118,25 @@ try {
     await page.locator('.pb-title').click();
     await page.waitForSelector('.pb-about');
     assert.equal(await page.locator('.pb-about h2').innerText(),'Rudramani Singha');
+    await page.waitForTimeout(700);
+    assert.equal(await page.locator('.pb-identity').count(),0);
+    assert.equal(await page.locator('img[alt="Rudramani Singha"]').count(),1);
+    const portrait=await page.locator('.pb-traveling-portrait').boundingBox(),slot=await page.locator('.pb-about-photo-slot').boundingBox();
+    assert(Math.abs(portrait.x-slot.x)<2&&Math.abs(portrait.y-slot.y)<2,'Portrait arrives in About slot');
+    await page.locator('[data-menu="research"]').hover();
+    await page.locator('.pb-navigation a[href="#robust-steering"]').click();
+    await page.waitForTimeout(750);
+    assert.equal(await page.locator('.pb-identity').count(),1);
+    const foldedPortrait=await page.locator('.pb-traveling-portrait').boundingBox();
+    assert(Math.abs(foldedPortrait.y-(height-370))<2,'About portrait folds back onto the stack');
+    await page.locator('.pb-traveling-portrait img').evaluate(node=>node.dataset.continuity='same-portrait');
+    await page.locator('.pb-traveling-portrait button').click();
+    await page.waitForTimeout(750);
+    assert.equal(await page.locator('.pb-traveling-portrait img').getAttribute('data-continuity'),'same-portrait');
+    assert.equal(await page.locator('.pb-identity').count(),0);
     await page.getByRole('button',{name:'Return to composition',exact:true}).click();
     await page.waitForTimeout(750);
+    assert.equal(await page.locator('.pb-title span').first().evaluate(node=>getComputedStyle(node).textDecorationLine),'none');
     await page.getByRole('button',{name:'Pause composition',exact:true}).click();
     const pausedFrames = await frames();
     await page.waitForTimeout(200);
@@ -119,6 +164,9 @@ try {
   const reducedFrames=await page.locator('.pb-nature-preview canvas').evaluateAll(nodes=>nodes.map(node=>node.dataset.frame));
   await page.waitForTimeout(200);
   assert.deepEqual(await page.locator('.pb-nature-preview canvas').evaluateAll(nodes=>nodes.map(node=>node.dataset.frame)),reducedFrames);
+  await page.locator('.pb-title').click();
+  await page.waitForFunction(()=>document.querySelectorAll('.pb-frozen').length===9);
+  assert.equal(await page.locator('.pb-fragment canvas').count(),0,'Reduced motion also freezes and releases previews');
   for(const width of [390,768]) {
     await page.setViewportSize({width,height:844});
     await page.waitForSelector('.pb-mobile');

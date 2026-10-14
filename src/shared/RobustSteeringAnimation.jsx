@@ -65,7 +65,7 @@ function Conversation({ snapshot }) {
   </>;
 }
 
-function usePlayback(root, active, elapsedMs) {
+function usePlayback(root, active, elapsedMs, maxFps) {
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [elapsed, setElapsed] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -85,31 +85,34 @@ function usePlayback(root, active, elapsedMs) {
   const running = active && visible && foreground && !paused && elapsedMs === undefined;
   useEffect(() => {
     if (!running) return;
-    let frame, previous = null;
+    let frame, previous = null, lastPaint = -Infinity;
     const tick = now => {
       if (previous !== null) clock.current += Math.min(now - previous, 100);
       previous = now;
-      setElapsed(clock.current);
+      if (!maxFps || now - lastPaint >= 1000 / maxFps - .5) {
+        setElapsed(clock.current);
+        lastPaint = now;
+      }
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [running, replayVersion]);
+  }, [running, replayVersion, maxFps]);
   return { elapsed: elapsedMs ?? elapsed, paused, running, toggle: () => setPaused(value => !value), replay: () => { clock.current = 0; setElapsed(0); setReplayVersion(value => value + 1); } };
 }
 
 export function RobustSteeringLandscape(props) { return <RobustSteeringAnimation {...props} part="landscape" />; }
 export function RobustSteeringConversation(props) { return <RobustSteeringAnimation {...props} part="conversation" />; }
 
-export default function RobustSteeringAnimation({ compact = false, active = true, onClose, part = 'full', elapsedMs }) {
+export default function RobustSteeringAnimation({ compact = false, active = true, onClose, part = 'full', elapsedMs, maxFps }) {
   const root = useRef(null);
-  const playback = usePlayback(root, active, elapsedMs);
+  const playback = usePlayback(root, active, elapsedMs, maxFps);
   const snapshot = sampleSteering(playback.elapsed);
   const view = part === 'landscape' ? { x: 20, y: 12, width: 320, height: compact ? 349 : 397 }
     : part === 'conversation' ? { x: 350, y: 50, width: 416, height: compact ? 270 : 310 }
     : { x: 0, y: 0, width: 776, height: 380 };
   useEffect(() => {
-    const observer = new ResizeObserver(([entry]) => root.current.style.setProperty('--steering-scale', Math.min(entry.contentRect.width / view.width, entry.contentRect.height / view.height)));
+    const observer = new ResizeObserver(([entry]) => root.current?.style.setProperty('--steering-scale', Math.min(entry.contentRect.width / view.width, entry.contentRect.height / view.height)));
     observer.observe(root.current);
     return () => observer.disconnect();
   }, [view.width, view.height]);

@@ -1,0 +1,14 @@
+name,fps,p95ms,mainThreadMsPerSecond,scriptMsPerSecond,layoutMsPerSecond,styleMsPerSecond,liveCanvases,frozenPreviews,runningOrbits
+idle,60,16.7,11.83,1.82,0,0,0,9,0
+motion,60,16.8,31.69,1.64,0,11.03,0,9,9
+nature-0,60,16.7,18.18,3.59,0,0,1,8,0
+nature-1,60,16.7,16.83,3.3,0,0,1,8,0
+nature-2,60,16.8,16.82,3.44,0,0,1,8,0
+nature-3,60,16.8,17.75,3.4,0,0,1,8,0
+signal,60,16.8,65.44,18.45,3.08,5.02,0,8,0
+autoregressive,60,16.7,46.56,5.52,3.29,4.55,0,8,0
+manifold,60,16.7,120.02,18.27,0,0,1,8,0
+landscape,60,16.7,81.45,55.36,0.05,2.6,0,8,0
+conversation,60,16.8,89.75,61.63,4.19,1.02,0,8,0
+all,60,16.8,234.9,105.89,5.26,10.27,5,0,9
+folded-about,60,16.8,13.43,2.37,0,0,0,9,0

@@ -6,6 +6,7 @@ import NeuralFieldAnimation, { NeuralFieldSignal, NeuralFieldAutoregressive, Neu
 import RobustSteeringAnimation, { RobustSteeringLandscape, RobustSteeringConversation } from '../../shared/RobustSteeringAnimation';
 import './styles.css';
 import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
+import { FreezePreview, TravelingPortrait, useOrbits } from './SceneMotion';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
@@ -17,15 +18,15 @@ const selectedFromHash = () => {
   return projects[id] || id === 'about' ? id : null;
 };
 const pieces = [
-  { id: 'nature-0', project: 'cooperation', clip: 0, x: 30, y: 148, width: 180, angle: -8, fan: [-18,-12] },
-  { id: 'nature-1', project: 'cooperation', clip: 1, x: 690, y: 4, width: 200, angle: 8, fan: [10,-10] },
-  { id: 'nature-2', project: 'cooperation', clip: 2, x: 260, y: 490, width: 200, angle: 6, fan: [-10,14] },
-  { id: 'nature-3', project: 'cooperation', clip: 3, x: 970, y: 410, width: 170, angle: -9, fan: [18,8] },
-  { id: 'landscape', project: 'robust-steering', Component: RobustSteeringLandscape, x: 940, y: 130, width: 250, angle: 5, fan: [6,-12] },
-  { id: 'conversation', project: 'robust-steering', Component: RobustSteeringConversation, x: 490, y: 504, width: 350, angle: -3, fan: [8,12] },
-  { id: 'signal', project: 'neural-field-manifold', Component: NeuralFieldSignal, x: 290, y: 15, width: 310, angle: -5, fan: [-12,-10] },
-  { id: 'autoregressive', project: 'neural-field-manifold', Component: NeuralFieldAutoregressive, x: 870, y: 560, width: 270, angle: 5, fan: [12,8] },
-  { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 20, y: 370, width: 190, angle: -6, fan: [-12,8] },
+  { id: 'nature-0', project: 'cooperation', clip: 0, x: 205, y: -15, width: 270, angle: -8 },
+  { id: 'nature-1', project: 'cooperation', clip: 1, x: 755, y: 105, width: 125, angle: 11 },
+  { id: 'nature-2', project: 'cooperation', clip: 2, x: 920, y: 430, width: 95, angle: -12 },
+  { id: 'nature-3', project: 'cooperation', clip: 3, x: 755, y: 443, width: 65, angle: 8 },
+  { id: 'landscape', project: 'robust-steering', Component: RobustSteeringLandscape, x: 845, y: 175, width: 270, angle: 5 },
+  { id: 'conversation', project: 'robust-steering', Component: RobustSteeringConversation, x: 450, y: 495, width: 350, angle: -3 },
+  { id: 'signal', project: 'neural-field-manifold', Component: NeuralFieldSignal, x: 505, y: 100, width: 150, angle: -8 },
+  { id: 'autoregressive', project: 'neural-field-manifold', Component: NeuralFieldAutoregressive, x: 785, y: 525, width: 310, angle: 5 },
+  { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 65, y: 365, width: 380, angle: -6 },
 ];
 
 function Navigation({ selected, open, hover }) {
@@ -43,6 +44,7 @@ function Navigation({ selected, open, hover }) {
     onKeyDown={event => { if (event.key === 'Escape' && menu) { event.stopPropagation(); setMenu(null); root.current.querySelector(`[data-menu="${menu}"]`)?.focus(); } }}>
     <div className="pb-nav-group" onPointerEnter={() => setMenu('research')}>
       <button data-menu="research" aria-expanded={menu === 'research'} aria-controls="pb-research-menu"
+        onFocus={() => setMenu(current => current === 'research' ? current : null)}
         onClick={() => setMenu('research')}
         onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); setMenu('research'); requestAnimationFrame(() => root.current.querySelector('.pb-dropdown a')?.focus()); } }}>Research<ChevronDown size={14} /></button>
       <div id="pb-research-menu" className="pb-dropdown" hidden={menu !== 'research'}>
@@ -54,10 +56,10 @@ function Navigation({ selected, open, hover }) {
       </div>
     </div>
     <div className="pb-nav-group" onPointerEnter={() => setMenu('packages')}>
-      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onClick={() => setMenu('packages')}>Tool Packages<ChevronDown size={14} /></button>
+      <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu('packages')}>Tool Packages<ChevronDown size={14} /></button>
       <div id="pb-packages-menu" className="pb-dropdown pb-packages" hidden={menu !== 'packages'}><p>No packages listed yet.</p></div>
     </div>
-    <a href="#about" aria-current={selected === 'about' ? 'page' : undefined} onPointerEnter={() => setMenu(null)}
+    <a href="#about" aria-current={selected === 'about' ? 'page' : undefined} onPointerEnter={() => setMenu(null)} onFocus={() => setMenu(null)}
       onClick={event => { event.preventDefault(); open('about', event.currentTarget); }}>About</a>
   </nav>;
 }
@@ -81,10 +83,10 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef }) {
+function ProjectDetail({ id, headingRef, portraitSlot }) {
   if (id === 'about') return <article className="pb-about">
     <h2 tabIndex={-1} ref={headingRef}>{profile.name}</h2>
-    <img src={profile.photo} alt={profile.name} />
+    <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />
     <p>{profile.role} <a href={profile.institutionUrl}>{profile.institution}</a>{profile.affiliation} {profile.statement}</p>
     <p>{profile.email}<br /><a href={profile.github}>{profile.githubLabel}</a></p>
   </article>;
@@ -116,11 +118,16 @@ export default function PrototypeB() {
   const [scale, setScale] = useState(1);
   const [viewport, setViewport] = useState(() => ({ width: innerWidth, height: innerHeight }));
   const scene = useRef(null);
+  const canvas = useRef(null);
   const heading = useRef(null);
+  const portraitSlot = useRef(null);
+  const origin = useRef(null);
   const opener = useRef(null);
-  const active = selected || hovered;
+  const diagnostic = new URLSearchParams(location.search).get('benchmark');
+  const active = hovered;
   const stackX = (24 - (viewport.width - 1200 * scale) / 2) / scale;
-  const stackY = (viewport.height - 220 - 92) / scale;
+  const stackY = (viewport.height - 360 - 92) / scale;
+  useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic });
   useEffect(() => {
     const media = matchMedia('(min-width: 901px)');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -149,6 +156,7 @@ export default function PrototypeB() {
   }, [selected, desktop]);
   function open(id, target) {
     opener.current = target;
+    origin.current = target?.getBoundingClientRect();
     location.hash = id;
     setSelected(id); setHovered(null);
   }
@@ -156,8 +164,7 @@ export default function PrototypeB() {
     history.pushState(null, '', location.pathname + location.search);
     setSelected(null); setHovered(null);
     requestAnimationFrame(() => {
-      const target = opener.current?.isConnected && opener.current.getClientRects().length ? opener.current : document.querySelector('.pb-title');
-      target?.focus({ preventScroll: true });
+      document.querySelector('.pb-title')?.focus({ preventScroll: true });
     });
   }
   useEffect(() => {
@@ -175,37 +182,44 @@ export default function PrototypeB() {
 
   return <main className="prototype-b" data-selected={selected || ''}>
     <header className="pb-header" data-open={Boolean(selected)}>
-      {selected && <div className="pb-identity">
-        <button className="pb-portrait" onClick={event => open('about', event.currentTarget)} aria-label={`About ${profile.name}`} title={`About ${profile.name}`}><img src={profile.photo} alt={profile.name} /></button>
-        <div><h1><button onClick={event => open('about', event.currentTarget)}>{profile.name}</button></h1><span>{profile.email}</span><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.githubLabel}<ArrowUpRight size={13} /></a></div>
-      </div>}
       <Navigation selected={selected} open={open} hover={setHovered} />
     </header>
+    {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
+      <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
+      {selected !== 'about' && <div className="pb-identity">
+        <h1><button onClick={event => open('about', event.currentTarget)}>{profile.name}</button></h1>
+        <span>{profile.email}</span><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.githubLabel}<ArrowUpRight size={13} /></a>
+      </div>}
+    </aside>}
+    <TravelingPortrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} open={open} />
 
     <section className="pb-stage" ref={scene} data-open={Boolean(selected)} aria-label="Interactive research composition" onPointerLeave={() => setHovered(null)}>
-      <div className="pb-canvas" style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-active={active || ''} data-paused={paused || Boolean(selected)}>
+      <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-active={active || ''} data-paused={paused || Boolean(selected)}>
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
           <h1><button className="pb-title" onClick={event => open('about',event.currentTarget)} aria-label={`About ${profile.name}`}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></button></h1>
         </div>
-        <NaturePreviewClock active={!paused && !selected} replay={replay}>{pieces.map((piece,index) => {
+        <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{pieces.map((piece,index) => {
           const matching = active === piece.project;
+          const settle = Boolean(active) && !matching;
           const factor = selected ? Math.min(110 / piece.width, .5) : 1;
-          const x = selected ? stackX + 30 + index % 3 * 24 : piece.x + (matching ? piece.fan[0] : 0);
-          const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (matching ? piece.fan[1] : 0);
-          return <button key={piece.id} className="pb-fragment" data-project={piece.project} data-matching={matching}
-            style={{ width: piece.width, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : matching ? 0 : piece.angle}deg) scale(${factor})`, '--pb-delay': `${-index * .8}s` }}
+          const x = selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
+          const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
+          const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
+          return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-matching={matching}
+            style={{ width: piece.width, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : piece.angle}deg) scale(${factor})` }}
             aria-label={`${names[piece.project]}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
             tabIndex={selected ? -1 : 0} aria-hidden={selected ? true : undefined} aria-controls="pb-reading"
-            onClick={event => selected ? close() : open(piece.project,event.currentTarget)} onPointerEnter={() => { if (!selected) setHovered(piece.project); }} onFocus={() => setHovered(piece.project)}>
-            <div className="pb-fragment-art" key={replay}>
-              {piece.Component ? <piece.Component compact active={!paused && !selected} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
+            onClick={event => selected ? close() : open(piece.project,event.currentTarget)} onPointerEnter={() => { if (!selected) setHovered(piece.project); }} onPointerLeave={() => setHovered(null)} onFocus={() => { if (!selected) setHovered(piece.project); }} onBlur={() => setHovered(null)}>
+            <div className="pb-orbit" data-project={piece.project} data-x={piece.x + piece.width / 2} data-y={piece.y + piece.width / 2} key={replay}>
+              <FreezePreview frozen={frozen}>
+                {piece.Component ? <piece.Component compact active={!paused} maxFps={30} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
+              </FreezePreview>
             </div>
           </button>;
         })}</NaturePreviewClock>
-        {selected && <button className="pb-stack-return" style={{ transform: `translate(${stackX}px, ${stackY}px)` }} onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>}
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} />
       </section>}
     </section>
     <footer className="pb-footer">
@@ -213,7 +227,7 @@ export default function PrototypeB() {
         <button onClick={() => setPaused(value => !value)} title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play composition' : 'Pause composition'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
         <button onClick={() => setReplay(value => value + 1)} title="Replay" aria-label="Replay composition"><RotateCcw size={17} /></button>
       </div>}
-      <span>&copy; 2026 {profile.name}</span>
+      {selected !== 'about' && <span>&copy; 2026 {profile.name}</span>}
     </footer>
   </main>;
 }
