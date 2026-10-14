@@ -80,12 +80,13 @@ try {
         floated: getComputedStyle(media).cssFloat === 'right',
         aligned: Math.abs(figure.right - body.getBoundingClientRect().right) < 1,
         beside: lines[0].right <= figure.left - 27,
+        wrapsBelow: lines.some(line => line.top >= figure.bottom + 16 && line.right > figure.left),
         clear: lines.every(line => line.top >= figure.bottom || line.right <= figure.left - 27),
         contained: body.getBoundingClientRect().bottom >= figure.bottom,
         overflow: document.documentElement.scrollWidth > innerWidth,
       };
     });
-    assert.deepEqual(layout, { floated: true, aligned: true, beside: true, clear: true, contained: true, overflow: false }, `Wrapped figure at ${width}px`);
+    assert.deepEqual(layout, { floated: true, aligned: true, beside: true, wrapsBelow: true, clear: true, contained: true, overflow: false }, `Wrapped figure at ${width}px`);
   }
   assert.equal(await page.locator('.pb-fragment animate').count(), 0, 'Folded previews are inert');
   const full = page.locator('.pb-tool .pylba-animation');
