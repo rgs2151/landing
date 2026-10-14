@@ -66,7 +66,27 @@ try {
   assert.equal(await page.locator('.pb-tool h2').textContent(), '\u{1f680} PyLBA');
   assert.equal(await page.locator('.pb-tool .pb-authors').textContent(), 'Rudramani Singha');
   assert.equal(await page.locator('.pb-tool .pb-blurb').textContent(), readFileSync(new URL('../src/content/pylba.md', import.meta.url),'utf8').trim());
-  assert(await page.locator('.pb-tool').evaluate(n=>n.children[1].classList.contains('pb-authors') && n.children[2].classList.contains('pb-tool-media')));
+  assert(await page.locator('.pb-tool').evaluate(n=>n.children[1].classList.contains('pb-authors') && n.children[2].classList.contains('pb-project-links') && n.children[3].classList.contains('pb-tool-body')));
+  for (const [width, height] of [[1024,768], [1440,900], [1920,1080]]) {
+    await page.setViewportSize({ width, height });
+    const layout = await page.locator('.pb-tool-body').evaluate(body => {
+      const media = body.querySelector('.pb-tool-media');
+      const figure = media.getBoundingClientRect();
+      const paragraph = body.querySelector('.pb-blurb p');
+      const range = document.createRange();
+      range.selectNodeContents(paragraph);
+      const lines = Array.from(range.getClientRects());
+      return {
+        floated: getComputedStyle(media).cssFloat === 'left',
+        aligned: Math.abs(figure.left - body.getBoundingClientRect().left) < 1,
+        beside: lines[0].left >= figure.right + 27,
+        clear: lines.every(line => line.top >= figure.bottom || line.left >= figure.right + 27),
+        contained: body.getBoundingClientRect().bottom >= figure.bottom,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+      };
+    });
+    assert.deepEqual(layout, { floated: true, aligned: true, beside: true, clear: true, contained: true, overflow: false }, `Wrapped figure at ${width}px`);
+  }
   assert.equal(await page.locator('.pb-fragment animate').count(), 0, 'Folded previews are inert');
   const full = page.locator('.pb-tool .pylba-animation');
   await full.getByRole('button',{name:'Pause PyLBA animation'}).click();

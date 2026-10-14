@@ -1,5 +1,12 @@
 # Design Decisions
 
+## Detail Figure Layout
+
+Place project links immediately below the author information. Figures that do
+not need the full content width float left with the abstract wrapping around
+them. Apply this to PyLBA and future additions; preserve existing full-width
+figures and frozen prototypes.
+
 ## Robust Steering Views
 
 The full steering asset uses a 776 x 380 frame, trimming 20px of bottom space
