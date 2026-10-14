@@ -61,6 +61,16 @@ try {
   });
   assert(motion, 'SVG samples visibly change over time');
   await page.locator('[data-menu="packages"]').hover();
+  assert.equal(await page.locator('#pb-packages-menu small').textContent(), '2025');
+  assert(await page.evaluate(() => {
+    const research = document.querySelector('#pb-research-menu');
+    const packages = document.querySelector('#pb-packages-menu');
+    return ['', ' a', ' small'].every(selector => {
+      const first = getComputedStyle(selector ? research.querySelector(selector.trim()) : research);
+      const second = getComputedStyle(selector ? packages.querySelector(selector.trim()) : packages);
+      return ['fontFamily', 'fontSize', 'lineHeight', 'padding', 'color'].every(property => first[property] === second[property]);
+    }) && getComputedStyle(research).width === getComputedStyle(packages).width;
+  }), 'Tool dropdown uses the same typography, spacing and width as research');
   await page.locator('#pb-packages-menu a[href="#pylba"]').click();
   await page.waitForTimeout(850);
   assert.equal(await page.locator('.pb-tool h2').textContent(), '\u{1f680} pyLBA: Linear Ballistic Accumulator Models in Python');

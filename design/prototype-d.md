@@ -9,6 +9,8 @@ to the production homepage.
   research composition. Idle opacity is 50%; hover/focus restores 100%.
   Other hover fading and folded snapshots retain C's behavior.
 - Navigation labels in D are Research Publications and Tools & Packages.
+  Both dropdowns share title typography, spacing and width, with metadata
+  beneath each title. PyLBA's year is 2025.
   The tools dropdown and splash preview both open PyLBA within the existing
   slide-in page, including direct hash links and back navigation.
 - PyLBA uses the README title: rocket emoji followed by

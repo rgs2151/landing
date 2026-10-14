@@ -5,6 +5,7 @@ export const pylba = {
   id: 'pylba',
   title: '\u{1f680} pyLBA: Linear Ballistic Accumulator Models in Python',
   shortTitle: 'PyLBA',
+  year: 2025,
   authors: [profile.name],
   url: 'https://rgs2151.github.io/pyLBA/',
   code: 'https://github.com/rgs2151/pyLBA',

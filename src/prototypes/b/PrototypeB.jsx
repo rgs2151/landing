@@ -61,10 +61,12 @@ function Navigation({ selected, open, hover, tools, labels }) {
     <div className="pb-nav-group" onPointerEnter={() => setMenu('packages')}>
       <button data-menu="packages" aria-expanded={menu === 'packages'} aria-controls="pb-packages-menu" onFocus={() => setMenu(current => current === 'packages' ? current : null)} onClick={() => setMenu('packages')}
         onKeyDown={event => { if (tools.length && event.key === 'ArrowDown') { event.preventDefault(); setMenu('packages'); requestAnimationFrame(() => root.current.querySelector('#pb-packages-menu a')?.focus()); } }}>{labels.packages}<ChevronDown size={14} /></button>
-      <div id="pb-packages-menu" className="pb-dropdown pb-packages" hidden={menu !== 'packages'}>
+      <div id="pb-packages-menu" className={`pb-dropdown${tools.length ? '' : ' pb-packages'}`} hidden={menu !== 'packages'}>
         {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(tool.id, event.currentTarget); }}
-          onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>{tool.title}</a>) : <p>No packages listed yet.</p>}
+          onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>
+          <span>{tool.title}</span><small>{tool.year}</small>
+        </a>) : <p>No packages listed yet.</p>}
       </div>
     </div>
     <a href="#about" aria-current={selected === 'about' ? 'page' : undefined} onPointerEnter={() => setMenu(null)} onFocus={() => setMenu(null)}
