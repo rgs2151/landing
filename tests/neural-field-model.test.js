@@ -51,9 +51,9 @@ test('waveform stays populated without joining the recording end to its beginnin
   assert.equal(waveformPath(signal, 1250).match(/M/g).length, 1);
 });
 
-test('half-speed playback keeps a full trail through the recording boundary', () => {
-  assert.equal(PLAYBACK_SPEED, 0.5);
-  assert.equal(sampleRate * PLAYBACK_SPEED, 250);
+test('quarter-speed playback keeps a full trail through the recording boundary', () => {
+  assert.equal(PLAYBACK_SPEED, 0.25);
+  assert.equal(sampleRate * PLAYBACK_SPEED, 125);
   assert.equal(advanceFrame(2499, 1, samples.length, 2 * lag), 20);
   for (let frame = 2 * lag; frame < samples.length; frame++) {
     const ranges = traceRanges(frame, samples.length, lag);
