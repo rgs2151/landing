@@ -44,3 +44,11 @@ across prototypes and the main website. Preserve the iteration A snapshot in
 Chat shorthand does not authorize renaming a project or its content files.
 When revising a blurb, include the complete resulting paragraph in chat so
 the user can review it without opening files.
+
+For package abstracts, use the README's introduction and feature structure as
+the foundation, and read the underlying paper to understand the scientific
+purpose. Write for a research audience: what the package is, why its model
+matters, then one clear sentence per substantive capability. Avoid beginner
+explanations, implementation trivia, personal sales pitches, and unsupported
+claims. Iterate copy in chat when requested, and apply approved wording without
+creative rewrites.

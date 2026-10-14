@@ -3,7 +3,7 @@
 ## Detail Figure Layout
 
 Place project links immediately below the author information. Figures that do
-not need the full content width float left with the abstract wrapping around
+not need the full content width float right with the abstract wrapping around
 them. Apply this to PyLBA and future additions; preserve existing full-width
 figures and frozen prototypes.
 

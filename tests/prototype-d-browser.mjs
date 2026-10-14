@@ -77,10 +77,10 @@ try {
       range.selectNodeContents(paragraph);
       const lines = Array.from(range.getClientRects());
       return {
-        floated: getComputedStyle(media).cssFloat === 'left',
-        aligned: Math.abs(figure.left - body.getBoundingClientRect().left) < 1,
-        beside: lines[0].left >= figure.right + 27,
-        clear: lines.every(line => line.top >= figure.bottom || line.left >= figure.right + 27),
+        floated: getComputedStyle(media).cssFloat === 'right',
+        aligned: Math.abs(figure.right - body.getBoundingClientRect().right) < 1,
+        beside: lines[0].right <= figure.left - 27,
+        clear: lines.every(line => line.top >= figure.bottom || line.right <= figure.left - 27),
         contained: body.getBoundingClientRect().bottom >= figure.bottom,
         overflow: document.documentElement.scrollWidth > innerWidth,
       };

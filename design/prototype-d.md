@@ -13,7 +13,7 @@ to the production homepage.
   slide-in page, including direct hash links and back navigation.
 - PyLBA's title is the rocket emoji followed by PyLBA. Rudramani Singha is the
   sole author. Documentation/code links come immediately below the author.
-  The animation floats left beside the abstract, which wraps around it.
+  The animation floats right beside the abstract, which wraps on its left.
 - Shared content: `src/content/pylba.js` and `src/content/pylba.md`.
   Shared animation: `src/shared/pylba/`. The full view and splash use the same
   React SVG and original SMIL timeline. No iframe or video conversion.
