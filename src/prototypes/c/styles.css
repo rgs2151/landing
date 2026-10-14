@@ -1,5 +1,6 @@
 .prototype-c .pb-fragment[data-piece="nature-0"] { z-index: 4; }
 .prototype-c .pb-fragment[data-piece="nature-1"] { z-index: 8; }
+.prototype-c .pb-fragment[data-piece="nature-3"] { z-index: 6; }
 .prototype-c .pb-fragment[data-piece="landscape"] { z-index: 8; }
 .prototype-c .pb-canvas { z-index: 5; pointer-events: none; }
 .prototype-c .pc-scene-portrait { position: absolute; pointer-events: auto; }

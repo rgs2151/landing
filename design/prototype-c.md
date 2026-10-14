@@ -20,7 +20,7 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   Previews gather closer to the name with deliberate edge overlaps. The two
   upper-left footage tiles overlap by roughly a quarter vertically. The large
   video overlaps the portrait's upper edge from behind the portrait and name; the smallest video
-  sits behind the portrait. The steering landscape overlaps its lower-right edge
+  sits above the portrait. The steering landscape overlaps its lower-right edge
   without covering the face. The manifold fills the corner beside the second
   name line. Sizes, rotations and internal animations remain unchanged.
 - A single persistent square portrait lives 20 scene pixels beside the visible
