@@ -25,13 +25,13 @@ try {
     await page.waitForSelector('.pylba-animation svg');
     await page.waitForTimeout(800);
     assert.equal(await page.locator('.pb-fragment').count(), 15);
-    const moved = { autoregressive: 'translate(345px, 120px)', manifold: 'translate(105px, 295px)', signal: 'translate(790px, 485px)' };
+    const moved = { autoregressive: 'translate(345px, 120px)', conversation: 'translate(420px, 470px)', manifold: 'translate(105px, 295px)', signal: 'translate(790px, 485px)' };
     const adjusted = frozen.map(row => moved[row[0]] ? [row[0], row[1], `${moved[row[0]]} rotate(0deg) scale(1)`, row[3]] : row);
     assert.deepEqual(await page.locator('.pb-fragment:not([data-kind="tool"])').evaluateAll(placements), adjusted);
     assert.equal(await page.locator('[data-menu="research"]').textContent(), 'Research Publications');
     assert.equal(await page.locator('[data-menu="packages"]').textContent(), 'Tools & Packages');
     assert.equal(await page.locator('[data-piece="neuraljax-rnn"]').evaluate(n => n.style.width), '180px');
-    assert.equal(await page.locator('[data-piece="neuraljax-autoencoder"]').evaluate(n => n.style.width), '234px');
+    assert.equal(await page.locator('[data-piece="neuraljax-autoencoder"]').evaluate(n => n.style.width), '210.6px');
     assert(await page.evaluate(() => {
       const canvas = document.querySelector('.pb-canvas');
       const name = canvas.querySelector('.pc-name-button');
