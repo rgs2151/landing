@@ -10,7 +10,7 @@ const placements = {
   'neuraljax-cnn': { x: 785, y: 565, width: 126, angle: 10 },
   'neuraljax-rnn': { x: -20, y: 245, width: 180, angle: 9 },
   'neuraljax-autoencoder': { x: 1025, y: 175, width: 189.54, angle: 5 },
-  'neuraljax-gan': { x: 10, y: 470, width: 181.35, angle: -6 },
+  'neuraljax-gan': { x: 10, y: 470, width: 145.08, angle: -6 },
   'neuraljax-transformer': { x: 200, y: 610, width: 190, angle: 7 },
 };
 const researchPlacements = {
