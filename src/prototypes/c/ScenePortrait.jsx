@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { profile } from '../../content/site';
 
-export default function ScenePortrait({ selected, slot, canvas, scale, viewport, reduced, close, open, paused, hovered, replay, transitioning }) {
+export default function ScenePortrait({ selected, slot, canvas, scale, viewport, reduced, close, open, hover, paused, hovered, replay, transitioning }) {
   const root = useRef(null), content = useRef(null), travel = useRef(null), floating = useRef(null);
   const [host, setHost] = useState(null);
   useLayoutEffect(() => { setHost(canvas.current); }, [canvas]);
@@ -66,7 +66,7 @@ export default function ScenePortrait({ selected, slot, canvas, scale, viewport,
   return createPortal(<div className="pb-traveling-portrait pc-scene-portrait" ref={root} style={{ visibility: 'hidden' }} data-location={selected === 'about' ? 'about' : selected ? 'stack' : 'home'}>
     <div className="pc-portrait-content" ref={content}>
       <img src={profile.photo} alt={profile.name} />
-      {selected !== 'about' && <button disabled={transitioning} onClick={event => selected ? close() : open('about', event.currentTarget)} aria-label={selected ? 'Return to landing page' : `About ${profile.name}`} title={selected ? 'Return to landing page' : 'About'} />}
+      {selected !== 'about' && <button disabled={transitioning} onPointerEnter={() => hover('about')} onPointerLeave={() => hover(null)} onFocus={() => hover('about')} onBlur={() => hover(null)} onClick={event => selected ? close() : open('about', event.currentTarget)} aria-label={selected ? 'Return to landing page' : `About ${profile.name}`} title={selected ? 'Return to landing page' : 'About'} />}
     </div>
   </div>, host);
 }

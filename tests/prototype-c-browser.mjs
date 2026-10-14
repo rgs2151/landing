@@ -14,6 +14,20 @@ for (let index=0; index<9; index++) {
   }
 }
 const browser=await playwright.chromium.launch({executablePath:'/home/dev/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell',args:['--enable-unsafe-swiftshader']});
+async function hasManifoldPixels(canvas) {
+  return canvas.evaluate(node=>new Promise(resolve=>{
+    const gl=node.getContext('webgl2') || node.getContext('webgl');
+    let attempts=0;
+    const sample=()=>{
+      const pixels=new Uint8Array(node.width*node.height*4);
+      gl.readPixels(0,0,node.width,node.height,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
+      if(pixels.some((value,index)=>index%4===3 && value>0)) resolve(true);
+      else if(++attempts<60) requestAnimationFrame(sample);
+      else resolve(false);
+    };
+    requestAnimationFrame(sample);
+  }));
+}
 try {
   const page=await browser.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
@@ -29,6 +43,12 @@ try {
     })),[['nature-0',690,65],['nature-1',170,120],['signal',780,515],['autoregressive',365,80]]);
     assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'home');
     assert.equal(await page.locator('.pc-scene-portrait img').count(),1);
+    assert.equal(await page.locator('[data-piece="manifold"] .nf-manifold').getAttribute('data-stroke-width'),'2');
+    assert(await hasManifoldPixels(page.locator('[data-piece="manifold"] .nf-manifold canvas')),'Shared preview manifold renders');
+    assert(await page.evaluate(()=>{
+      const z=selector=>Number(getComputedStyle(document.querySelector(selector)).zIndex);
+      return z('[data-piece="nature-0"]')<z('.pc-scene-portrait') && z('[data-piece="landscape"]')>z('.pc-scene-portrait');
+    }),'Large footage sits behind the portrait; steering landscape stays above it');
     assert(await page.evaluate(()=>{
       const portrait=document.querySelector('.pc-scene-portrait'), image=portrait.querySelector('img');
       const box=portrait.getBoundingClientRect(), title=document.querySelector('.pb-title').getBoundingClientRect();
@@ -67,6 +87,19 @@ try {
     assert.equal(await page.locator('.pb-canvas').getAttribute('data-active'),'neural-field-manifold');
     assert(await page.locator('.pb-orbit').evaluateAll(nodes=>nodes.every(n=>n.getAnimations()[0].playState==='paused')));
     await page.mouse.move(20,20);
+    for(const selector of ['.pc-name-button','.pc-scene-portrait button']) {
+      const box=await page.locator(selector).boundingBox();
+      await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+      await page.waitForTimeout(400);
+      assert.equal(await page.locator('.pb-canvas').getAttribute('data-active'),'about');
+      assert(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.every(n=>Number(getComputedStyle(n).opacity)===.25)));
+      assert(await page.locator('.pb-lettering,.pc-scene-portrait').evaluateAll(nodes=>nodes.every(n=>getComputedStyle(n).opacity==='1')));
+      assert(await page.locator('.pb-orbit').evaluateAll(nodes=>nodes.every(n=>n.getAnimations()[0].playState==='paused')));
+      await page.mouse.move(20,20);
+      await page.waitForTimeout(400);
+      assert.equal(await page.locator('.pb-canvas').getAttribute('data-active'),'');
+      assert(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.every(n=>getComputedStyle(n).opacity==='1')));
+    }
   }
   for (const id of ['cooperation','robust-steering','neural-field-manifold']) {
     await page.locator('[data-menu="research"]').hover();
@@ -75,6 +108,10 @@ try {
     assert.equal(await page.locator('.pb-project').count(),1);
     assert.equal(await page.locator('.pb-fragment canvas').count(),0);
     assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'stack');
+    if(id==='neural-field-manifold') {
+      assert.equal(await page.locator('.pb-project .nf-manifold').getAttribute('data-stroke-width'),'2');
+      assert(await hasManifoldPixels(page.locator('.pb-project .nf-manifold canvas')),'Shared full manifold renders');
+    }
     assert(await page.evaluate(async id=>{
       const content=await import('/src/content/site.js');
       const project=id==='cooperation'?content.paper:id==='robust-steering'?content.robustSteering:content.neuralFieldManifold;

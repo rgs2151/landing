@@ -8,6 +8,7 @@ import { loadNeuralFieldModel, advanceFrame, traceRanges, PLAYBACK_SPEED, SIGNAL
 import './neural-field-animation.css';
 
 const ACCENT = '#8b1e1e';
+const MANIFOLD_STROKE_WIDTH = 2;
 const VIEWBOXES = {
   full: '0 50 1000 480',
   signal: '8 220 250 165',
@@ -138,7 +139,7 @@ export default function NeuralFieldAnimation(props) {
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, manifoldStrokeWidth = 1, maxFps }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model, snapshotRef, maxFps }) {
   const full = part === 'full';
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
@@ -151,7 +152,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
-    const manifold = host.current ? createManifold(host.current, model, manifoldStrokeWidth) : null;
+    const manifold = host.current ? createManifold(host.current, model, MANIFOLD_STROKE_WIDTH) : null;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const initialFrame = Math.floor(model.signal.length / 2);
     let frame = initialFrame;
@@ -225,7 +226,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
       manifold?.dispose(); controller.current = null;
       if (snapshotRef) snapshotRef.current = null;
     };
-  }, [model, LAG, part, snapshotRef, manifoldStrokeWidth, maxFps]);
+  }, [model, LAG, part, snapshotRef, maxFps]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
 
@@ -293,7 +294,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, part = '
         </>}
         {(full || part === 'manifold') && <text x="874" y="392" textAnchor="middle" className="nf-caption">x(t), x(t − τ), x(t − 2τ)</text>}
       </svg>
-      {(full || part === 'manifold') && <div className="nf-manifold" ref={host} aria-hidden="true" />}
+      {(full || part === 'manifold') && <div className="nf-manifold" ref={host} data-stroke-width={MANIFOLD_STROKE_WIDTH} aria-hidden="true" />}
     </div>
     {!compact && <div className="nf-controls">
       <button type="button" onClick={() => { controller.current?.allowMotion(); setPaused(value => !value); }} aria-label={paused ? 'Play neural field animation' : 'Pause neural field animation'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>

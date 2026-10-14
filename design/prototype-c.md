@@ -19,7 +19,7 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
 - Equation/lag axes stay above the name; the waveform stays at the lower right.
   Previews gather closer to the name with deliberate edge overlaps. The two
   upper-left footage tiles overlap by roughly a quarter vertically. The large
-  video overlaps the portrait's upper edge, behind the name; the smallest video
+  video overlaps the portrait's upper edge from behind the portrait and name; the smallest video
   sits behind the portrait. The steering landscape overlaps its lower-right edge
   without covering the face. The manifold fills the corner beside the second
   name line. Sizes, rotations and internal animations remain unchanged.
@@ -34,6 +34,10 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   text wrapping beside and below it. The folded stack and back arrow return to
   the splash; the stack has an active pointer cursor. Splash/project portraits
   remain grayscale. The splash name and photo now open About, alongside the nav.
+- Hovering or focusing the splash name/photo keeps both fully visible, dims
+  project fragments, and pauses their drift without gathering or raising layers.
+- Manifold stroke width belongs to the shared animation asset, not a preview
+  override: the full schematic and standalone manifold both use width 2.
 - Preserve hover freeze/straightening/dimming, slide-in reading pages,
   transition pointer lock, and low-cost folded snapshots.
 - Reuse B's interaction/view components and all shared content/assets. C owns

@@ -209,12 +209,12 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
       <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-about={selected === 'about'} data-transitioning={transitioning} data-active={active || ''} data-paused={paused || Boolean(selected)}>
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
           <h1 className="pb-title" tabIndex={-1}>{profileEntry
-            ? <button className="pc-name-button" aria-label={`About ${profile.name}`} onClick={event => { if (!transitioning) open('about', event.currentTarget); }}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></button>
+            ? <button className="pc-name-button" aria-label={`About ${profile.name}`} onPointerEnter={() => hover('about')} onPointerLeave={() => hover(null)} onFocus={() => hover('about')} onBlur={() => hover(null)} onClick={event => { if (!transitioning) open('about', event.currentTarget); }}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></button>
             : <><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></>}</h1>
         </div>
         <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{scenePieces.map((piece,index) => {
           const matching = active === piece.project;
-          const settle = Boolean(active) && !matching;
+          const settle = Boolean(active) && active !== 'about' && !matching;
           const factor = selected ? Math.min(110 / piece.width, .5) : 1;
           const x = selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
           const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
@@ -227,7 +227,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
             <div className="pb-orbit" data-project={piece.project} data-x={piece.x + piece.width / 2} data-y={piece.y + piece.width / 2} key={replay}>
               <div className="pb-tilt">
               <FreezePreview frozen={frozen}>
-                {piece.Component ? <piece.Component compact active={!paused} maxFps={30} previewPadding={piece.id === 'landscape' ? 12 : 0} manifoldStrokeWidth={piece.id === 'manifold' ? 2 : 1} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
+                {piece.Component ? <piece.Component compact active={!paused} maxFps={30} previewPadding={piece.id === 'landscape' ? 12 : 0} /> : <NaturePreview clip={piece.clip} poster={paper.clips[piece.clip].poster} />}
               </FreezePreview>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} />
       </section>}
     </section>
-    <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open}
+    <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}
       canvas={canvas} scale={scale} paused={paused} hovered={hovered} replay={replay} transitioning={transitioning} />
     <footer className="pb-footer">
       {!selected && !reduced && <div className="pb-scene-controls">
