@@ -14,6 +14,8 @@ No design or content changes were part of creating E.
 
 ## E Changes
 
+- Open pages place copyright below the fixed sidebar contacts, with no trailing
+  footer adding scroll space. The splash footer and earlier prototypes stay unchanged.
 - Only the name's highlighted lines capture pointer input; empty space passes
   through to the assets behind it. The photo remains clickable.
 - Tools navigation shows plain titles and years, without logos or emoji.

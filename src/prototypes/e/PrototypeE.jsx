@@ -34,5 +34,5 @@ const previewTools = tools.map(tool => ({ ...tool,
 
 export default function PrototypeE() {
   return <PrototypeB scenePieces={scenePieces} motion={createLocalMotion} variant="e" className="prototype-c"
-    Portrait={ScenePortrait} profileEntry projectArrival centeredStack tools={previewTools} navigationLabels={navigationLabels} />;
+    Portrait={ScenePortrait} profileEntry projectArrival centeredStack sidebarCopyright tools={previewTools} navigationLabels={navigationLabels} />;
 }

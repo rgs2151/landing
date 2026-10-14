@@ -125,7 +125,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, sidebarCopyright = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
@@ -220,6 +220,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
       {selected !== 'about' && <div className="pb-identity">
         <h1>{profile.name}</h1>
         <span>{profile.email}</span><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.githubLabel}<ArrowUpRight size={13} /></a>
+        {sidebarCopyright && <span className="pb-sidebar-copyright">&copy; 2026 {profile.name}</span>}
       </div>}
     </aside>}
     <section className="pb-stage" ref={scene} data-open={Boolean(selected)} aria-label="Interactive research composition" onPointerLeave={() => setHovered(null)}>
@@ -262,12 +263,12 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     </section>
     <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open} hover={hover}
       canvas={canvas} scale={scale} paused={paused} hovered={hovered} replay={replay} transitioning={transitioning} />
-    <footer className="pb-footer">
+    {(!sidebarCopyright || !selected) && <footer className="pb-footer">
       {!selected && !reduced && <div className="pb-scene-controls">
         <button onClick={() => setPaused(value => !value)} title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play composition' : 'Pause composition'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
         <button onClick={() => setReplay(value => value + 1)} title="Replay" aria-label="Replay composition"><RotateCcw size={17} /></button>
       </div>}
       {selected !== 'about' && <span>&copy; 2026 {profile.name}</span>}
-    </footer>
+    </footer>}
   </main>;
 }

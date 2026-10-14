@@ -6,6 +6,9 @@
 .prototype-e .pb-fragment .pb-orbit * { cursor: pointer; }
 .prototype-e .pb-footer > span { order: -1; margin-left: 0; }
 .prototype-e .pb-footer .pb-scene-controls { margin-left: auto; }
+.prototype-e .pb-identity { position: relative; }
+.prototype-e .pb-sidebar-copyright { position: absolute; top: calc(100% + 12px); left: 0; white-space: nowrap; }
+.prototype-e .pb-stage[data-open="true"] { min-height: 100svh; }
 .prototype-e .pb-tool-body { display: flow-root; }
 .prototype-e .pb-tool-gallery { margin-bottom: 24px; }
 .prototype-e .pb-canvas[data-open="false"] .pb-fragment[data-project="neuraljaxlib"] { z-index: 11; }
