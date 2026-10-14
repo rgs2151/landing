@@ -23,7 +23,8 @@ No design or content changes were part of creating E.
   center over 700ms, with a delayed fade near arrival. All other previews fold
   into the left stack. Back restores the splash placements.
 - The opt-in `centeredStack` behavior centers folded previews on one shared
-  point, retaining their sizes and varied rotations without staggered fan-out.
+  point aligned with the photo's center, retaining their sizes and varied
+  rotations without staggered fan-out.
   D retains its original stack.
 - The opt-in `projectArrival` behavior measures the figure in canvas coordinates;
   it uses the existing frozen previews, does not duplicate running animations,

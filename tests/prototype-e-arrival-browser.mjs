@@ -45,10 +45,12 @@ try {
       const media = reading.querySelector('.pb-project-media, .pb-tool-gallery, .pb-tool-media') || reading;
       const box = media.getBoundingClientRect();
       const target = { x: box.left + box.width / 2, y: Math.min(innerHeight - 80, Math.max(120, box.top + box.height / 2)) };
+      const portrait = document.querySelector('.pc-scene-portrait[data-location="stack"]').getBoundingClientRect();
+      const stackCenter = { x: portrait.left + portrait.width / 2, y: portrait.top + portrait.height / 2 };
       return [...document.querySelectorAll('.pb-fragment')].map(node => {
         const rect = node.getBoundingClientRect();
         return { arriving: node.dataset.arriving === 'true', x: rect.left + rect.width / 2, y: rect.top + rect.height / 2,
-          opacity: Number(getComputedStyle(node).opacity), target };
+          opacity: Number(getComputedStyle(node).opacity), target, stackCenter };
       });
     });
     for (const item of landing) {
@@ -57,7 +59,7 @@ try {
         assert(Math.abs(item.x - item.target.x) < 3 && Math.abs(item.y - item.target.y) < 3, `${project}: selected assets reach the figure center`);
       } else {
         assert(item.x < 300 && item.opacity === 1, `${project}: other assets remain in left stack`);
-        assert(Math.abs(item.x - 128) < 1 && Math.abs(item.y - 620) < 1, `${project}: folded cards share one center regardless of size or rotation`);
+        assert(Math.abs(item.x - item.stackCenter.x) < 1 && Math.abs(item.y - item.stackCenter.y) < 1, `${project}: folded cards share the photo's center regardless of size or rotation`);
       }
     }
     assert.equal(await page.locator('.pb-fragment .svg-asset[data-playing="true"]').count(), 0, 'Folded/arriving SVG previews stop rendering');

@@ -239,7 +239,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
           const x = arriving ? (destination?.x ?? 850) - piece.width * factor / 2
             : centered ? stackX + 104 / scale : selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
           const y = arriving ? (destination?.y ?? 350) - (destination?.heights[piece.id] ?? piece.width) * factor / 2
-            : centered ? stackY + 80 / scale : selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
+            : centered ? stackY + 46 / scale : selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
           const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
           return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-kind={piece.kind} data-matching={matching} data-arriving={arriving || undefined}
             style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected && !arriving ? (index - 4) * 5 : 0}deg) scale(${factor})${centered ? ' translate(-50%, -50%)' : ''}` }}
