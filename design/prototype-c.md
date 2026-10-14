@@ -7,9 +7,10 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   steering landscape 270px and conversation 350px.
 - Keep all nine animations legible and separately discoverable, with limited
   intentional edge overlaps rather than a revolving cluster.
-- Small, smoothly eased local wandering: at most 12px horizontally and 9px
-  vertically from each resting position. Deterministic paths have independent
-  timing, no revolution, depth scaling or idle-opacity cycling.
+- Subtle, smoothly eased local wandering: at most 4px horizontally and 3px
+  vertically from each resting position, with 60-84 second cycles. Deterministic
+  paths have independent timing, no revolution, depth scaling or idle-opacity
+  cycling. Keep idle motion restrained rather than visibly jostling the artwork.
 - Preserve transparent previews, the white page and name-only black highlights.
 - The largest footage preview is 20% smaller than C's initial 270px version and
   swaps upper positions with the 125px preview. The large preview is behind the
