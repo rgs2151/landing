@@ -1,0 +1,6 @@
+.svg-asset { position: relative; width: 100%; }
+.svg-asset-mount { position: absolute; top: 0; left: 0; width: 300px; transform-origin: top left; }
+.svg-asset-controls { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }
+.svg-asset-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
+.svg-asset-controls button:hover { background: #f5ebeb; }
+.svg-asset-controls button:disabled { opacity: .4; cursor: default; }

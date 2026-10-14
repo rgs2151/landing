@@ -27,3 +27,19 @@ to the production homepage.
 - Playback pauses when inactive, offscreen, hidden, or reduced motion is enabled.
   Folded previews capture current opacity values and remove SMIL animation nodes
   so the stack stays inert.
+
+## NeuralJAXlib Addition
+
+- NeuralJAXlib (2024) uses its original SVG logo inline with the name in the
+  heading and Tools & Packages dropdown. Links remain code, then documentation.
+- Five independent splash fragments: CNN (20,55), RNN (775,0), Autoencoder
+  (245,570), GAN (20,570), Transformer (1000,545). Existing placements are unchanged.
+  All five share the tool's hover state and open `/prototype/d#neuraljaxlib`.
+- The detail page uses five smaller left-floating figures with README/gallery
+  text wrapping beside them. These are source excerpts, not a new abstract.
+  The Flax/PyTorch-informed abstract is a later, separate discussion.
+- `src/shared/tools.js` defines each tool's ordered figures and associated text;
+  `ToolDetail` and `ProjectTitle` render all tools uniformly. Neither the detail
+  renderer nor the splash needs project-specific content conditionals.
+- Native SVG renderers and cached samples live under `src/shared/neuraljaxlib/`.
+  They share React lifecycle/control integration, not copied animations per view.

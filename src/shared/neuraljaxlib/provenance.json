@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/rgs2151/NeuralJAXlib",
+  "adaptation": "ES module export boundaries only; rendering, data, geometry and timing unchanged.",
+  "files": {
+    "cnn/animation.js": {
+      "source": "407e8823cfcbb4fd39e0a0e68406049ee2a0dbfc100599555f0cd09d47cba2c5",
+      "imported": "130a5b7a238d35c7825547c26a45c48ffd8e4766bb891cc2b6d190fa65e00e61"
+    },
+    "cnn/samples.js": {
+      "source": "012e6a4b1d0a8519749ea70c32649a741301c313b4dcd87680085d76af8bb5b0",
+      "imported": "d206d7516f3a32c21a49bde2fae6453984e15c297d7db58818d5b9fe6e09e777"
+    },
+    "rnn/animation.js": {
+      "source": "db2fbeb7a3a9f115eb4b4a8c25bc8060ef9029ab78cd185daf66257feca420b5",
+      "imported": "ae8631a57778f3bd3d0f4edf3567d91f07a308aae4d4156e95bf9f09a5a98bf4"
+    },
+    "rnn/samples.js": {
+      "source": "788df313d7a1af1fd05a27a03d1e5eb0d70799810d21457e123aab7aa2b7246d",
+      "imported": "0a11d01ca26e748575d75699ee2aa6ee001f0667fe86f9ac0da4c0b765dbf51c"
+    },
+    "autoencoder/animation.js": {
+      "source": "6aa73ea1762e3ac7a3527946d2656548acbe66c3a589d7ab9ad89e873425d6d8",
+      "imported": "12c641717dba365cb3cbda5d587a7eef48b3ac83ec042f9bf0190a2254edddc2"
+    },
+    "autoencoder/samples.js": {
+      "source": "8ee92bd6d2904b7346dcc533afde294280d75ba5d92ed651642b8fef92bd3cb6",
+      "imported": "ffb775579529dca6d5b2f73d4c8b3c600eca1122d12c75460eb0a1f6cdd3d131"
+    },
+    "gan/animation.js": {
+      "source": "85b8d12d853c4ce8eabc013fc7a2695efd8ae7208360d45321eb62e91698d772",
+      "imported": "761e2fe62bed8bd250b577e448c3ed764b0e47693caf219085c86144cc2a4d70"
+    },
+    "gan/samples.js": {
+      "source": "e2d6e39d01b5e206fa11a3712a95e4cc4241d45d89dff2dbaf7f39c44c6553fa",
+      "imported": "0ae990d5a19d4e155dfa8fcd2876508a959a9dc85f456a857fcdf0b9d73a4643"
+    },
+    "transformer/animation.js": {
+      "source": "17637ff38b8c62d584bb8abd47abf0134897bbd0c21fa2c44781f7d7c757baf8",
+      "imported": "f8872e79757cad77fb764986dcb545955b08ea7eec3da485847c7ec294681d45"
+    },
+    "transformer/samples.js": {
+      "source": "8fe002f5528bd49f6feaa5255531c8a570b7fd9e09edc17693605200dcbd1f28",
+      "imported": "1d35f70d259d4833fd4d2d7e6323028f7d4885b3ed6884d4a5ecb7d6915998ae"
+    }
+  }
+}

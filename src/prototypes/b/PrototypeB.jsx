@@ -8,6 +8,7 @@ import RobustSteeringAnimation, { RobustSteeringLandscape, RobustSteeringConvers
 import './styles.css';
 import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
 import { FreezePreview, TravelingPortrait, useOrbits } from './SceneMotion';
+import ProjectTitle from '../../shared/ProjectTitle';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
@@ -66,7 +67,7 @@ function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
         {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(tool.id, event.currentTarget); }}
           onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>
-          <span>{tool.title}</span><small>{tool.year}</small>
+          <span><ProjectTitle project={tool} /></span><small>{tool.year}</small>
         </a>) : <p>No packages listed yet.</p>}
       </div>
     </div>

@@ -24,7 +24,7 @@ try {
     await page.goto('http://localhost:5173/prototype/d');
     await page.waitForSelector('.pylba-animation svg');
     await page.waitForTimeout(800);
-    assert.equal(await page.locator('.pb-fragment').count(), 10);
+    assert.equal(await page.locator('.pb-fragment').count(), 15);
     assert.deepEqual(await page.locator('.pb-fragment:not([data-kind="tool"])').evaluateAll(placements), frozen);
     assert.equal(await page.locator('[data-menu="research"]').textContent(), 'Research Publications');
     assert.equal(await page.locator('[data-menu="packages"]').textContent(), 'Tools & Packages');
@@ -61,7 +61,7 @@ try {
   });
   assert(motion, 'SVG samples visibly change over time');
   await page.locator('[data-menu="packages"]').hover();
-  assert.equal(await page.locator('#pb-packages-menu small').textContent(), '2025');
+  assert.equal(await page.locator('#pb-packages-menu a[href="#pylba"] small').textContent(), '2025');
   assert(await page.evaluate(() => {
     const research = document.querySelector('#pb-research-menu');
     const packages = document.querySelector('#pb-packages-menu');

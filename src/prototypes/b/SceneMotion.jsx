@@ -67,7 +67,7 @@ export function FreezePreview({ frozen, children }) {
     const capture = () => {
       const node = live.current;
       if (!node) return;
-      const waiting = node.querySelector('.nf-animation[aria-label], .pb-nature-preview canvas:not([data-ready="true"])');
+      const waiting = node.querySelector('.nf-animation[aria-label], .pb-nature-preview canvas:not([data-ready="true"]), .svg-asset[data-ready="false"]');
       if (waiting && attempts++ < 120) { frame = requestAnimationFrame(capture); return; }
       snapshotRef.current?.();
       snapshot.current = cloneFrame(node);

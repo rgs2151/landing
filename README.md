@@ -35,6 +35,19 @@ The A findings and B decisions are in `design/prototype-b.md`; C's layout and
 local-motion decisions are in `design/prototype-c.md`. D's additions are recorded
 in `design/prototype-d.md`.
 
+Tool additions use one shared structure:
+
+- `src/content/<tool>.js` and `.md`: metadata and copy.
+- `src/shared/<tool>/`: original assets, renderers, license and provenance.
+- `src/shared/tools.js`: ordered figures paired with their text.
+- `src/shared/ToolDetail.jsx`: shared title, author, links and wrapped figures.
+- `src/prototypes/d/PrototypeD.jsx`: splash placement only.
+
+PyLBA and NeuralJAXlib use this structure. NeuralJAXlib's five SVG animations
+share the same components between the splash and detail page; their imported
+source and cached data are documented in `src/shared/neuraljaxlib/README.md`.
+Its current copy is taken from the source README/gallery, pending abstract review.
+
 Build locally:
 
 ```bash
