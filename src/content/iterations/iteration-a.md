@@ -1,7 +1,7 @@
 # Copy Iteration A
 
 Frozen snapshot of the shared project blurbs before LFP revision. Preserve this
-snapshot; subsequent edits belong in the working copy in `src/content/site.js`.
+snapshot; subsequent edits belong in the working files in `src/content/`.
 
 ## Nature
 

@@ -16,4 +16,10 @@ through local prototypes before implementing it in the main website.
 Do not take screenshots unless explicitly requested. Use browser inspection
 and focused checks for verification.
 
-Commit and push completed substantial steps as requested by the user.
+After every prompt that changes repository files, commit and push the completed
+changes. Do not add a separate Git audit or diff review. Use ordinary pushes,
+not force pushes; retain necessary checks appropriate to the requested change.
+
+Working project blurbs live in `src/content/`. The accepted LFP version in
+`src/content/lfp.md` is frozen unless explicitly reopened by the user. Preserve
+the iteration A snapshot in `src/content/iterations/iteration-a.md`.

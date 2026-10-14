@@ -1,3 +1,6 @@
+import lfpBlurb from './lfp.md?raw';
+import robustSteeringBlurb from './robust-steering.md?raw';
+
 export const profile = {
   name: 'Rudramani Singha',
   photo: '/images/hero.jpg',
@@ -34,8 +37,9 @@ export const paper = {
   githubLogo: '/assets/logos/github.svg',
 };
 
-export const llmSteering = {
-  id: 'llm-steering',
+export const robustSteering = {
+  id: 'robust-steering',
+  shortTitle: 'Robust steering',
   title: 'Mind Control of LLMs via Closed-Loop Stimulation: Out-of-Distribution Robustness',
   url: 'https://rgs2151.github.io/controller/',
   code: 'https://github.com/rgs2151/controller',
@@ -44,7 +48,7 @@ export const llmSteering = {
   authors: ['Kasra Fallah', 'Rudramani Singha', 'Hannah Ghanei', 'Paul Sajda', 'James Anderson', 'Erfan Zabeh'],
   equalContribution: ['Kasra Fallah', 'Rudramani Singha'],
   reference: 'design/references/papers/llm-robust-stimulation.pdf',
-  blurb: 'We formulate LLM steering as a feedback-control problem inspired by closed-loop neurostimulation. Our robust controller adapts interventions to the model\'s evolving internal state while accounting for uncertainty in its dynamics, improving steering under shifts in language, adversarial prompts, and context length without changing model weights. We also introduce robust steerability, a pre-deployment measure of how much dynamics mismatch an intervention can tolerate, connecting reliable control in artificial and biological neural systems.',
+  blurb: robustSteeringBlurb.trim(),
 };
 
 export const neuralFieldManifold = {
@@ -56,11 +60,11 @@ export const neuralFieldManifold = {
   status: 'Preprint',
   authors: ['Kasra Fallah', 'Haoyu Novak Chen', 'Rudramani Singha', 'Eunji Kong', 'Gergely Turi', 'Attila Losonczy', 'Erfan Zabeh'],
   reference: 'design/references/papers/neural-field-manifold.pdf',
-  blurb: 'We develop a framework for recovering the geometry of local field potentials, revealing the low-dimensional structure behind population-level brain signals. Under an autoregressive model, we show how sustained oscillatory modes give rise to toroidal manifolds through lag embedding, while noise and aperiodic activity contribute geometric thickness. We further propose a geometry-aware learning network for time-varying dynamics and validate our framework on synthetic systems and neural recordings across species.',
+  blurb: lfpBlurb.trim(),
 };
 
 export const projects = [
   { id: 'cooperation', ...paper },
-  llmSteering,
+  robustSteering,
   neuralFieldManifold,
 ];
