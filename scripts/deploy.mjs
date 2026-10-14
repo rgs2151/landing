@@ -46,7 +46,7 @@ try {
     execFileSync('git', ['push', 'origin', 'HEAD:refs/heads/deploy'], {
       cwd: staging, stdio: 'inherit',
     });
-    console.log('Published to deploy. GitHub Pages will update singha.io.');
+    console.log('Published to deploy. GitHub Pages will publish this build; domain routing is configured separately.');
   } else {
     console.log('The deploy branch already matches this build.');
   }

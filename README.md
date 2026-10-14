@@ -1,7 +1,7 @@
 # Rudramani Singha Website
 
-The accepted interactive website, built with React and Vite and hosted on GitHub
-Pages at `singha.io`. The final F design is now the homepage at `/`.
+The accepted interactive website, built with React and Vite, with GitHub Pages
+configured for `singha.io`. The final F design is now the homepage at `/`.
 
 ## Local Development
 
@@ -71,6 +71,11 @@ Editable source lives on `expansion`. The `deploy` branch contains only the buil
 website. GitHub Pages serves `deploy` from `/ (root)` with the custom domain
 `singha.io`. The previous `dan` branch is retained but is no longer the publishing
 source.
+
+Domain cutover is still pending: on 2026-10-14 the public domain responded through
+Cloudflare with a Caddy upstream and served an older build, independently of the
+Pages configuration. Confirm/update the Cloudflare origin routing before treating
+Pages publication as a live-domain update. DNS was not changed by this setup.
 
 After committing and pushing source changes on `expansion`:
 
