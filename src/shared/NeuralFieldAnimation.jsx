@@ -211,7 +211,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <g className="nf-axes" transform="translate(568 177)" markerEnd={`url(#${id}-arrow)`}>
           <path d="M0,0 V-57" /><path d="M0,0 H70" /><path d="M0,0 L-25,39" /><path d="M0,0 L44,36" />
         </g>
-        <text x="554" y="128" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">n</tspan></text>
+        <text x="540" y="128" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">n</tspan></text>
         <text x="650" y="176" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">3</tspan></text>
         <text x="617" y="232" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">2</tspan></text>
         <text x="523" y="226" className="nf-axis-text">x<tspan baselineShift="sub" fontSize="12">1</tspan></text>
