@@ -5,11 +5,11 @@ import { createLocalMotion } from '../src/prototypes/c/localMotion.js';
 for (let index=0; index<9; index++) {
   const motion=createLocalMotion(index);
   assert.deepEqual(motion,createLocalMotion(index));
-  assert.equal(motion.duration,36000+index*1800);
+  assert.equal(motion.duration,18000+index*900);
   assert.equal(motion.keyframes[0].transform,motion.keyframes.at(-1).transform);
   for (const frame of motion.keyframes) {
     const [x,y]=frame.transform.match(/-?\d+(?:\.\d+)?/g).map(Number);
-    assert(Math.abs(x)<=8 && Math.abs(y)<=6);
+    assert(Math.abs(x)<=10 && Math.abs(y)<=7.5);
     assert(!frame.transform.includes('scale') && !('opacity' in frame));
   }
 }

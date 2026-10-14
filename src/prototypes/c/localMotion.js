@@ -5,9 +5,9 @@ export function createLocalMotion(index) {
     return seed / 4294967296;
   };
   const keyframes = Array.from({ length: 9 }, (_, frame) => {
-    const x = frame === 0 || frame === 8 ? 0 : (random() - .5) * 16;
-    const y = frame === 0 || frame === 8 ? 0 : (random() - .5) * 12;
+    const x = frame === 0 || frame === 8 ? 0 : (random() - .5) * 20;
+    const y = frame === 0 || frame === 8 ? 0 : (random() - .5) * 15;
     return { transform: `translate(${x}px, ${y}px)`, easing: 'cubic-bezier(.45,0,.55,1)' };
   });
-  return { keyframes, duration: 36000 + index * 1800 };
+  return { keyframes, duration: 18000 + index * 900 };
 }

@@ -7,8 +7,8 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   steering landscape 270px and conversation 350px.
 - Keep all nine animations legible and separately discoverable, with limited
   intentional edge overlaps rather than a revolving cluster.
-- Gentle but visible local wandering: at most 8px horizontally and 6px
-  vertically from each resting position, with 36-50.4 second cycles and eight
+- Gentle but visible local wandering: at most 10px horizontally and 7.5px
+  vertically from each resting position, with 18-25.2 second cycles and eight
   smoothly eased legs per cycle. Deterministic
   paths have independent timing, no revolution, depth scaling or idle-opacity
   cycling. Keep idle motion restrained rather than visibly jostling the artwork.
