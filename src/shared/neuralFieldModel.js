@@ -3,6 +3,7 @@ export const SIGNAL_WINDOW = 500;
 export const TRACE_LENGTH = 1000;
 export const SIGNAL_HEIGHT = 50;
 export const POINT_SCALE = 1.8;
+export const PLAYBACK_SPEED = 0.5;
 
 export function createNeuralFieldModel(recording) {
   const { samples, sampleRate, lagSamples: lag } = recording;
@@ -34,15 +35,26 @@ export function loadNeuralFieldModel() {
   return cachedModel;
 }
 
-export function advanceFrame(frame, steps, length) {
-  return (frame + steps) % length;
+export function advanceFrame(frame, steps, length, first = 0) {
+  return first + (frame - first + steps) % (length - first);
+}
+
+export function traceRanges(frame, length, lag) {
+  const first = 2 * lag;
+  const start = frame - TRACE_LENGTH + 1;
+  if (start >= first) return [{ start, count: TRACE_LENGTH }];
+  // Keep the previous pass visible without drawing across the recording cut.
+  return [
+    { start: length - (first - start), count: first - start },
+    { start: first, count: frame - first + 1 },
+  ];
 }
 
 export function waveformPath(signal, frame) {
-  const count = Math.min(SIGNAL_WINDOW, frame + 1);
-  return Array.from({ length: count }, (_, i) => {
-    const x = 18 + (SIGNAL_WINDOW - count + i) * 224 / (SIGNAL_WINDOW - 1);
-    const y = 286 - signal[frame - count + 1 + i] * SIGNAL_HEIGHT;
-    return `${i ? 'L' : 'M'}${x.toFixed(2)},${y.toFixed(2)}`;
+  return Array.from({ length: SIGNAL_WINDOW }, (_, i) => {
+    const index = (frame - SIGNAL_WINDOW + 1 + i + signal.length) % signal.length;
+    const x = 18 + i * 224 / (SIGNAL_WINDOW - 1);
+    const y = 286 - signal[index] * SIGNAL_HEIGHT;
+    return `${i && index !== 0 ? 'L' : 'M'}${x.toFixed(2)},${y.toFixed(2)}`;
   }).join(' ');
 }

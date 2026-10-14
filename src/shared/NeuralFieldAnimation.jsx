@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import * as THREE from 'three';
-import { loadNeuralFieldModel, advanceFrame, SIGNAL_WINDOW, SIGNAL_HEIGHT, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
+import { loadNeuralFieldModel, advanceFrame, traceRanges, PLAYBACK_SPEED, SIGNAL_WINDOW, SIGNAL_HEIGHT, waveformPath } from './neuralFieldModel';
 import './neural-field-animation.css';
 
 const ACCENT = '#8b1e1e';
@@ -32,12 +32,14 @@ function createManifold(host, model) {
         context.strokeStyle = ACCENT;
         context.lineWidth = 1.6;
         context.beginPath();
-        for (let i = Math.max(2 * LAG, frame - TRACE_LENGTH + 1); i <= frame; i++) {
-          projected.fromArray(model.points, i * 3).project(camera);
-          const px = (projected.x + 1) * width / 2;
-          const py = (1 - projected.y) * height / 2;
-          if (i === Math.max(2 * LAG, frame - TRACE_LENGTH + 1)) context.moveTo(px, py);
-          else context.lineTo(px, py);
+        for (const { start, count } of traceRanges(frame, model.signal.length, LAG)) {
+          for (let i = start; i < start + count; i++) {
+            projected.fromArray(model.points, i * 3).project(camera);
+            const px = (projected.x + 1) * width / 2;
+            const py = (1 - projected.y) * height / 2;
+            if (i === start) context.moveTo(px, py);
+            else context.lineTo(px, py);
+          }
         }
         context.stroke();
       },
@@ -48,10 +50,13 @@ function createManifold(host, model) {
   renderer.setClearColor(0xffffff, 0);
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(model.points, 3));
+  const position = new THREE.BufferAttribute(model.points, 3);
+  const geometries = [new THREE.BufferGeometry(), new THREE.BufferGeometry()];
   const material = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.78 });
-  scene.add(new THREE.Line(geometry, material));
+  geometries.forEach(geometry => {
+    geometry.setAttribute('position', position);
+    scene.add(new THREE.Line(geometry, material));
+  });
   const pointGeometry = new THREE.SphereGeometry(0.065, 12, 8);
   const pointMaterial = new THREE.MeshBasicMaterial({ color: 0x191919 });
   const point = new THREE.Mesh(pointGeometry, pointMaterial);
@@ -66,14 +71,18 @@ function createManifold(host, model) {
       camera.updateProjectionMatrix();
     },
     draw(frame) {
-      const start = Math.max(2 * LAG, frame - TRACE_LENGTH + 1);
-      geometry.setDrawRange(start, Math.max(0, frame - start + 1));
+      const ranges = traceRanges(frame, model.signal.length, LAG);
+      geometries.forEach((geometry, index) => {
+        const range = ranges[index];
+        geometry.setDrawRange(range?.start || 0, range?.count || 0);
+      });
       point.visible = frame >= 2 * LAG;
       point.position.fromArray(model.points, frame * 3);
       renderer.render(scene, camera);
     },
     dispose() {
-      geometry.dispose(); material.dispose(); pointGeometry.dispose(); pointMaterial.dispose();
+      geometries.forEach(geometry => geometry.dispose());
+      material.dispose(); pointGeometry.dispose(); pointMaterial.dispose();
       grid.geometry.dispose(); grid.material.dispose(); renderer.dispose();
       renderer.forceContextLoss(); renderer.domElement.remove();
     },
@@ -111,7 +120,8 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
   useEffect(() => {
     const manifold = createManifold(host.current, model);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = reducedMotion.matches ? 1499 : 0;
+    const initialFrame = Math.floor(model.signal.length / 2);
+    let frame = initialFrame;
     let raf = 0;
     let last = 0;
     let remainder = 0;
@@ -121,10 +131,9 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
     function draw() {
       waveform.current.setAttribute('d', waveformPath(model.signal, frame));
       lagPoints.current.forEach((point, j) => {
-        point.style.visibility = frame >= j * LAG ? 'visible' : 'hidden';
-        if (frame < j * LAG) return;
+        const index = (frame - j * LAG + model.signal.length) % model.signal.length;
         point.setAttribute('cx', 242 - j * LAG * 224 / (SIGNAL_WINDOW - 1));
-        point.setAttribute('cy', 286 - model.signal[frame - j * LAG] * SIGNAL_HEIGHT);
+        point.setAttribute('cy', 286 - model.signal[index] * SIGNAL_HEIGHT);
       });
       temporalPoint.current.style.visibility = frame >= 2 * LAG ? 'visible' : 'hidden';
       if (frame >= 2 * LAG) {
@@ -135,12 +144,12 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
       manifold.draw(frame);
     }
     function tick(now) {
-      if (last) remainder += Math.min(now - last, 100) * model.sampleRate / 1000;
+      if (last) remainder += Math.min(now - last, 100) * model.sampleRate * PLAYBACK_SPEED / 1000;
       last = now;
       const steps = Math.floor(remainder);
       if (steps) {
         remainder -= steps;
-        frame = advanceFrame(frame, steps, model.signal.length);
+        frame = advanceFrame(frame, steps, model.signal.length, 2 * LAG);
         draw();
       }
       raf = requestAnimationFrame(tick);
@@ -152,7 +161,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
     }
     controller.current = {
       setPlaying(value) { playing = value; sync(); },
-      replay() { frame = 0; remainder = 0; draw(); },
+      replay() { frame = initialFrame; remainder = 0; draw(); },
       allowMotion() { motionAllowed = true; sync(); },
     };
     const resize = new ResizeObserver(([entry]) => {
@@ -179,18 +188,17 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
   return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} ref={root}>
     <div className="nf-diagram">
       <svg viewBox="0 0 1000 550" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
-        <title id={`${id}-title`}>Extracting state space of a signal from time series</title>
+        <title id={`${id}-title`}>Recorded mouse LFP and lag embedding</title>
         <desc id={`${id}-desc`}>Five seconds of recorded mouse hippocampal LFP, using the tutorial's processed samples at 500 Hz and a lag of 10 samples. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
-        <text className="nf-heading" x="500" y="31" textAnchor="middle">Extracting state space of a signal from time series</text>
         <text x="48" y="217" className="nf-label">LFP</text>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
         {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
-        <path d="M191,263 L290,183" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
+        <path d="M258,250 L290,200" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
         <text x="190" y="130" textAnchor="middle" className="nf-label">Hidden<tspan x="190" dy="24">dynamic</tspan></text>
-        <path d="M195,330 L279,432" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
+        <path d="M258,325 L290,389" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
         <text x="191" y="430" textAnchor="middle" className="nf-label nf-red">Lag<tspan x="191" dy="24">embedding</tspan></text>
 
         <rect x="306" y="65" width="392" height="190" fill="none" stroke="#898989" strokeWidth="2" />

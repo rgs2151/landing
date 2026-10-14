@@ -26,10 +26,13 @@ not a simulation or AR prediction. The existing local notebook cache is
 The JSON preserves every original float64 value. Its metadata records the
 source, parameters and SHA-256 of the little-endian float64 sample bytes.
 The browser fetches it once, shares it across views, and replays at 500 samples
-per second. The waveform shows one second; the trailing embedding shows up to
-two seconds. At each five-second boundary both histories reset, avoiding an
-invented trajectory between unrelated endpoints. No smoothing or crossfade is
-applied at the boundary, and no samples are synthesized.
+per second in recorded time, displayed at half speed (250 samples per wall-clock
+second). Playback and replay start midway at sample 1,250 with history already
+populated. The waveform shows one recorded second and the trailing embedding
+shows 1,000 valid delay states. History wraps without clearing; separate line
+segments avoid inventing a connection between the recording's endpoints.
+The cursor cycles through valid delay states 20-2,499; the first 20 samples
+remain the lag context. No smoothing, crossfade or synthesized samples are used.
 
 Regenerate only from the original cache:
 

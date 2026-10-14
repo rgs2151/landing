@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { SIGNAL_WINDOW, POINT_SCALE, createNeuralFieldModel, advanceFrame, waveformPath } from '../src/shared/neuralFieldModel.js';
+import { SIGNAL_WINDOW, TRACE_LENGTH, PLAYBACK_SPEED, POINT_SCALE, createNeuralFieldModel, advanceFrame, traceRanges, waveformPath } from '../src/shared/neuralFieldModel.js';
 
 const recording = JSON.parse(readFileSync(new URL('../public/assets/data/mouse-lfp.json', import.meta.url)));
 const { signal, points, samples, lag, sampleRate } = createNeuralFieldModel(recording);
@@ -41,13 +41,30 @@ test('five-second playback includes every sample and wraps without skipping the 
   assert.equal(advanceFrame(2499, 8, samples.length), 7);
 });
 
-test('waveform does not join the recording end to its beginning', () => {
+test('waveform stays populated without joining the recording end to its beginning', () => {
   for (const frame of [0, 1, 19, 499, 500, 2499]) {
     const path = waveformPath(signal, frame);
-    assert.equal(path.match(/[ML]/g).length, Math.min(frame + 1, SIGNAL_WINDOW));
+    assert.equal(path.match(/[ML]/g).length, SIGNAL_WINDOW);
     assert.ok(!/NaN|Infinity/.test(path));
   }
-  assert.equal(waveformPath(signal, 0).includes('L'), false);
+  assert.equal(waveformPath(signal, 20).match(/M/g).length, 2);
+  assert.equal(waveformPath(signal, 1250).match(/M/g).length, 1);
+});
+
+test('half-speed playback keeps a full trail through the recording boundary', () => {
+  assert.equal(PLAYBACK_SPEED, 0.5);
+  assert.equal(sampleRate * PLAYBACK_SPEED, 250);
+  assert.equal(advanceFrame(2499, 1, samples.length, 2 * lag), 20);
+  for (let frame = 2 * lag; frame < samples.length; frame++) {
+    const ranges = traceRanges(frame, samples.length, lag);
+    assert.equal(ranges.reduce((sum, range) => sum + range.count, 0), TRACE_LENGTH);
+    for (const range of ranges) {
+      assert.ok(range.start >= 2 * lag);
+      assert.ok(range.start + range.count <= samples.length);
+    }
+    const last = ranges.at(-1);
+    assert.equal(last.start + last.count - 1, frame);
+  }
 });
 
 test('invalid recordings are rejected rather than replaced with synthetic data', () => {
