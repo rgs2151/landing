@@ -14,3 +14,12 @@ export const neuraljaxAnimations = definitions.map(definition => {
   const Animation = props => <SVGAnimation {...props} asset={asset} />;
   return { id: `neuraljax-${asset.id}`, key: asset.id, Animation };
 });
+
+let galleryModule;
+const galleryAsset = {
+  id: 'gallery', label: 'NeuralJAXlib', fps: 60,
+  load: () => galleryModule ??= import('./vendor/composite/animation').then(module => ({ render: module.default })),
+};
+export function NeuralJAXGallery(props) {
+  return <SVGAnimation {...props} asset={galleryAsset} />;
+}

@@ -1,5 +1,7 @@
 .prototype-d .pb-canvas[data-open="false"][data-active=""] .pb-fragment[data-kind="tool"] { opacity: .5; }
 .prototype-d .pb-tool-body { display: flow-root; }
+.prototype-d .pb-tool-gallery { margin-bottom: 24px; }
+.prototype-d .pb-canvas[data-open="false"] .pb-fragment[data-project="neuraljaxlib"] { z-index: 11; }
 .prototype-d .pb-tool-body + .pb-tool-body { margin-top: 28px; }
 .prototype-d .pb-project-logo { display: inline-block; width: .8em; height: 1em; object-fit: contain; vertical-align: -.12em; margin-right: .25em; }
 .prototype-d .pb-tool .pb-project-links img { width: 20px; }

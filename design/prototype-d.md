@@ -32,14 +32,19 @@ to the production homepage.
 
 - NeuralJAXlib (2024) uses its original SVG logo inline with the name in the
   heading and Tools & Packages dropdown. Links remain code, then documentation.
-- Five independent splash fragments: CNN (20,55), RNN (775,0), Autoencoder
-  (245,570), GAN (20,570), Transformer (1000,545). Existing placements are unchanged.
+- Five independent splash fragments: CNN (795,640), RNN (20,55), Autoencoder
+  (285,595), GAN (10,610), Transformer (1000,580). Existing placements are unchanged.
+  New fragments sit above the state-space assets on the splash so their hover
+  targets remain reachable. RNN leads in the upper-left; CNN sits below the waveform.
   All five share the tool's hover state and open `/prototype/d#neuraljaxlib`.
-- The detail page uses five smaller left-floating figures with README/gallery
-  text wrapping beside them. These are source excerpts, not a new abstract.
+- The detail page uses the original five-panel composite in one row immediately
+  below the links, with one shared pause/play and replay control. README/gallery
+  text follows unchanged. These are source excerpts, not a new abstract.
   The Flax/PyTorch-informed abstract is a later, separate discussion.
 - `src/shared/tools.js` defines each tool's ordered figures and associated text;
   `ToolDetail` and `ProjectTitle` render all tools uniformly. Neither the detail
   renderer nor the splash needs project-specific content conditionals.
 - Native SVG renderers and cached samples live under `src/shared/neuraljaxlib/`.
   They share React lifecycle/control integration, not copied animations per view.
+  RNN label sizing uses the untransformed SVG viewport, preventing inverse scaling
+  of "now" when a preview is small or tilted.

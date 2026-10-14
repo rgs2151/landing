@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/rgs2151/NeuralJAXlib",
-  "adaptation": "ES module export boundaries only; rendering, data, geometry and timing unchanged.",
+  "adaptation": "ES module exports/imports; RNN label sizing uses untransformed clientWidth. Cached data, geometry and timing otherwise unchanged.",
   "files": {
     "cnn/animation.js": {
       "source": "407e8823cfcbb4fd39e0a0e68406049ee2a0dbfc100599555f0cd09d47cba2c5",
@@ -12,7 +12,7 @@
     },
     "rnn/animation.js": {
       "source": "db2fbeb7a3a9f115eb4b4a8c25bc8060ef9029ab78cd185daf66257feca420b5",
-      "imported": "ae8631a57778f3bd3d0f4edf3567d91f07a308aae4d4156e95bf9f09a5a98bf4"
+      "imported": "356e646f0b481b32ef95a1b0daceb295e728cb0a1f633ae9a8c77f5e783b7852"
     },
     "rnn/samples.js": {
       "source": "788df313d7a1af1fd05a27a03d1e5eb0d70799810d21457e123aab7aa2b7246d",
@@ -41,6 +41,10 @@
     "transformer/samples.js": {
       "source": "8fe002f5528bd49f6feaa5255531c8a570b7fd9e09edc17693605200dcbd1f28",
       "imported": "1d35f70d259d4833fd4d2d7e6323028f7d4885b3ed6884d4a5ecb7d6915998ae"
+    },
+    "composite/animation.js": {
+      "source": "6a1ab442c8f543fb2d87a0b2b7e919563122a42e323a286600b0800def428877",
+      "imported": "a05ff5b8ef6afd10d2a84ea72e4be9a06f4fe5af3e8595916677abe01b29c822"
     }
   }
 }
