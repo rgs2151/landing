@@ -55,7 +55,10 @@ try {
       if (item.arriving) {
         assert.equal(item.opacity, 0);
         assert(Math.abs(item.x - item.target.x) < 3 && Math.abs(item.y - item.target.y) < 3, `${project}: selected assets reach the figure center`);
-      } else assert(item.x < 300 && item.opacity === 1, `${project}: other assets remain in left stack`);
+      } else {
+        assert(item.x < 300 && item.opacity === 1, `${project}: other assets remain in left stack`);
+        assert(Math.abs(item.x - 128) < 1 && Math.abs(item.y - 620) < 1, `${project}: folded cards share one center regardless of size or rotation`);
+      }
     }
     assert.equal(await page.locator('.pb-fragment .svg-asset[data-playing="true"]').count(), 0, 'Folded/arriving SVG previews stop rendering');
     if (project === 'neuraljaxlib') assert.equal(await page.locator('.pb-tool h2 img').count(), 1, 'Page title retains its logo');

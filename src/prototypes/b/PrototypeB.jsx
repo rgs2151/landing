@@ -125,7 +125,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, centeredStack = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
@@ -232,16 +232,17 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{scenePieces.map((piece,index) => {
           const matching = active === piece.project;
           const arriving = projectArrival && selected === piece.project;
+          const centered = centeredStack && selected && !arriving;
           const destination = arriving && arrival?.project === selected ? arrival : null;
           const settle = Boolean(active) && active !== 'about' && !matching;
           const factor = arriving ? Math.min(150 / piece.width, .55) : selected ? Math.min(110 / piece.width, .5) : 1;
           const x = arriving ? (destination?.x ?? 850) - piece.width * factor / 2
-            : selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
+            : centered ? stackX + 104 / scale : selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
           const y = arriving ? (destination?.y ?? 350) - (destination?.heights[piece.id] ?? piece.width) * factor / 2
-            : selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
+            : centered ? stackY + 80 / scale : selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
           const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
           return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-kind={piece.kind} data-matching={matching} data-arriving={arriving || undefined}
-            style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected && !arriving ? (index - 4) * 5 : 0}deg) scale(${factor})` }}
+            style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected && !arriving ? (index - 4) * 5 : 0}deg) scale(${factor})${centered ? ' translate(-50%, -50%)' : ''}` }}
             aria-label={`${names[piece.project] || tools.find(tool => tool.id === piece.project)?.shortTitle}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
             tabIndex={selected ? -1 : 0} aria-hidden={selected ? true : undefined} aria-controls="pb-reading"
             onClick={event => { if (!transitioning) selected ? close() : open(piece.project,event.currentTarget); }} onPointerEnter={() => hover(piece.project)} onPointerLeave={() => hover(null)} onFocus={() => hover(piece.project)} onBlur={() => hover(null)}>

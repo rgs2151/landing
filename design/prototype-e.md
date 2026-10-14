@@ -20,8 +20,11 @@ No design or content changes were part of creating E.
   NeuralJAXlib (2026) appears first, followed by "pyLBA: Linear Ballistic
   Accumulators" (2025). Detail titles keep their icons.
 - Opening a project sends its matching previews to the main detail figure's
-  center over 700ms, with a delayed fade near arrival. All other previews retain
-  the existing left-stack transition. Back restores the splash placements.
+  center over 700ms, with a delayed fade near arrival. All other previews fold
+  into the left stack. Back restores the splash placements.
+- The opt-in `centeredStack` behavior centers folded previews on one shared
+  point, retaining their sizes and varied rotations without staggered fan-out.
+  D retains its original stack.
 - The opt-in `projectArrival` behavior measures the figure in canvas coordinates;
   it uses the existing frozen previews, does not duplicate running animations,
   ignores pointer input on arriving previews, and respects reduced motion.
