@@ -18,7 +18,9 @@ test('shared easing accelerates and settles without changing phase boundaries', 
   assert(ease(0.75) > 0.75);
   const start = timeline.entries[0].duration;
   assert.equal(timeline.sample(start + 550).swipe, ease(0.25));
-  assert.equal(timeline.sample(start + 2900).corruption, ease(0.25));
+  assert.equal(timeline.sample(start + 2900).corruption, 0.25);
+  const typing = timeline.sample(start + 575);
+  assert.equal(typing.question, typing.entry.units.question.slice(0, Math.floor(typing.entry.units.question.length * 0.25)).join(''));
   assert.equal(timeline.sample(start + 5000).corruption, 1);
   assert.equal(timeline.duration, 42500);
 });

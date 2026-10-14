@@ -175,7 +175,7 @@
     baseMask.setAttribute("width", (1 - swipe) * 280);
     const steering = snapshot.phase === "steering" || snapshot.phase === "steered";
     find("route").setAttribute("opacity", steering ? "1" : "0");
-    find("route-line").setAttribute("stroke-dashoffset", 1 - snapshot.corruption);
+    find("route-line").setAttribute("stroke-dashoffset", 1 - ease(snapshot.corruption));
     find("stimulation").style.opacity = 1;
     scene.style.opacity = 1;
     scene.style.clipPath = "none";

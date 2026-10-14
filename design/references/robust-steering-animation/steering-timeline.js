@@ -21,7 +21,7 @@ globalThis.SteeringTimeline = (() => {
       const entry = entries[index];
       const previous = entries[(index + entries.length - 1) % entries.length];
       const first = elapsed < entries[0].duration;
-      const progress = (start, span) => ease((time - start) / span);
+      const progress = (start, span) => clamp((time - start) / span);
       const questionStart = first ? 0 : 300;
       const answerErase = first ? 1100 : 1400;
       const answerStart = answerErase + 250;
@@ -55,7 +55,7 @@ globalThis.SteeringTimeline = (() => {
         answerTyping: time >= answerErase && time < answerEnd,
         questionLanguage: !first && time < questionStart ? previous.language : entry.language,
         answerLanguage: time < answerStart && !first ? (previous.steered ? 'es' : previous.language) : phase === 'steered' ? 'es' : entry.language,
-        swipe: first ? 0 : progress(0, 2200),
+        swipe: first ? 0 : ease(progress(0, 2200)),
       };
     }
     return { entries, duration, sample, units };

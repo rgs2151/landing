@@ -64,10 +64,11 @@ immediately when the swipe completes and lasts 2800ms. There is no red state dot
 or expanding pulse between these steps. Headings use the same left-to-right wipe
 as the landscape. During steering, a teal line grows along a cached contour from
 a red point to a distant teal point, without an arrowhead.
-The gray axis lines are removed; axis labels remain. Swipes, typing/deletion,
+The gray axis lines are removed; axis labels remain. Swipes,
 direction movement and contour drawing use a shared cubic ease-in/ease-out for
 a snappier middle and soft arrival, with all phase timings unchanged. Lightning
 uses a matching ease-in/ease-out rhythm without changing its cycle duration.
+Text typing, deletion and response overwrite remain linear at the same timings.
 
 `steering-landscapes.json` caches the unchanged seeded KDE landscapes and the
 contour-following routes. Regenerate with `node scripts/cache-steering-landscapes.mjs`.
