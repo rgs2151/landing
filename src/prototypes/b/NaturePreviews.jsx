@@ -47,8 +47,11 @@ export default function NaturePreview({ clip, poster }) {
     let disposed = false, draw, visible = false;
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
     observer.observe(node);
-    loadSheet(data.src).then(sheet => {
+    loadSheet(`${data.src}?v=${data.revision}`).then(sheet => {
       if (disposed) return;
+      if (sheet.naturalWidth !== data.columns * data.size || sheet.naturalHeight !== Math.ceil(data.frames / data.columns) * data.size) {
+        throw new Error(`Preview dimensions do not match metadata: ${data.src}`);
+      }
       let previous = -1;
       draw = elapsed => {
         const frame = Math.floor(elapsed * data.fps / 1000) % data.frames;

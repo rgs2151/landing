@@ -187,16 +187,14 @@ export default function PrototypeB() {
     {selected && <aside className="pb-profile-dock" data-about={selected === 'about'}>
       <button className="pb-dock-back" onClick={close} aria-label="Return to composition" title="Return to composition"><ArrowLeft size={22} /></button>
       {selected !== 'about' && <div className="pb-identity">
-        <h1><button onClick={event => open('about', event.currentTarget)}>{profile.name}</button></h1>
+        <h1>{profile.name}</h1>
         <span>{profile.email}</span><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.githubLabel}<ArrowUpRight size={13} /></a>
       </div>}
     </aside>}
-    <TravelingPortrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} open={open} />
-
     <section className="pb-stage" ref={scene} data-open={Boolean(selected)} aria-label="Interactive research composition" onPointerLeave={() => setHovered(null)}>
       <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-active={active || ''} data-paused={paused || Boolean(selected)}>
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
-          <h1><button className="pb-title" onClick={event => open('about',event.currentTarget)} aria-label={`About ${profile.name}`}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></button></h1>
+          <h1 className="pb-title" tabIndex={-1}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></h1>
         </div>
         <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{pieces.map((piece,index) => {
           const matching = active === piece.project;
@@ -222,6 +220,7 @@ export default function PrototypeB() {
         <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} />
       </section>}
     </section>
+    <TravelingPortrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} />
     <footer className="pb-footer">
       {!selected && !reduced && <div className="pb-scene-controls">
         <button onClick={() => setPaused(value => !value)} title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play composition' : 'Pause composition'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>

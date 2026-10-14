@@ -1,4 +1,4 @@
-.prototype-b { --pb-accent: #8b1e1e; --pb-ink: #111; color-scheme: light; min-height: 100svh; background: #fff; color: var(--pb-ink); font-family: Arial, Helvetica, sans-serif; isolation: isolate; overflow-x: clip; }
+.prototype-b { --font-body: Arial, Helvetica, sans-serif; --pb-accent: #8b1e1e; --pb-ink: #111; color-scheme: light; min-height: 100svh; background: #fff; color: var(--pb-ink); font-family: var(--font-body); isolation: isolate; overflow-x: clip; }
 .prototype-b * { box-sizing: border-box; letter-spacing: 0; }
 .prototype-b button { font: inherit; cursor: pointer; border: 0; border-radius: 0; background: transparent; }
 .prototype-b a { color: inherit; text-underline-offset: 4px; }
@@ -10,8 +10,7 @@
 .pb-dock-back { flex: 0 0 26px; width: 26px; height: 27px; display: grid; place-items: center; color: inherit; padding: 0; }
 .pb-dock-back:hover { color: var(--pb-accent); }
 .pb-identity { display: grid; gap: 5px; font-size: 15px; line-height: 1.35; min-width: 0; }
-.pb-identity h1 { margin: 0 0 4px; font: 600 18px/1.2 Arial, sans-serif; }
-.pb-identity h1 button { padding: 0; color: inherit; text-align: left; }
+.pb-identity h1 { margin: 0 0 4px; font: 600 18px/1.2 var(--font-body); }
 .pb-identity a { display: flex; align-items: center; gap: 5px; }
 .pb-traveling-portrait { position: fixed; z-index: 5; transform-origin: top left; }
 .pb-traveling-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
@@ -35,7 +34,7 @@
 .pb-canvas { position: fixed; width: 1200px; height: 760px; left: 50%; top: 92px; transform: translateX(-50%) scale(var(--pb-scale,1)); transform-origin: top center; }
 .pb-fragment { position: absolute; top: 0; left: 0; padding: 0; transform-origin: top left; transition: transform 700ms cubic-bezier(.65,0,.35,1), opacity 300ms; z-index: 3; }
 .pb-fragment video { width: 100%; aspect-ratio: 1; display: block; object-fit: contain; }
-.pb-nature-preview { position: relative; aspect-ratio: 1; }
+.pb-nature-preview { position: relative; aspect-ratio: 1; overflow: clip; }
 .pb-nature-preview :is(img,canvas) { display: block; width: 100%; height: 100%; }
 .pb-nature-preview canvas { position: absolute; inset: 0; opacity: 0; }
 .pb-nature-preview canvas[data-ready="true"] { opacity: 1; }

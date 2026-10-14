@@ -5,6 +5,14 @@ try {
   const page = await browser.newPage();
   const errors = []; page.on('pageerror',error=>errors.push(error.message));
   const base = process.env.SITE_URL || 'http://localhost:5173';
+  const assertFonts = async () => assert.deepEqual(await page.locator('.pb-reading h2,.pb-blurb p,.pb-authors,.pb-authors span,.pb-equal,.pb-project-links a,.pb-about p,.pb-about a,.pb-navigation a,.pb-navigation button,.pb-identity h1,.pb-identity a').evaluateAll(nodes => nodes.filter(node => getComputedStyle(node).fontFamily !== 'Arial, Helvetica, sans-serif').map(node => ({ tag: node.tagName, class: node.className, font: getComputedStyle(node).fontFamily }))), [], 'All reading, identity and navigation text uses Arial');
+  const assertLanding = async () => {
+    await page.waitForFunction(() => !document.querySelector('.pb-reading') && getComputedStyle(document.querySelector('.pb-traveling-portrait')).visibility === 'hidden');
+    assert.equal(await page.locator('.pb-identity,.pb-profile-dock,.pb-frozen').count(),0);
+    await page.waitForFunction(() => document.querySelectorAll('.pb-nature-preview canvas[data-ready="true"]').length === 4);
+    assert.equal(await page.locator('.pb-nature-preview').count(),4,'No duplicate previews survive unfolding');
+    assert.equal(await page.locator('.pb-frozen-canvas').count(),0);
+  };
   for (const [width,height] of [[1440,900],[1024,768],[1920,1080]]) {
     await page.setViewportSize({width,height});
     await page.goto(base+'/prototype/b');
@@ -80,6 +88,7 @@ try {
         return {sameTitle:document.querySelector('#pb-project-heading').textContent===content.title,sameBlurb:document.querySelector('.pb-blurb').textContent.replace(/\s/g,'')===content.blurb.replace(/\s/g,''),overlap:h.bottom>authors.top||authors.bottom>links.top||links.bottom>media.top||media.bottom>blurb.top,overflow:article.right>innerWidth,backgroundPaused:[...document.querySelectorAll('.pb-fragment video')].every(v=>v.paused),focus:document.activeElement.id,fullWidth:Math.abs(blurb.width-article.width)<1,justified:getComputedStyle(document.querySelector('.pb-blurb')).textAlign==='justify',font:getComputedStyle(document.querySelector('.pb-project')).fontFamily};
       },id);
       assert.deepEqual(data,{sameTitle:true,sameBlurb:true,overlap:false,overflow:false,backgroundPaused:true,focus:'pb-project-heading',fullWidth:true,justified:true,font:'Arial, Helvetica, sans-serif'});
+      await assertFonts();
       assert.equal(await page.locator('.pb-fragment .pb-frozen').count(),9);
       assert.equal(await page.locator('.pb-fragment canvas').count(),0,'Folded views release live canvases');
       assert(await page.locator('.pb-fragment[data-piece="manifold"] .pb-frozen-canvas').evaluate(async image=>{
@@ -114,9 +123,13 @@ try {
       await page.getByRole('button',{name:'Return to composition',exact:true}).click();
       await page.waitForTimeout(800);
       assert.equal(await page.locator('.pb-reading').count(),0);
+      await assertLanding();
     }
     await page.locator('.pb-title').click();
+    assert.equal(await page.locator('.pb-reading').count(),0,'The display name does not open About');
+    await page.locator('.pb-navigation > a[href="#about"]').click();
     await page.waitForSelector('.pb-about');
+    await assertFonts();
     assert.equal(await page.locator('.pb-about h2').innerText(),'Rudramani Singha');
     await page.waitForTimeout(700);
     assert.equal(await page.locator('.pb-identity').count(),0);
@@ -134,8 +147,7 @@ try {
     await page.waitForTimeout(750);
     assert.equal(await page.locator('.pb-traveling-portrait img').getAttribute('data-continuity'),'same-portrait');
     assert.equal(await page.locator('.pb-identity').count(),0);
-    await page.getByRole('button',{name:'Return to composition',exact:true}).click();
-    await page.waitForTimeout(750);
+    await assertLanding();
     assert.equal(await page.locator('.pb-title span').first().evaluate(node=>getComputedStyle(node).textDecorationLine),'none');
     await page.getByRole('button',{name:'Pause composition',exact:true}).click();
     const pausedFrames = await frames();
@@ -143,6 +155,21 @@ try {
     assert.deepEqual(await frames(),pausedFrames);
     await page.getByRole('button',{name:'Replay composition',exact:true}).click();
     await page.waitForFunction(()=>[...document.querySelectorAll('.pb-nature-preview canvas')].every(node=>node.dataset.frame==='0'));
+    assert(await page.evaluate(async () => {
+      const clips = await (await fetch('/assets/images/previews/clips.json')).json();
+      for (const [index, node] of [...document.querySelectorAll('.pb-nature-preview canvas')].entries()) {
+        const clip = clips[index], image = new Image();
+        image.src = `${clip.src}?v=${clip.revision}`; await image.decode();
+        if (image.naturalWidth !== clip.columns * clip.size || image.naturalHeight !== Math.ceil(clip.frames / clip.columns) * clip.size) return false;
+        const expected = document.createElement('canvas'); expected.width = expected.height = clip.size;
+        const context = expected.getContext('2d', { alpha: false });
+        context.drawImage(image, 0, 0, clip.size, clip.size, 0, 0, clip.size, clip.size);
+        const pixels = context.getImageData(0,0,clip.size,clip.size).data;
+        const actual = node.getContext('2d').getImageData(0,0,clip.size,clip.size).data;
+        if (!actual.every((value,i) => value === pixels[i])) return false;
+      }
+      return true;
+    }), 'Every preview paints precisely one full source frame, not neighboring tiles');
     await page.getByRole('button',{name:'Play composition',exact:true}).click();
   }
   await page.goto(base+'/prototype/b#robust-steering');
@@ -156,6 +183,16 @@ try {
   await page.waitForFunction(()=>document.querySelector('.prototype-b')?.dataset.selected==='robust-steering');
   await page.keyboard.press('Escape');
   await page.waitForFunction(()=>!document.querySelector('.pb-reading'));
+  await assertLanding();
+  await page.locator('.pb-navigation > a[href="#about"]').click();
+  await page.waitForTimeout(700);
+  await page.goBack();
+  await assertLanding();
+  await page.locator('.pb-navigation > a[href="#about"]').click();
+  await page.waitForTimeout(700);
+  await page.evaluate(() => { location.hash = ''; });
+  await page.setViewportSize({width:1430,height:890});
+  await assertLanding();
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.reload();
   await page.waitForSelector('.pb-fragment');
@@ -164,9 +201,11 @@ try {
   const reducedFrames=await page.locator('.pb-nature-preview canvas').evaluateAll(nodes=>nodes.map(node=>node.dataset.frame));
   await page.waitForTimeout(200);
   assert.deepEqual(await page.locator('.pb-nature-preview canvas').evaluateAll(nodes=>nodes.map(node=>node.dataset.frame)),reducedFrames);
-  await page.locator('.pb-title').click();
+  await page.locator('.pb-navigation > a[href="#about"]').click();
   await page.waitForFunction(()=>document.querySelectorAll('.pb-frozen').length===9);
   assert.equal(await page.locator('.pb-fragment canvas').count(),0,'Reduced motion also freezes and releases previews');
+  await page.keyboard.press('Escape');
+  await assertLanding();
   for(const width of [390,768]) {
     await page.setViewportSize({width,height:844});
     await page.waitForSelector('.pb-mobile');

@@ -34,7 +34,8 @@ unchanged; verifying its domain is a separate content decision.
   decoration, fabricated diagrams, stock imagery or rewritten project content.
 - Hover/focus temporarily holds related orbital movement. Clicking opens an
   unframed reading area and folds the pieces into the lower-left profile group.
-- The only large splash lettering is Rudramani Singha, opening About. No profile
+- The only large splash lettering is Rudramani Singha, a static heading. About
+  opens only through its navigation link. No profile
   card, project headings or venue stamp appears on the splash. The nine fragments
   are interleaved, not grouped by project. Research, Tool Packages and About form
   the navigation; research expands to full titles and publication status. No
@@ -70,8 +71,16 @@ unchanged; verifying its domain is a separate content decision.
 - Folded artwork sits above the lower-left identity/back row. A single persistent
   portrait lands on top of the stack, expands into the About photo slot, and
   folds back. About omits the small identity/contact row and repeated footer name.
-  Entry from the splash name starts the portrait transition from that click;
+  Entry from the splash About link starts the portrait transition from that click;
   entry from a project uses the already-visible portrait on the stack.
+- Clicking the stacked portrait returns to the landing composition, never About.
+  All return paths hide the portrait, including history, Escape and hash changes.
+- B overrides the inherited body-font variable locally so paragraphs, author
+  lists and links cannot pick up the production site's Garamond. Display lettering
+  and finalized animation typography remain unchanged.
+- Preview sheets carry content-hash revisions and checked tile dimensions. Each
+  tile is one complete resized source frame, not a crop of the four-video strip.
+  Mismatched sheets fall back to the poster instead of displaying adjacent frames.
 - Frozen previews are inert DOM/bitmap snapshots, not hidden live components.
   Full project content and animation output remain unchanged. The native assets
   only gain opt-in preview sampling/capture support and unmount cleanup guards.

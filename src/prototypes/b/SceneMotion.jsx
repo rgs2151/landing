@@ -75,7 +75,7 @@ export function FreezePreview({ frozen, children }) {
     : <div key="live" ref={live}>{cloneElement(children, { snapshotRef })}</div>;
 }
 
-export function TravelingPortrait({ selected, slot, origin, viewport, reduced, open }) {
+export function TravelingPortrait({ selected, slot, origin, viewport, reduced, close }) {
   const root = useRef(null), previous = useRef(null);
   useLayoutEffect(() => {
     const node = root.current;
@@ -89,7 +89,10 @@ export function TravelingPortrait({ selected, slot, origin, viewport, reduced, o
     }
     node.getAnimations().forEach(animation => animation.cancel());
     Object.assign(node.style, { left: `${destination.x}px`, top: `${destination.y}px`, width: `${destination.width}px`, height: `${destination.height}px` });
-    if (!selected && !previous.current) return;
+    if (!selected && !previous.current) {
+      node.style.visibility = 'hidden';
+      return;
+    }
     node.style.visibility = 'visible';
     const source = from || (selected === 'about' && origin.current ? {
       x: origin.current.x + origin.current.width / 2 - 56,
@@ -108,9 +111,9 @@ export function TravelingPortrait({ selected, slot, origin, viewport, reduced, o
     };
     window.addEventListener('scroll', followScroll, { passive: true });
     return () => window.removeEventListener('scroll', followScroll);
-  }, [selected, slot, origin, viewport, reduced]);
+  }, [selected, slot, origin, viewport.width, viewport.height, reduced]);
   return <div className="pb-traveling-portrait" ref={root} style={{ visibility: 'hidden' }} aria-hidden={!selected}>
     <img src={profile.photo} alt={profile.name} />
-    {selected && selected !== 'about' && <button onClick={event => open('about', event.currentTarget)} aria-label={`About ${profile.name}`} title={`About ${profile.name}`} />}
+    {selected && selected !== 'about' && <button onClick={close} aria-label="Return to landing page" title="Return to landing page" />}
   </div>;
 }

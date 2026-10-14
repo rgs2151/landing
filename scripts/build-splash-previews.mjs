@@ -1,4 +1,5 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 
 const directory = new URL('../public/assets/images/previews/', import.meta.url);
@@ -17,6 +18,7 @@ for (const number of [6, 7, 8, 9]) {
   const result = spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', source.pathname,
     '-vf', `scale=${size}:${size}:flags=lanczos,tile=6x${Math.ceil(frames / 6)}`, '-frames:v', '1', '-c:v', 'libwebp', '-quality', '80', target.pathname], { stdio: 'inherit' });
   if (result.status !== 0) throw new Error(`Preview encoding failed: ${number}`);
-  clips.push({ src: `/assets/images/previews/paper-${number}.webp`, frames, fps, size, columns: 6 });
+  const revision = createHash('sha256').update(readFileSync(target)).digest('hex').slice(0, 12);
+  clips.push({ src: `/assets/images/previews/paper-${number}.webp`, frames, fps, size, columns: 6, revision });
 }
 writeFileSync(new URL('clips.json', directory), JSON.stringify(clips, null, 2) + '\n');
