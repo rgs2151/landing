@@ -56,7 +56,7 @@ export const neuralFieldManifold = {
   status: 'Preprint',
   authors: ['Kasra Fallah', 'Haoyu Novak Chen', 'Rudramani Singha', 'Eunji Kong', 'Gergely Turi', 'Attila Losonczy', 'Erfan Zabeh'],
   reference: 'design/references/papers/neural-field-manifold.pdf',
-  blurb: 'We develop a framework for recovering the geometry of local field potentials, revealing the low-dimensional structure behind population-level brain signals. Under an autoregressive model, we show how sustained oscillatory modes give rise to toroidal manifolds through lag embedding, while noise and aperiodic activity contribute geometric thickness. A geometry-aware learning network extends reconstruction to time-varying dynamics, with validation on synthetic systems and neural recordings across species.',
+  blurb: 'We develop a framework for recovering the geometry of local field potentials, revealing the low-dimensional structure behind population-level brain signals. Under an autoregressive model, we show how sustained oscillatory modes give rise to toroidal manifolds through lag embedding, while noise and aperiodic activity contribute geometric thickness. We further propose a geometry-aware learning network for time-varying dynamics and validate our framework on synthetic systems and neural recordings across species.',
 };
 
 export const projects = [
