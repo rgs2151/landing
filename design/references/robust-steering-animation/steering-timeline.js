@@ -3,6 +3,10 @@ globalThis.SteeringTimeline = (() => {
   const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
   const units = text => [...segmenter.segment(text || '')].map(item => item.segment);
   const clamp = value => Math.max(0, Math.min(1, value));
+  const ease = value => {
+    const x = clamp(value);
+    return x < 0.5 ? 4 * x ** 3 : 1 - (-2 * x + 2) ** 3 / 2;
+  };
   const prefix = (text, amount) => text.slice(0, Math.floor(text.length * clamp(amount))).join('');
 
   function create(examples) {
@@ -17,7 +21,7 @@ globalThis.SteeringTimeline = (() => {
       const entry = entries[index];
       const previous = entries[(index + entries.length - 1) % entries.length];
       const first = elapsed < entries[0].duration;
-      const progress = (start, span) => clamp((time - start) / span);
+      const progress = (start, span) => ease((time - start) / span);
       const questionStart = first ? 0 : 300;
       const answerErase = first ? 1100 : 1400;
       const answerStart = answerErase + 250;
@@ -56,5 +60,5 @@ globalThis.SteeringTimeline = (() => {
     }
     return { entries, duration, sample, units };
   }
-  return { create };
+  return { create, ease };
 })();

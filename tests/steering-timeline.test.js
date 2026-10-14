@@ -9,6 +9,20 @@ const context = { Intl };
 runInNewContext(readFileSync(new URL('steering-timeline.js', base), 'utf8'), context);
 const timeline = context.SteeringTimeline.create(examples);
 
+test('shared easing accelerates and settles without changing phase boundaries', () => {
+  const { ease } = context.SteeringTimeline;
+  assert.equal(ease(0), 0);
+  assert.equal(ease(0.5), 0.5);
+  assert.equal(ease(1), 1);
+  assert(ease(0.25) < 0.25);
+  assert(ease(0.75) > 0.75);
+  const start = timeline.entries[0].duration;
+  assert.equal(timeline.sample(start + 550).swipe, ease(0.25));
+  assert.equal(timeline.sample(start + 2900).corruption, ease(0.25));
+  assert.equal(timeline.sample(start + 5000).corruption, 1);
+  assert.equal(timeline.duration, 42500);
+});
+
 test('cached steering routes follow undisplayed level sets between distant points', () => {
   const { fields } = JSON.parse(readFileSync(new URL('steering-landscapes.json', base)));
   assert.deepEqual(fields.map(field => field.language), examples.map(entry => entry.language));

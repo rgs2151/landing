@@ -38,7 +38,7 @@
 .steering-demo-vibration { position: absolute; inset: 0; width: 90px; height: 60px; opacity: 0; }
 .steering-demo[data-phase="steering"] .steering-demo-bolt,
 .steering-demo[data-phase="steered"] .steering-demo-bolt { opacity: 1; }
-.steering-demo[data-phase="steering"] .steering-demo-bolt { animation: steering-demo-shake .14s linear infinite; }
+.steering-demo[data-phase="steering"] .steering-demo-bolt { animation: steering-demo-shake .14s cubic-bezier(.65, 0, .35, 1) infinite; }
 .steering-demo[data-phase="steering"] .steering-demo-vibration { opacity: .8; }
 .steering-demo[data-paused="true"] .steering-demo-bolt { animation-play-state: paused; }
 .steering-demo-travel-bolt { position: absolute; left: 0; top: 0; width: 44px; height: 56px; opacity: 0; pointer-events: none; }

@@ -33,7 +33,7 @@
   let flightEnd;
   let sceneScale = 1;
   const clamp = (x) => Math.max(0, Math.min(1, x));
-  const ease = (x) => x * x * (3 - 2 * x);
+  const ease = SteeringTimeline.ease;
 
   const cachedFields = JSON.parse(document.getElementById("steering-landscapes").textContent).fields;
   const fields = timeline.entries.map(entry => {
@@ -151,14 +151,14 @@
       }
       fieldPair = pair;
     }
-    const progress = (start, span) => clamp((time - start) / span);
+    const progress = (start, span) => ease((time - start) / span);
     const english = entry.language === "en";
     const offset = first ? 0 : 2200;
     box.dataset.stage = snapshot.swipe < 1 && !first ? "shift" : english ? "direction" : "conversation";
     state.style.opacity = 1;
     const points = english ? progress(offset + 400, 300) : 0;
     const drawn = english ? progress(offset + 1000, 850) : 0;
-    const stored = ease(progress(offset + 2800, 1100));
+    const stored = progress(offset + 2800, 1100);
     direction.style.opacity = points * (1 - progress(offset + 3700, 200));
     directionLine.style.opacity = drawn;
     directionHead.style.opacity = clamp(drawn * 4 - 3);
@@ -168,7 +168,7 @@
     // Carry the direction straight to the model's lightning, with no controller stop.
     const target = flightEnd || { x: 169, y: 160 };
     direction.setAttribute("transform", "translate(" + (169 * (1 - scale) + (target.x - 169) * stored) + " " + (160 * (1 - scale) + (target.y - 160) * stored) + ") scale(" + scale + ")");
-    const swipe = ease(snapshot.swipe);
+    const swipe = snapshot.swipe;
     box.style.setProperty("--demo-swipe", swipe);
     shiftMask.setAttribute("width", swipe * 280);
     baseMask.setAttribute("x", 30 + swipe * 280);
