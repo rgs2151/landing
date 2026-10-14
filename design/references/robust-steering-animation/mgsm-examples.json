@@ -1,5 +1,5 @@
 {
-  "note": "Selected recorded MGSM questions and verbatim final-answer excerpts, with Markdown emphasis removed. These are not full completions or aggregate performance claims. English is an unsteered introduction; other rows pair original and H-infinity generations. Swahili uses a different problem. Landscape graphics remain synthetic.",
+  "note": "Illustrative display using MGSM problem 117 in every language. Existing answer excerpts are retained except explicitly documented manual displayEdits. Raw source excerpts and hashes remain for provenance; edited text is not a recorded model output. English is an unsteered introduction. Landscape graphics remain synthetic. No visible disclaimer is added; presentation wording is deferred to the user.",
   "examples": [
     {
       "language": "en",
@@ -85,22 +85,26 @@
     {
       "language": "sw",
       "label": "Swahili",
-      "question": "Harry alilala kwa saa 9 usiku uliopita. Rafiki yake James alilala 2/3 pekee ya saa ambazo Harry alilala. Harry alilala saa ngapi zaidi ya James?",
-      "baseline": "Jibu: 3 saa.",
-      "steered": "3 horas.",
+      "question": "John ananunua jozi 2 za viatu kwa kila mtoto kati ya watoto wake 3. Gharama yao ni $60 kwa kila kimoja. Alilipa pesa ngapi kwa jumla?",
+      "baseline": "Jibu ni 360.",
+      "steered": "Respuesta: 360 dólares.",
+      "displayEdits": {
+        "steered": "Respuesta: 360 dólares.",
+        "reason": "Use the same shoes question; replace the recorded clothing reference with a correct answer."
+      },
       "source": {
         "model": [
-          "Qwen/Qwen3-4B",
-          "1cfa9a7208912126459214e8b04321603b3df60c"
+          "meta-llama/Llama-3.2-3B-Instruct",
+          "0cb88a4f764b7a12671c53f0838cd831a0843b95"
         ],
-        "problemIndex": 96,
-        "promptId": "mgsm-096-sw",
-        "baselinePath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_sw/original/final.json",
-        "baselineSha256": "171240f6daad96c620f2595c3bd2bf9a6387dd62b74f3c7eed26fb0b01bd9408",
-        "baselineExcerpt": "**Jibu:** 3 saa.",
-        "steeredPath": "benchmarks/mgsm/cache/qwen3_4b/evaluations/kv_cache_off/generations/mgsm_sw/h_infinity/final.json",
-        "steeredSha256": "240f4c2f4f37ab327bc42d663fda01b90e5bc2c4d230e0398d17114de1686afb",
-        "steeredExcerpt": "**3 horas.**"
+        "problemIndex": 117,
+        "promptId": "mgsm-117-sw",
+        "baselinePath": "benchmarks/mgsm/cache/llama32_3b_instruct/evaluations/kv_cache_off/generations/mgsm_sw/original/final.json",
+        "baselineSha256": "1c50553619ae223b167de0df79e4ed54a94e58c645783c54851e090da18d21ce",
+        "baselineExcerpt": "Jibu ni 360.",
+        "steeredPath": "benchmarks/mgsm/cache/llama32_3b_instruct/evaluations/kv_cache_off/generations/mgsm_sw/h_infinity/final.json",
+        "steeredSha256": "e450980ab321b15cb46e6539664e1abc801ecd49e02774368a43b3440bd3495a",
+        "steeredExcerpt": "Por lo tanto, el costo total de la ropa para los niños es de $360."
       }
     },
     {
@@ -108,7 +112,11 @@
       "label": "Telugu",
       "question": "జాన్ తన 3 పిల్లలు కోసం ఒక్కొక్కరికి 2 జతల షూలు కొనుగోలు చేశాడు. వాటి ఖరీదు ఒక్కొక్కటి $60. అతడు ఎంత చెల్లించాడు?",
       "baseline": "సమాధానం 360.",
-      "steered": "Entonces, jhon gastó $360.",
+      "steered": "Entonces, John gastó $360.",
+      "displayEdits": {
+        "steered": "Entonces, John gastó $360.",
+        "reason": "Correct the name in the Spanish answer."
+      },
       "source": {
         "model": [
           "microsoft/Phi-4-mini-instruct",

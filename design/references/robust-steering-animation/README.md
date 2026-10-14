@@ -67,27 +67,30 @@ a red point to a distant teal point; the arrowhead appears on arrival.
 
 `steering-landscapes.json` caches the unchanged seeded KDE landscapes and the
 contour-following routes. Regenerate with `node scripts/cache-steering-landscapes.mjs`.
-The generator selects seeded starts and distant endpoints on visible contour arcs;
+The generator selects seeded starts and distant endpoints on intermediate density
+levels that are never drawn in the landscape, rather than tracing visible contours;
 the browser only draws these stored paths. These are synthetic illustrations, not
 measured model-state trajectories. The English direction introduction is unchanged.
 English returns through the same transition, without a blank scene or hard reset.
 Typing and deletion use Unicode grapheme clusters, including Telugu combining marks.
 
-## Recorded Text
+## Display Text
 
 `mgsm-examples.json` replaces the earlier invented pencils example. It contains
-complete recorded questions and short, verbatim answer excerpts from sibling
-`controller/code/benchmarks/mgsm/cache/` generation files. Only Markdown emphasis
-markers are removed; grammar and model mistakes are not rewritten. Source paths,
-model IDs/revisions, problem IDs, raw excerpts and file hashes accompany each row.
-These selected excerpts are not full completions or aggregate performance claims;
-the full generated reasoning can be mixed-language or imperfect.
+complete recorded translations of problem 117 and short answer excerpts from sibling
+`controller/code/benchmarks/mgsm/cache/` generation files. This display is illustrative:
+the Swahili-to-Spanish answer is manually corrected and the Telugu-to-Spanish name
+is corrected from "jhon" to "John". Other answers retain the existing excerpts.
+Manual corrections are stored in `displayEdits`, separately from raw source excerpts,
+model IDs and hashes. Edited display text must not be described as recorded output.
+No disclaimer or illustration label is added to the animation; the user will decide
+how to contextualize it elsewhere later.
 
 English, Chinese, French and Japanese use Qwen3-4B problem 117. Telugu uses the
-same problem from Phi-4-mini-instruct. Swahili uses Qwen3-4B problem 96, not a
-translation of problem 117. English shows a recorded unsteered answer; each of
-the five transfer languages pairs its original response with its own H-infinity
-response. No English H-infinity output is invented.
+same problem from Phi-4-mini-instruct. Swahili now uses Llama-3.2-3B problem 117,
+with the correct native baseline "Jibu ni 360." and the manually supplied Spanish
+answer "Respuesta: 360 dólares." Every language asks about the same shoes purchase.
+English remains an unsteered introduction.
 
 Regenerate and verify every excerpt against its original completion:
 

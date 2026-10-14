@@ -190,8 +190,8 @@
     box.dataset.language = entry.language;
     if (box.dataset.phase !== phase) {
       box.dataset.phase = phase;
-      if (phase === "baseline-hold") description.textContent = "Recorded " + entry.label + " question: " + entry.question + " Answer excerpt: " + entry.baseline;
-      if (phase === "steered") description.textContent = "Recorded steered answer excerpt: " + entry.steered;
+      if (phase === "baseline-hold") description.textContent = entry.label + " question: " + entry.question + " Answer: " + entry.baseline;
+      if (phase === "steered") description.textContent = "Steered answer: " + entry.steered;
     }
     if (question.textContent !== snapshot.question) question.textContent = snapshot.question;
     question.lang = snapshot.questionLanguage;

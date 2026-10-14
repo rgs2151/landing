@@ -9,7 +9,7 @@ const context = { Intl };
 runInNewContext(readFileSync(new URL('steering-timeline.js', base), 'utf8'), context);
 const timeline = context.SteeringTimeline.create(examples);
 
-test('cached steering routes follow visible contours between distant points', () => {
+test('cached steering routes follow undisplayed level sets between distant points', () => {
   const { fields } = JSON.parse(readFileSync(new URL('steering-landscapes.json', base)));
   assert.deepEqual(fields.map(field => field.language), examples.map(entry => entry.language));
   for (const field of fields) {
@@ -23,7 +23,7 @@ test('cached steering routes follow visible contours between distant points', ()
     assert.equal(points[0], start.join(','));
     assert.equal(points.at(-1), end.join(','));
     for (const point of points) {
-      assert(vertices.has(point));
+      assert(!vertices.has(point));
       const [x,y] = point.split(',').map(Number);
       assert(x >= 44 && x <= 296 && y >= 32 && y <= 284);
     }
@@ -98,10 +98,15 @@ test('preserves grapheme clusters for Telugu while typing and erasing', () => {
   for (let time = 300; time < 1400; time += 11) assert(prefixes.has(timeline.sample(start + time).question));
 });
 
-test('cached display answers preserve the recorded excerpts without paraphrasing', () => {
+test('one shared problem preserves source excerpts and documents manual display edits', () => {
   for (const example of examples) {
+    assert.equal(example.source.problemIndex, 117);
+    assert.match(example.baseline, /360/);
     assert.equal(example.baseline, example.source.baselineExcerpt.replaceAll('**', ''));
-    if (example.steered) assert.equal(example.steered, example.source.steeredExcerpt.replaceAll('**', ''));
+    if (example.steered) {
+      assert.match(example.steered, /360/);
+      assert.equal(example.steered, example.displayEdits?.steered || example.source.steeredExcerpt.replaceAll('**', ''));
+    }
     assert.match(example.source.baselineSha256, /^[a-f0-9]{64}$/);
   }
 });

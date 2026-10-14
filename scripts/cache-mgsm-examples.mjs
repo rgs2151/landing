@@ -9,9 +9,13 @@ const selections = [
   ['zh', 'Chinese', 'qwen3_4b', 117, '答案是 360 美元。', '**Respuesta: 360 dólares.**'],
   ['fr', 'French', 'qwen3_4b', 117, 'La réponse est **360**.', '**La respuesta es: 360.**'],
   ['ja', 'Japanese', 'qwen3_4b', 117, '答えは **360ドル** です。', '**Respuesta: 360 dólares.**'],
-  ['sw', 'Swahili', 'qwen3_4b', 96, '**Jibu:** 3 saa.', '**3 horas.**'],
+  ['sw', 'Swahili', 'llama32_3b_instruct', 117, 'Jibu ni 360.', 'Por lo tanto, el costo total de la ropa para los niños es de $360.'],
   ['te', 'Telugu', 'phi4_mini_instruct', 117, 'సమాధానం 360.', 'Entonces, jhon gastó $360.'],
 ];
+const displayEdits = {
+  sw: { steered: 'Respuesta: 360 dólares.', reason: 'Use the same shoes question; replace the recorded clothing reference with a correct answer.' },
+  te: { steered: 'Entonces, John gastó $360.', reason: 'Correct the name in the Spanish answer.' },
+};
 const examples = selections.map(([language, label, model, problemIndex, baselineExcerpt, steeredExcerpt]) => {
   function load(method, excerpt) {
     const path = `benchmarks/mgsm/cache/${model}/evaluations/kv_cache_off/generations/mgsm_${language}/${method}/final.json`;
@@ -27,7 +31,8 @@ const examples = selections.map(([language, label, model, problemIndex, baseline
   return {
     language, label, question: baseline.row.question,
     baseline: baselineExcerpt.replaceAll('**', ''),
-    steered: steeredExcerpt?.replaceAll('**', '') || null,
+    steered: displayEdits[language]?.steered || steeredExcerpt?.replaceAll('**', '') || null,
+    ...(displayEdits[language] && { displayEdits: displayEdits[language] }),
     source: {
       model: baseline.model, problemIndex, promptId: baseline.row.prompt_id,
       baselinePath: baseline.path, baselineSha256: baseline.sha256, baselineExcerpt,
@@ -37,7 +42,7 @@ const examples = selections.map(([language, label, model, problemIndex, baseline
 });
 const output = new URL('../design/references/robust-steering-animation/mgsm-examples.json', import.meta.url);
 writeFileSync(output, JSON.stringify({
-  note: 'Selected recorded MGSM questions and verbatim final-answer excerpts, with Markdown emphasis removed. These are not full completions or aggregate performance claims. English is an unsteered introduction; other rows pair original and H-infinity generations. Swahili uses a different problem. Landscape graphics remain synthetic.',
+  note: 'Illustrative display using MGSM problem 117 in every language. Existing answer excerpts are retained except explicitly documented manual displayEdits. Raw source excerpts and hashes remain for provenance; edited text is not a recorded model output. English is an unsteered introduction. Landscape graphics remain synthetic. No visible disclaimer is added; presentation wording is deferred to the user.',
   examples,
 }, null, 2) + '\n');
-console.log(`Cached ${examples.length} source-verified MGSM examples.`);
+console.log(`Cached ${examples.length} MGSM examples with documented display edits.`);
