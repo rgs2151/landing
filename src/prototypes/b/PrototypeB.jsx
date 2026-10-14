@@ -9,6 +9,7 @@ import './styles.css';
 import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
 import { FreezePreview, TravelingPortrait, useOrbits } from './SceneMotion';
 import ProjectTitle from '../../shared/ProjectTitle';
+import useProjectArrival from '../../shared/useProjectArrival';
 
 const projects = { cooperation: paper, 'robust-steering': robustSteering, 'neural-field-manifold': neuralFieldManifold };
 const names = { cooperation: 'Leader follower', 'robust-steering': robustSteering.shortTitle, 'neural-field-manifold': neuralFieldManifold.title.split(':')[0] };
@@ -67,7 +68,7 @@ function Navigation({ selected, open, hover, tools, labels, omitAccepted }) {
         {tools.length ? tools.map(tool => <a key={tool.id} href={`#${tool.id}`} aria-current={selected === tool.id ? 'page' : undefined}
           onClick={event => { event.preventDefault(); setMenu(null); open(tool.id, event.currentTarget); }}
           onPointerEnter={() => hover(tool.id)} onFocus={() => hover(tool.id)}>
-          <span><ProjectTitle project={tool} title={tool.navigationTitle} /></span><small>{tool.year}</small>
+          <span><ProjectTitle project={tool} title={tool.navigationTitle} showLogo={tool.navigationLogo} /></span><small>{tool.year}</small>
         </a>) : <p>No packages listed yet.</p>}
       </div>
     </div>
@@ -124,7 +125,7 @@ function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false, to
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false, projectArrival = false, tools = NO_TOOLS, navigationLabels = DEFAULT_NAVIGATION, className = '' }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(() => selectedFromHash(tools));
   const [hovered, setHovered] = useState(null);
@@ -145,6 +146,7 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
   const active = hovered;
   const stackX = (24 - (viewport.width - 1200 * scale) / 2) / scale;
   const stackY = (viewport.height - 360 - 92) / scale;
+  const arrival = useProjectArrival({ enabled: projectArrival, selected, desktop, canvas, scale, ...viewport });
   useOrbits(canvas, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning, motion });
   useLayoutEffect(() => {
     if (lastSelection.current === selected) { setTransitioning(false); return; }
@@ -229,13 +231,17 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         </div>
         <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{scenePieces.map((piece,index) => {
           const matching = active === piece.project;
+          const arriving = projectArrival && selected === piece.project;
+          const destination = arriving && arrival?.project === selected ? arrival : null;
           const settle = Boolean(active) && active !== 'about' && !matching;
-          const factor = selected ? Math.min(110 / piece.width, .5) : 1;
-          const x = selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
-          const y = selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
+          const factor = arriving ? Math.min(150 / piece.width, .55) : selected ? Math.min(110 / piece.width, .5) : 1;
+          const x = arriving ? (destination?.x ?? 850) - piece.width * factor / 2
+            : selected ? stackX + 30 + index % 3 * 24 : piece.x + (settle ? (600 - piece.x - piece.width / 2) * .035 : 0);
+          const y = arriving ? (destination?.y ?? 350) - (destination?.heights[piece.id] ?? piece.width) * factor / 2
+            : selected ? stackY + 10 + index % 4 * 15 : piece.y + (settle ? (350 - piece.y - piece.width / 2) * .035 : 0);
           const frozen = Boolean(selected) || Boolean(diagnostic && diagnostic !== 'all' && diagnostic !== piece.id);
-          return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-kind={piece.kind} data-matching={matching}
-            style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected ? (index - 4) * 5 : 0}deg) scale(${factor})` }}
+          return <button key={piece.id} className="pb-fragment" data-piece={piece.id} data-project={piece.project} data-kind={piece.kind} data-matching={matching} data-arriving={arriving || undefined}
+            style={{ width: piece.width, '--pb-angle': `${matching || selected ? 0 : piece.angle}deg`, transform: `translate(${x}px, ${y}px) rotate(${selected && !arriving ? (index - 4) * 5 : 0}deg) scale(${factor})` }}
             aria-label={`${names[piece.project] || tools.find(tool => tool.id === piece.project)?.shortTitle}: ${piece.clip === undefined ? piece.id : `video ${piece.clip + 1}`}`}
             tabIndex={selected ? -1 : 0} aria-hidden={selected ? true : undefined} aria-controls="pb-reading"
             onClick={event => { if (!transitioning) selected ? close() : open(piece.project,event.currentTarget); }} onPointerEnter={() => hover(piece.project)} onPointerLeave={() => hover(null)} onFocus={() => hover(piece.project)} onBlur={() => hover(null)}>
