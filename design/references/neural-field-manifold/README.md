@@ -7,34 +7,49 @@ right-hand manifold organization. Omit the panel letter. Dark red: `#8b1e1e`.
 The reusable implementation is in `src/shared/NeuralFieldAnimation.jsx`;
 the signal model is in `src/shared/neuralFieldModel.js`.
 
-## Demonstration Model
+## Recorded Mouse LFP
 
-The simulation now follows `notebooks/rudra_novak/donuts_retry_improve.ipynb`,
-cells 1, 2 and 8, in [NeuralFieldManifold](https://github.com/erfanzabeh/NeuralFieldManifold/blob/9eafbedcfbddb25f0d6102db6e75ddfa6eb31c79/notebooks/rudra_novak/donuts_retry_improve.ipynb).
-The reference clone stays outside this repository, at
-`/tmp/landing-NeuralFieldManifold-reference`; no notebook or dataset is vendored.
+The animation uses the real processed mouse hippocampal LFP from the
+[mouse LFP tutorial](https://github.com/erfanzabeh/NeuralFieldManifold/blob/9eafbedcfbddb25f0d6102db6e75ddfa6eb31c79/docs/tutorials/mouse_lfp.ipynb),
+not a simulation or AR prediction. The existing local notebook cache is
+`/home/dev/NeuralFieldManifold/notebooks/rudra_novak/data/mice_lfp.npz`.
 
-- Noise-driven AR(4), with pole radii 0.999 and 0.993.
-- Frequencies 0.025 and 0.10 cycles/sample; sampling rate 100 Hz.
-- Gaussian innovation standard deviation 0.05, 5,000-sample burn-in,
-  5,000 retained samples, seed 42.
-- The notebook's min/max normalization to [-1, 1].
-- Direct three-coordinate delay embedding with lag 10; the initial trajectory
-  uses the first 1,500 samples, as in the notebook's low-noise AR(4) figure.
+- Source recording: `eke003_spont_250818_175844.npy`, channel index 1.
+- First five seconds: 2,500 processed samples at 500 Hz.
+- The cache's own lag: 10 samples (20 ms), embedding dimension 3.
+- Tutorial processing: 50 Hz notch (Q=30), 1-20 Hz bandpass,
+  downsampling from 20,000 to 500 Hz, then the tutorial's 1-80 Hz
+  envelope normalization with a 3 Hz envelope lowpass.
+- Cached `xs` values are exported unchanged to
+  `public/assets/data/mouse-lfp.json` (47,791 bytes).
 
-JavaScript uses a seeded Mulberry32/Box-Muller Gaussian stream, not NumPy PCG64:
-the model and parameters match, but individual random samples are not bitwise
-identical. This remains synthetic data, not an experimental recording.
+The JSON preserves every original float64 value. Its metadata records the
+source, parameters and SHA-256 of the little-endian float64 sample bytes.
+The browser fetches it once, shares it across views, and replays at 500 samples
+per second. The waveform shows one second; the trailing embedding shows up to
+two seconds. At each five-second boundary both histories reset, avoiding an
+invented trajectory between unrelated endpoints. No smoothing or crossfade is
+applied at the boundary, and no samples are synthesized.
+
+Regenerate only from the original cache:
+
+```sh
+python scripts/cache-mouse-lfp.py /path/to/mice_lfp.npz
+```
+
+This exporter needs NumPy. Only the small processed excerpt is included in the
+website; the raw recording, other repository and notebooks remain outside it.
 
 The displayed coordinates are x(t), x(t-tau), x(t-2tau), uniformly scaled for
-viewing. No modal-phase recovery, imposed torus surface, or radial projection is
+viewing by a single constant gain. No modal-phase recovery, imposed torus surface, or radial projection is
 used. The waveform, lag markers and moving 3D point share the same sample index.
 The upper hidden-dynamics panel remains the static conceptual comparison.
 
 SVG renders labels, equations, arrows, and the waveform. Three.js renders the
 manifold; a canvas projection is used if WebGL is unavailable. Animation stops
 offscreen, in hidden tabs, and behind an open project. Reduced-motion users see
-a static state until they explicitly play it. No recording is downloaded.
+a static state until they explicitly play it. The source raw recording is never
+downloaded by the browser.
 
 ## Prototype
 

@@ -1,14 +1,13 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import * as THREE from 'three';
-import { createNeuralFieldModel, LAG, SIGNAL_WINDOW, SIGNAL_HEIGHT, SIMULATION, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
+import { loadNeuralFieldModel, advanceFrame, SIGNAL_WINDOW, SIGNAL_HEIGHT, TRACE_LENGTH, waveformPath } from './neuralFieldModel';
 import './neural-field-animation.css';
 
-const model = createNeuralFieldModel();
-const START = SIGNAL_WINDOW + 3 * LAG;
 const ACCENT = '#8b1e1e';
 
-function createManifold(host) {
+function createManifold(host, model) {
+  const LAG = model.lag;
   const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 30);
   camera.position.set(3.2, 3.1, 4.9).multiplyScalar(1.2);
   camera.lookAt(0, 0, 0);
@@ -68,7 +67,8 @@ function createManifold(host) {
     },
     draw(frame) {
       const start = Math.max(2 * LAG, frame - TRACE_LENGTH + 1);
-      geometry.setDrawRange(start, frame - start + 1);
+      geometry.setDrawRange(start, Math.max(0, frame - start + 1));
+      point.visible = frame >= 2 * LAG;
       point.position.fromArray(model.points, frame * 3);
       renderer.render(scene, camera);
     },
@@ -80,7 +80,25 @@ function createManifold(host) {
   };
 }
 
-export default function NeuralFieldAnimation({ compact = false, active = true }) {
+export default function NeuralFieldAnimation(props) {
+  const [model, setModel] = useState(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let mounted = true;
+    loadNeuralFieldModel().then(value => { if (mounted) setModel(value); })
+      .catch(() => { if (mounted) setError(true); });
+    return () => { mounted = false; };
+  }, [attempt]);
+  if (!model) return <div className="nf-animation nf-diagram" aria-label={error ? 'LFP recording unavailable' : 'Loading LFP recording'}>
+    {error && !props.compact && <div className="nf-controls"><button title="Retry loading LFP recording" aria-label="Retry loading LFP recording"
+      onClick={() => { setError(false); setAttempt(value => value + 1); }}><RotateCcw size={17} /></button></div>}
+  </div>;
+  return <RecordedNeuralFieldAnimation {...props} model={model} />;
+}
+
+function RecordedNeuralFieldAnimation({ compact = false, active = true, model }) {
+  const LAG = model.lag;
   const id = useId().replaceAll(':', '');
   const root = useRef(null);
   const host = useRef(null);
@@ -91,9 +109,9 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
-    const manifold = createManifold(host.current);
+    const manifold = createManifold(host.current, model);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 1499;
+    let frame = reducedMotion.matches ? 1499 : 0;
     let raf = 0;
     let last = 0;
     let remainder = 0;
@@ -103,22 +121,26 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
     function draw() {
       waveform.current.setAttribute('d', waveformPath(model.signal, frame));
       lagPoints.current.forEach((point, j) => {
+        point.style.visibility = frame >= j * LAG ? 'visible' : 'hidden';
+        if (frame < j * LAG) return;
         point.setAttribute('cx', 242 - j * LAG * 224 / (SIGNAL_WINDOW - 1));
         point.setAttribute('cy', 286 - model.signal[frame - j * LAG] * SIGNAL_HEIGHT);
       });
-      temporalPoint.current.setAttribute('cx', 567 + model.signal[frame - LAG] * 19);
-      temporalPoint.current.setAttribute('cy', 446 - model.signal[frame - 2 * LAG] * 14);
+      temporalPoint.current.style.visibility = frame >= 2 * LAG ? 'visible' : 'hidden';
+      if (frame >= 2 * LAG) {
+        temporalPoint.current.setAttribute('cx', 567 + model.signal[frame - LAG] * 19);
+        temporalPoint.current.setAttribute('cy', 446 - model.signal[frame - 2 * LAG] * 14);
+      }
       root.current.dataset.frame = String(frame);
       manifold.draw(frame);
     }
     function tick(now) {
-      if (last) remainder += Math.min(now - last, 100) * SIMULATION.sampleRate / 1000;
+      if (last) remainder += Math.min(now - last, 100) * model.sampleRate / 1000;
       last = now;
       const steps = Math.floor(remainder);
       if (steps) {
         remainder -= steps;
-        frame += steps;
-        if (frame >= model.signal.length) frame = START;
+        frame = advanceFrame(frame, steps, model.signal.length);
         draw();
       }
       raf = requestAnimationFrame(tick);
@@ -130,7 +152,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
     }
     controller.current = {
       setPlaying(value) { playing = value; sync(); },
-      replay() { frame = START; remainder = 0; draw(); },
+      replay() { frame = 0; remainder = 0; draw(); },
       allowMotion() { motionAllowed = true; sync(); },
     };
     const resize = new ResizeObserver(([entry]) => {
@@ -150,7 +172,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
       document.removeEventListener('visibilitychange', sync);
       manifold.dispose(); controller.current = null;
     };
-  }, []);
+  }, [model, LAG]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
 
@@ -158,7 +180,7 @@ export default function NeuralFieldAnimation({ compact = false, active = true })
     <div className="nf-diagram">
       <svg viewBox="0 0 1000 550" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
         <title id={`${id}-title`}>Extracting state space of a signal from time series</title>
-        <desc id={`${id}-desc`}>Noise-driven AR(4) simulation using the NeuralFieldManifold notebook parameters. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
+        <desc id={`${id}-desc`}>Five seconds of recorded mouse hippocampal LFP, using the tutorial's processed samples at 500 Hz and a lag of 10 samples. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
