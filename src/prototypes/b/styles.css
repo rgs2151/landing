@@ -44,7 +44,9 @@
 .pb-frozen * { animation: none !important; transition: none !important; }
 .pb-frozen-canvas { display: block; width: 100%; height: 100%; }
 .pb-nature-preview > .pb-frozen-canvas { position: absolute; inset: 0; }
-.pb-tilt { background: #fff; transform: rotate(var(--pb-angle)); transition: transform 500ms cubic-bezier(.65,0,.35,1); }
+.pb-tilt { background: transparent; transform: rotate(var(--pb-angle)); transition: transform 500ms cubic-bezier(.65,0,.35,1); }
+.pb-canvas:not([data-active=""]) .pb-orbit,
+.pb-canvas[data-open="true"] .pb-orbit { opacity: 1 !important; }
 .pb-fragment[data-piece="nature-0"] { z-index: 8; }
 .pb-fragment[data-piece="manifold"] { z-index: 9; }
 .pb-fragment[data-piece="autoregressive"] { z-index: 10; }

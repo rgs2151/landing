@@ -57,16 +57,25 @@ unchanged; verifying its domain is a separate content decision.
   finalized animation's own controls. Hidden/background animations are suspended.
 - All layouts and interactions must be finished. No placeholder-work exception.
 
-## Orbital And Profile Iteration
+## Drift And Profile Iteration
 
-- Keep the large name static and unadorned on hover. Artwork completes full
-  elliptical loops in 48-66 seconds around the name, with subtle depth scaling.
-  Hover pauses all orbital motion, straightens the related project's pieces,
+- Keep the large name static and unadorned on hover. Artwork drifts independently
+  around stable anchors, with different directions, depth and 36-58 second cycles.
+  Full revolutions are retired. Hover pauses all drift, straightens the related pieces,
   and reduces other pieces to 25% opacity while preserving the name's opacity.
   Leaving resumes the same paths. There is no latched hover selection.
-- All nine assets remain. Orbit radii span 324-420px horizontally and 192-252px
-  vertically, a 20% increase in the previous range. Nine distinct, staggered
-  tracks replace the three repeated radii; no two assets share a track.
+- All nine assets and their enlarged sizes remain. Anchors retain the previous
+  324-420px horizontal / 192-252px vertical spread, but movement is local rather
+  than circling the name. Independently oriented displacement in three dimensions
+  provides gentle perspective scaling and opacity changes. Hover restores full
+  preview opacity before applying the existing unrelated-project dimming.
+- Motion reference: [Thinking Orbs](https://github.com/Jakubantalik/thinking-orbs),
+  particularly its independent orientations and depth cues in `src/engine/orbits.ts`.
+  This is a motion adaptation for the existing figures, not an added orb widget or
+  copied renderer. Curves are precomputed and played by Web Animations; no per-frame
+  React state, filters or additional WebGL scene is introduced.
+- Preview wrappers are transparent. Do not add white plates behind the SVG assets.
+  White pixels baked into Nature footage remain source media, not CSS backgrounds.
 - Equation and manifold previews sit above the name, with one dominant footage
   preview also in front. The conversation and three smaller footage previews
   sit behind. Overlap is intentional; the nav remains an unobstructed way to

@@ -17,12 +17,14 @@ try {
     { background: 'rgb(0, 0, 0)', color: 'rgb(255, 255, 255)' },
   ]);
   assert.deepEqual(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.map(node=>parseFloat(node.style.width))),[324,150,114,78,324,420,180,372,456], 'All nine assets remain, each 20% larger');
-  const radii = await page.locator('.pb-orbit').evaluateAll(nodes => nodes.map(node => {
-    const frames = node.getAnimations()[0].effect.getKeyframes().map(frame => new DOMMatrixReadOnly(frame.transform));
-    return (Math.max(...frames.map(m=>m.m41))-Math.min(...frames.map(m=>m.m41)))/2;
+  assert(await page.locator('.pb-tilt,.pb-fragment .rs-animation,.pb-fragment .nf-animation').evaluateAll(nodes=>nodes.every(node=>getComputedStyle(node).backgroundColor==='rgba(0, 0, 0, 0)')), 'SVG previews have no opaque wrapper');
+  const motion = await page.locator('.pb-orbit').evaluateAll(nodes => nodes.map(node => {
+    const animation = node.getAnimations()[0], frames = animation.effect.getKeyframes();
+    const matrices = frames.map(frame => new DOMMatrixReadOnly(frame.transform));
+    return { duration: animation.effect.getTiming().duration, x: Math.max(...matrices.map(m=>m.m41))-Math.min(...matrices.map(m=>m.m41)), y: Math.max(...matrices.map(m=>m.m42))-Math.min(...matrices.map(m=>m.m42)), scale: Math.max(...matrices.map(m=>m.m11))-Math.min(...matrices.map(m=>m.m11)), opacity: Math.max(...frames.map(f=>+f.opacity))-Math.min(...frames.map(f=>+f.opacity)) };
   }));
-  assert.equal(new Set(radii.map(radius=>Math.round(radius))).size,9,'Every asset has a distinct orbit radius');
-  assert(Math.abs(radii.reduce((sum,radius)=>sum+radius,0)/9-372)<1,'Mean orbit radius is 20% larger');
+  assert.equal(new Set(motion.map(m=>m.duration)).size,9,'Each asset has independent timing');
+  assert(motion.every(m=>m.x>25 && m.x<300 && m.y>25 && m.y<300 && m.scale>.03 && m.opacity>.03),'Bounded multidirectional drift includes depth cues');
   const depth = await page.locator('.pb-fragment,.pb-lettering').evaluateAll(nodes => Object.fromEntries(nodes.map(node => [node.dataset.piece || 'name', +getComputedStyle(node).zIndex])));
   for (const id of ['autoregressive','manifold','nature-0']) assert(depth[id] > depth.name);
   for (const id of ['conversation','nature-1','nature-2','nature-3']) assert(depth[id] < depth.name);
@@ -36,8 +38,8 @@ try {
       return [matrix.m41, matrix.m42];
     });
   });
-  assert(Math.hypot(cycle[0][0]-cycle[2][0],cycle[0][1]-cycle[2][1]) > 300, 'Motion completes a full orbit, not a sway');
-  assert(Math.hypot(cycle[0][0]-cycle[4][0],cycle[0][1]-cycle[4][1]) < 1, 'Orbit loops seamlessly');
+  assert(Math.hypot(cycle[0][0]-cycle[2][0],cycle[0][1]-cycle[2][1]) > 10, 'Independent drift moves through the composition');
+  assert(Math.hypot(cycle[0][0]-cycle[4][0],cycle[0][1]-cycle[4][1]) < 1, 'Drift loops seamlessly');
   await page.locator('[data-menu="research"]').hover();
   await page.locator('.pb-navigation a[href="#robust-steering"]').hover();
   await page.waitForTimeout(800);
@@ -71,7 +73,7 @@ try {
 
   if (process.env.SKIP_BENCHMARK === '1') {
     assert.deepEqual(errors,[]);
-    console.log('Passed: nine enlarged assets, distinct enlarged orbits, text-only highlights, hover, labels, transitions and About. No screenshots.');
+    console.log('Passed: nine transparent previews, independent depth drift, text-only highlights, hover, labels, transitions and About. No screenshots.');
   } else {
   // Isolate opacity cost: identical hovered scene, paused orbits, active figures.
   const cdp = await page.context().newCDPSession(page);
@@ -104,6 +106,6 @@ try {
   const summary = [false,true].map(dimmed=>({dimmed,...Object.fromEntries(['fps','p95ms','mainThreadMsPerSecond'].map(key=>[key,+median(samples.filter(s=>s.dimmed===dimmed).map(s=>s[key])).toFixed(2)]))}));
   writeFileSync('reports/prototype-b-focus.json',JSON.stringify({measuredAt:new Date().toISOString(),browser:browser.version(),renderer:'Headless Chromium / SwiftShader',viewport:{width:1440,height:900},sampleMs:1500,summary,samples},null,2)+'\n');
   console.log(JSON.stringify(summary,null,2));
-  console.log('Passed: splash contrast, depth, full orbit, hover freeze/straightening, axis padding, transition lock and hidden About stack. No screenshots.');
+  console.log('Passed: splash contrast, depth drift, hover freeze/straightening, axis padding, transition lock and hidden About stack. No screenshots.');
   }
 } finally { await browser.close(); }

@@ -1,5 +1,6 @@
 import { cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { profile } from '../../content/site';
+import { createDriftMotion } from './sceneDrift';
 
 export function useOrbits(root, { desktop, paused, selected, hovered, reduced, replay, diagnostic, transitioning }) {
   const animations = useRef([]);
@@ -7,15 +8,8 @@ export function useOrbits(root, { desktop, paused, selected, hovered, reduced, r
     if (!desktop || !root.current) return;
     animations.current = [...root.current.querySelectorAll('.pb-orbit')].map((node, index) => {
       const x = Number(node.dataset.x) - 600, y = Number(node.dataset.y) - 350;
-      const phase = Math.atan2(y, x);
-      // Nine staggered tracks across the previous radius range, enlarged by 20%.
-      const track = (index % 3) * 3 + Math.floor(index / 3);
-      const radiusX = (270 + track * 10) * 1.2, radiusY = (160 + track * 6.25) * 1.2;
-      const keyframes = Array.from({ length: 121 }, (_, frame) => {
-        const angle = phase + frame / 120 * Math.PI * 2;
-        return { transform: `translate(${radiusX * Math.cos(angle) - x}px, ${radiusY * Math.sin(angle) - y}px) scale(${.9 + .1 * Math.sin(angle)})` };
-      });
-      const animation = node.animate(keyframes, { duration: 48000 + index * 2300, iterations: Infinity });
+      const { keyframes, duration } = createDriftMotion(index, x, y);
+      const animation = node.animate(keyframes, { duration, iterations: Infinity });
       return { animation, node, settle: null };
     });
     return () => animations.current.forEach(({ animation, settle }) => { animation.cancel(); settle?.cancel(); });
