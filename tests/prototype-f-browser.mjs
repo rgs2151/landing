@@ -38,7 +38,7 @@ try {
     }
     assert.deepEqual(layouts[1].filter(row => row.id !== 'neuraljax-gan'), layouts[0].filter(row => row.id !== 'neuraljax-gan'), `Unchanged geometry preserved at ${width}px`);
     const gan = layouts[1].find(row => row.id === 'neuraljax-gan');
-    assert.equal(gan.width, Math.round(145.08 * 1.2));
+    assert.equal(gan.width, Math.round(174.096 * 1.3));
     assert.equal(gan.transform, 'translate(0px, 490px) rotate(0deg) scale(1)');
     assert.equal(gan.tilt, '-6deg');
   }

@@ -3,8 +3,9 @@
 Route: `/prototype/f`. E remains frozen at `d135339` and `/prototype/e`.
 Content, rotation, depth, opacity, motion, hover, navigation, project arrivals,
 centered stack, sidebar and controls are preserved. The explicitly requested
-GAN update increases its width from 145.08 to 174.096 and moves its anchor from
-(30, 460) to (0, 490). Other splash placements and dimensions are unchanged.
+GAN update moved its anchor from (30, 460) to (0, 490). Its width is now
+226.3248 after a further 30% enlargement from 174.096; the anchor and -6 degree
+rotation stay unchanged. Other splash placements and dimensions are unchanged.
 
 ## NeuralJAXlib Brain Assets
 
