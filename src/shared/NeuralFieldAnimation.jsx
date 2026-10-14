@@ -197,10 +197,10 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <text x="48" y="217" className="nf-label">LFP</text>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
         {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
-        <path d="M254,286 L306,160" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
-        <text x="190" y="130" textAnchor="middle" className="nf-label">Hidden<tspan x="190" dy="24">dynamic</tspan></text>
-        <path d="M254,286 L306,421" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
-        <text x="191" y="430" textAnchor="middle" className="nf-label nf-red">Lag<tspan x="191" dy="24">embedding</tspan></text>
+        <path d="M130,221 L291,160" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
+        <text x="205" y="126" textAnchor="middle" className="nf-label">Hidden<tspan x="205" dy="24">dynamic</tspan></text>
+        <path d="M130,351 L291,421" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
+        <text x="205" y="445" textAnchor="middle" className="nf-label nf-red">Lag<tspan x="205" dy="24">embedding</tspan></text>
 
         <rect x="306" y="65" width="392" height="190" fill="none" stroke="#898989" strokeWidth="2" />
         <text x="502" y="94" textAnchor="middle" className="nf-label">Hidden dynamical process</text>
