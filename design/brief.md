@@ -27,6 +27,7 @@ separately. Hover fans out the central composition; click holds the selection
 and opens a calmer, readable project view. Mobile gets a simple photo,
 introduction, contact details, and an invitation to open the desktop experience.
 
-Prototype A uses still frames, a static particle sketch, and simple hover
-transitions to assess composition and interaction before detailed animation.
-The LLM steering sketch is an exploration, not an asserted project achievement.
+Prototype A is preserved as a historical direction. B and later directions must
+look and behave like intended final products, not rough mockups. Reuse finalized
+project assets and frozen copy. Project selection rearranges the composition and
+reveals readable content within the page; no modal dialog or backdrop.

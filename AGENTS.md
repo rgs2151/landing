@@ -12,6 +12,10 @@ skills and their default creative recommendations.
 
 Use shared content and assets across prototypes. Agree on a visual direction
 through local prototypes before implementing it in the main website.
+Every prototype must be polished as an intended final product. Do not defer
+visible defects as mockup issues. Preserve A when iterating in B. Project details
+in B open within the composition, not in modal dialogs or backdrop overlays.
+The individual project animations are finalized; reuse them without redesigning.
 
 Read `design/decisions.md` before changing animation assets or controls.
 The NeuralFieldManifold animation is frozen; do not alter it unless the user

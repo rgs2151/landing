@@ -11,6 +11,7 @@ description: Apply website and prototype feedback in this repository while prese
 - Implement necessary dependent changes only when required for the requested result. Keep them minimal and explain any material dependency. Put unrelated improvement ideas in discussion instead of implementing them.
 - Read the current state before editing. Preserve earlier accepted decisions and user edits. If feedback is ambiguous, clarify the uncertain part while continuing work that is clear.
 - Keep prototype content and media in shared sources. Variants may change presentation, but must not carry independently rewritten copies of the same content. Scope variant-specific feedback to that variant; do not silently apply it to every direction.
+- Prototype means a separate design direction, not reduced quality. Present finished layouts, interactions and states; never excuse visible defects as temporary mockup work. Preserve earlier variants. Project expansion in B happens within the scene, without modals.
 - During design exploration, iterate on local prototypes first. Implement the selected direction in the main website after the user asks to proceed.
 - Verify the diff matches the requested scope and that copy has not changed accidentally. Respect the user's instruction to avoid screenshots unless they explicitly request them.
 - Report the concrete change concisely. Do not bundle unsolicited redesigns, refactors, or fixes into a feedback iteration.
