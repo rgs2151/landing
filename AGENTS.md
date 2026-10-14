@@ -18,8 +18,8 @@ in B open within the composition, not in modal dialogs or backdrop overlays.
 The individual project animations are finalized; reuse them without redesigning.
 
 Prototype C is frozen at commit `8a28b01`. Continue additions in prototype D.
-Reuse C's existing content, assets, positions, sizes, motion and interactions;
-do not change their output while adding tools. D's tool previews start at 50%
+Reuse C's existing content, assets, motion and interactions; change D's placement
+only when explicitly requested, without modifying C. D's tool previews start at 75%
 opacity and reach full opacity on hover; papers and the profile remain fully
 opaque at rest. Keep new tool placements toward the composition's outer edge.
 

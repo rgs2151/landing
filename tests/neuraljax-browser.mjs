@@ -23,7 +23,7 @@ try {
     assert.equal(await fragments.locator('iframe,video,canvas,button').count(), 0);
     for (const id of ids) {
       const fragment = page.locator(`[data-piece="neuraljax-${id}"]`);
-      assert.equal(await fragment.evaluate(n => getComputedStyle(n).opacity), '0.5');
+      assert.equal(await fragment.evaluate(n => getComputedStyle(n).opacity), '0.75');
       const box = await fragment.locator('.pb-orbit').boundingBox();
       assert(box.width > 60 && box.height > 60, `${id}: nonzero size`);
       assert(box.x >= 0 && box.y >= 0 && box.x + box.width <= width && box.y + box.height <= height, `${id}: on screen at ${width}`);

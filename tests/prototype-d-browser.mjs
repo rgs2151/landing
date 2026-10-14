@@ -25,11 +25,30 @@ try {
     await page.waitForSelector('.pylba-animation svg');
     await page.waitForTimeout(800);
     assert.equal(await page.locator('.pb-fragment').count(), 15);
-    assert.deepEqual(await page.locator('.pb-fragment:not([data-kind="tool"])').evaluateAll(placements), frozen);
+    const adjusted = frozen.map(row => row[0] === 'manifold' ? [row[0], row[1], row[2].replace('325px', '400px'), row[3]] : row);
+    assert.deepEqual(await page.locator('.pb-fragment:not([data-kind="tool"])').evaluateAll(placements), adjusted);
     assert.equal(await page.locator('[data-menu="research"]').textContent(), 'Research Publications');
     assert.equal(await page.locator('[data-menu="packages"]').textContent(), 'Tools & Packages');
+    assert.equal(await page.locator('[data-piece="neuraljax-rnn"]').evaluate(n => n.style.width), '300px');
+    assert.equal(await page.locator('[data-piece="neuraljax-autoencoder"]').evaluate(n => n.style.width), '234px');
+    assert(await page.evaluate(() => {
+      const canvas = document.querySelector('.pb-canvas');
+      const name = canvas.querySelector('.pc-name-button');
+      const lettering = canvas.querySelector('.pb-lettering');
+      const manifold = canvas.querySelector('[data-piece="manifold"]');
+      const spans = [...name.querySelectorAll('span')];
+      const nameReachable = spans.every(span => {
+        const r = span.getBoundingClientRect();
+        return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('.pc-name-button') === name;
+      });
+      const handCursors = [...canvas.querySelectorAll('.pb-orbit, .pb-orbit *')].every(n => getComputedStyle(n).cursor === 'pointer');
+      const copyright = document.querySelector('.pb-footer > span').getBoundingClientRect();
+      const controls = document.querySelector('.pb-footer .pb-scene-controls').getBoundingClientRect();
+      return Number(getComputedStyle(manifold).zIndex) < Number(getComputedStyle(lettering).zIndex)
+        && nameReachable && handCursors && copyright.right < controls.left;
+    }), 'Name remains reachable above manifold, every preview has a hand cursor, copyright precedes right-aligned controls');
     const tool = page.locator('[data-piece="pylba"]');
-    assert.equal(await tool.evaluate(node => getComputedStyle(node).opacity), '0.5');
+    assert.equal(await tool.evaluate(node => getComputedStyle(node).opacity), '0.75');
     assert(await page.locator('.pb-fragment:not([data-kind="tool"]),.pb-lettering,.pc-scene-portrait').evaluateAll(nodes=>nodes.every(node=>getComputedStyle(node).opacity==='1')));
     assert.equal(await tool.locator('iframe,img,video,canvas,button').count(), 0);
     assert(await tool.locator('svg').evaluate(svg=>svg.querySelectorAll('animate').length>0 && !svg.animationsPaused()));
@@ -40,7 +59,7 @@ try {
     assert.equal(await tool.evaluate(node => getComputedStyle(node).opacity), '1');
     await page.mouse.move(20,20);
     await page.waitForTimeout(550);
-    assert.equal(await tool.evaluate(node => getComputedStyle(node).opacity), '0.5');
+    assert.equal(await tool.evaluate(node => getComputedStyle(node).opacity), '0.75');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth), false);
   }
   const source = readFileSync(new URL('../src/shared/pylba/pylba.svg', import.meta.url), 'utf8');
