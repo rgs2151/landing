@@ -26,8 +26,9 @@ unchanged; verifying its domain is a separate content decision.
 
 ## B Decisions
 
-- The splash is black with white display lettering and white-backed scientific
-  previews. Reading pages remain white. Display lettering uses the existing
+- The splash stays white. White name lettering has a close-fitting black
+  highlight on each line, not on its container or surrounding whitespace.
+  Reading pages remain white. Display lettering uses the existing
   Impact stack for the large name; reading text and navigation use Arial, as
   confirmed by the user. Existing reading text sizes remain. Dark red stays the accent.
 - Project figures and actual Nature footage form the composition. No new particle
@@ -63,13 +64,17 @@ unchanged; verifying its domain is a separate content decision.
   Hover pauses all orbital motion, straightens the related project's pieces,
   and reduces other pieces to 25% opacity while preserving the name's opacity.
   Leaving resumes the same paths. There is no latched hover selection.
+- All nine assets remain. Orbit radii span 324-420px horizontally and 192-252px
+  vertically, a 20% increase in the previous range. Nine distinct, staggered
+  tracks replace the three repeated radii; no two assets share a track.
 - Equation and manifold previews sit above the name, with one dominant footage
   preview also in front. The conversation and three smaller footage previews
   sit behind. Overlap is intentional; the nav remains an unobstructed way to
   reach every project. Tilt has its own wrapper so it cannot displace the orbit
   or create a moving hover target. Fold/unfold transitions ignore pointer input.
-- Preview widths: footage 270/125/95/65px, manifold 380px, waveform 150px,
-  equation 310px, landscape 270px, conversation 350px. The user confirmed that
+- Preview widths increased uniformly by 20%: footage 324/150/114/78px,
+  manifold 456px, waveform 180px, equation 372px, landscape 324px,
+  conversation 420px. The user confirmed that
   the smaller "ARR" referred to the waveform, not the equation. These are current
   art-direction choices, not a freeze on future placement feedback.
 - The selected state's categories remain at the top left. Open dropdowns paint

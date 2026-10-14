@@ -27,7 +27,7 @@ const pieces = [
   { id: 'signal', project: 'neural-field-manifold', Component: NeuralFieldSignal, x: 505, y: 100, width: 150, angle: -8 },
   { id: 'autoregressive', project: 'neural-field-manifold', Component: NeuralFieldAutoregressive, x: 785, y: 525, width: 310, angle: 5 },
   { id: 'manifold', project: 'neural-field-manifold', Component: NeuralFieldManifold, x: 65, y: 365, width: 380, angle: -6 },
-];
+].map(piece => ({ ...piece, width: piece.width * 1.2 }));
 
 function Navigation({ selected, open, hover }) {
   const [menu, setMenu] = useState(null);

@@ -8,7 +8,9 @@ export function useOrbits(root, { desktop, paused, selected, hovered, reduced, r
     animations.current = [...root.current.querySelectorAll('.pb-orbit')].map((node, index) => {
       const x = Number(node.dataset.x) - 600, y = Number(node.dataset.y) - 350;
       const phase = Math.atan2(y, x);
-      const radiusX = 270 + index % 3 * 40, radiusY = 160 + index % 3 * 25;
+      // Nine staggered tracks across the previous radius range, enlarged by 20%.
+      const track = (index % 3) * 3 + Math.floor(index / 3);
+      const radiusX = (270 + track * 10) * 1.2, radiusY = (160 + track * 6.25) * 1.2;
       const keyframes = Array.from({ length: 121 }, (_, frame) => {
         const angle = phase + frame / 120 * Math.PI * 2;
         return { transform: `translate(${radiusX * Math.cos(angle) - x}px, ${radiusY * Math.sin(angle) - y}px) scale(${.9 + .1 * Math.sin(angle)})` };

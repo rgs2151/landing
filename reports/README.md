@@ -7,7 +7,8 @@ version, viewport, preview sizes, source-frame counts, and the measurement date.
 ## Focus And Depth Iteration
 
 [prototype-b-focus.json](prototype-b-focus.json) records the black-splash/depth
-iteration: three 1500ms samples per condition, 1440x900, headless Chromium with
+iteration before the white-background correction and 20% size/radius increase.
+These are historical measurements: three 1500ms samples per condition, 1440x900, headless Chromium with
 SwiftShader. Both conditions hold the same hovered scene, with its orbits
 paused and internal figures running. The control disables only opacity dimming.
 
