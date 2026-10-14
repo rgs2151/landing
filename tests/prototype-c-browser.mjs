@@ -22,7 +22,18 @@ try {
     await page.waitForSelector('.prototype-c');
     await page.waitForFunction(()=>document.querySelectorAll('.pb-nature-preview canvas[data-ready="true"]').length===4);
     await page.waitForTimeout(850);
-    assert.deepEqual(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.map(n=>parseFloat(n.style.width))),[270,125,95,65,270,350,150,310,380]);
+    assert.deepEqual(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.map(n=>parseFloat(n.style.width))),[216,125,95,65,270,350,150,310,380]);
+    assert.deepEqual(await page.locator('[data-piece="nature-0"],[data-piece="nature-1"],[data-piece="signal"],[data-piece="autoregressive"]').evaluateAll(nodes=>nodes.map(node=>{
+      const m=new DOMMatrixReadOnly(node.style.transform);return [node.dataset.piece,m.m41,m.m42];
+    })),[['nature-0',755,105],['nature-1',205,-15],['signal',785,525],['autoregressive',505,100]]);
+    assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'home');
+    assert.equal(await page.locator('.pc-scene-portrait img').count(),1);
+    assert(await page.evaluate(()=>{
+      const title=document.querySelector('.pb-title'),span=title.querySelector('span'),range=document.createRange();
+      range.setStart(span.firstChild,0);range.setEnd(span.firstChild,1);
+      const r=range.getBoundingClientRect();
+      return title.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));
+    }),'The opening R stays unobstructed');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     const hidden = await page.locator('.pb-orbit').evaluateAll(nodes=>nodes.flatMap(node=>{
       const animation=node.getAnimations()[0]; animation.pause();
@@ -47,6 +58,7 @@ try {
     await page.waitForTimeout(850);
     assert.equal(await page.locator('.pb-project').count(),1);
     assert.equal(await page.locator('.pb-fragment canvas').count(),0);
+    assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'stack');
     assert(await page.evaluate(async id=>{
       const content=await import('/src/content/site.js');
       const project=id==='cooperation'?content.paper:id==='robust-steering'?content.robustSteering:content.neuralFieldManifold;
@@ -58,9 +70,26 @@ try {
   await page.locator('.pb-navigation > a[href="#about"]').click();
   await page.waitForTimeout(850);
   assert(await page.locator('.pb-fragment').evaluateAll(nodes=>nodes.every(n=>getComputedStyle(n).visibility==='hidden')));
-  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.pc-scene-portrait img').evaluate(n=>getComputedStyle(n).filter),'none');
+  assert.equal(await page.locator('.pc-scene-portrait button').count(),0);
+  const aboutPhoto=await page.locator('.pc-scene-portrait').boundingBox();
+  await page.locator('.pc-scene-portrait img').evaluate(n=>n.dataset.continuity='same-photo');
+  await page.getByRole('button',{name:'Return to composition',exact:true}).click();
+  const returnSource=await page.locator('.pc-scene-portrait').evaluate(node=>{
+    const matrix=new DOMMatrixReadOnly(node.getAnimations()[0].effect.getKeyframes()[0].transform);
+    return {x:parseFloat(node.style.left)+matrix.m41,y:parseFloat(node.style.top)+matrix.m42};
+  });
+  assert(Math.abs(returnSource.x-aboutPhoto.x)<2 && Math.abs(returnSource.y-aboutPhoto.y)<2,'Return starts from About, not the bottom-left stack');
   await page.waitForTimeout(850);
-  assert.equal(await page.locator('.pb-traveling-portrait').evaluate(n=>getComputedStyle(n).visibility),'hidden');
+  assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'home');
+  assert.equal(await page.locator('.pc-scene-portrait img').getAttribute('data-continuity'),'same-photo');
+  assert.equal(await page.locator('.pc-scene-portrait').evaluate(n=>getComputedStyle(n).visibility),'visible');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.locator('.pb-navigation > a[href="#about"]').click();
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator('.pc-scene-portrait').getAttribute('data-location'),'home');
+  await page.emulateMedia({reducedMotion:'no-preference'});
   await page.goto('http://localhost:5173/prototype/b');
   await page.waitForSelector('.pb-fragment');
   assert.equal(await page.locator('.prototype-c').count(),0);

@@ -108,7 +108,7 @@ function ProjectDetail({ id, headingRef, portraitSlot }) {
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b' }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(selectedFromHash);
   const [hovered, setHovered] = useState(null);
@@ -235,7 +235,8 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} />
       </section>}
     </section>
-    <TravelingPortrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} />
+    <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close}
+      canvas={canvas} scale={scale} paused={paused} hovered={hovered} replay={replay} transitioning={transitioning} />
     <footer className="pb-footer">
       {!selected && !reduced && <div className="pb-scene-controls">
         <button onClick={() => setPaused(value => !value)} title={paused ? 'Play' : 'Pause'} aria-label={paused ? 'Play composition' : 'Pause composition'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>

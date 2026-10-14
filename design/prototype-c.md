@@ -3,7 +3,7 @@
 Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
 
 - Restore the earlier spread and size balance before the full-orbit experiments:
-  footage 270/125/95/65px; waveform 150px; equation 310px; manifold 380px;
+  footage 216/125/95/65px; waveform 150px; equation 310px; manifold 380px;
   steering landscape 270px and conversation 350px.
 - Keep all nine animations legible and separately discoverable, with limited
   intentional edge overlaps rather than a revolving cluster.
@@ -11,9 +11,22 @@ Route: `/prototype/c`. B remains available unchanged at `/prototype/b`.
   vertically from each resting position. Deterministic paths have independent
   timing, no revolution, depth scaling or idle-opacity cycling.
 - Preserve transparent previews, the white page and name-only black highlights.
+- The largest footage preview is 20% smaller than C's initial 270px version and
+  swaps upper positions with the 125px preview. The large preview is behind the
+  name; the small upper-left preview stays in front, clear of the initial R.
+- Equation/lag axes move to the waveform's former upper position (505,100);
+  the waveform moves to the former equation position (785,525). Other assets
+  retain their accepted positions. This pair was explicitly confirmed by the user.
+- A single persistent portrait lives beside the name at scene coordinates
+  (770,305), sized 80x100, with subtle local motion. It travels to the bottom-left
+  stack for projects, to the About photo slot for About, and directly home when
+  returning to the splash. Do not remount or duplicate the portrait between views.
+- About shows the portrait in color, hides all folded artwork, and retains the
+  back arrow. The splash/project portrait remains grayscale. The portrait never
+  opens About; only the About navigation link does.
 - Preserve hover freeze/straightening/dimming, slide-in reading pages, About-only
   navigation, transition pointer lock, and low-cost folded snapshots.
 - Reuse B's interaction/view components and all shared content/assets. C owns
-  only its layout configuration and motion function. Defaults for B are unchanged;
+  its layout, local motion and persistent-portrait component. Defaults for B are unchanged;
   future C-specific visual changes must be opt-in or scoped to `.prototype-c`.
 - No changes to production, A, finalized project diagrams or copy.
