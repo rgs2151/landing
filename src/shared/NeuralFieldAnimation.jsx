@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { Pause, Play, RotateCcw } from 'lucide-react';
+import { Pause, Play, Rat, RotateCcw } from 'lucide-react';
 import * as THREE from 'three';
 import { loadNeuralFieldModel, advanceFrame, traceRanges, PLAYBACK_SPEED, SIGNAL_WINDOW, SIGNAL_HEIGHT, waveformPath } from './neuralFieldModel';
 import './neural-field-animation.css';
@@ -193,6 +193,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
+        <Rat x={16} y={195} width={24} height={24} strokeWidth={1.7} aria-hidden="true" />
         <text x="48" y="217" className="nf-label">LFP</text>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
         {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
@@ -221,7 +222,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <text x="502" y="355" textAnchor="middle" className="nf-label">Autoregressive notion</text>
         <text x="367" y="408" className="nf-equation">x(t) =</text>
         <text x="326" y="441" className="nf-equation" fontSize="32">Σ</text>
-        <text x="341" y="420" fontSize="13" fontStyle="italic">p</text>
+        <text x="341" y="420" fontSize="13">p</text>
         <text x="322" y="456" fontSize="12">i = 1</text>
         <text x="353" y="439" className="nf-equation">φ<tspan baselineShift="sub" fontSize="13">i</tspan> x(t−i) +</text>
         <text x="377" y="475" className="nf-equation">ε(t)</text>
