@@ -6,7 +6,7 @@ import { tools } from '../../shared/tools';
 import './styles.css';
 
 const placements = {
-  pylba: { x: 940, y: 0, width: 175, angle: -5 },
+  pylba: { x: 970, y: 0, width: 175, angle: -5 },
   'neuraljax-cnn': { x: 785, y: 565, width: 126, angle: 10 },
   'neuraljax-rnn': { x: -20, y: 245, width: 180, angle: 9 },
   'neuraljax-autoencoder': { x: 1025, y: 175, width: 189.54, angle: 5 },
