@@ -26,6 +26,7 @@
 .steering-demo-label { display: block; margin-bottom: 6px; font-size: var(--demo-chat-text-size); color: var(--muted); }
 .steering-demo-copy p { margin: 0; min-height: 1.45em; font-size: var(--demo-chat-text-size); line-height: 1.45; font-weight: 400; overflow-wrap: anywhere; white-space: pre-wrap; }
 .steering-demo-copy .steering-demo-answer-text { height: var(--demo-response-height, 2.9em); }
+.steering-demo-copy p[data-typing="true"]::after { content: ""; display: inline-block; width: 1px; height: 1em; background: currentColor; vertical-align: -.1em; }
 .steering-demo-char { visibility: hidden; }
 .steering-demo-char.is-visible { visibility: visible; }
 .steering-demo-char.is-glitch { color: var(--teal); display: inline-block; transform: translateY(-2px); text-shadow: 2px 0 rgba(0,124,124,.3); }

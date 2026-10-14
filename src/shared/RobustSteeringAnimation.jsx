@@ -3,6 +3,8 @@ import { Pause, Play, RotateCcw } from 'lucide-react';
 import sourcePage from '../../design/references/robust-steering-animation/source-page.html?raw';
 import sourceStyles from '../../design/references/robust-steering-animation/steering-demo.css?raw';
 import sourceScript from '../../design/references/robust-steering-animation/steering-demo.js?raw';
+import timelineScript from '../../design/references/robust-steering-animation/steering-timeline.js?raw';
+import examples from '../../design/references/robust-steering-animation/mgsm-examples.json';
 import './robust-steering-animation.css';
 
 function animationDocument() {
@@ -19,7 +21,7 @@ function animationDocument() {
     .steering-demo-controls { display: none; }
     .steering-demo-state, .steering-demo-scene { opacity: 1; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-  </style></head><body>${animation.outerHTML}<script>${sourceScript}</script><script>
+  </style></head><body>${animation.outerHTML}<script type="application/json" id="steering-examples">${JSON.stringify(examples.examples).replaceAll('<', '\\u003c')}</script><script>${timelineScript}</script><script>${sourceScript}</script><script>
     const box = document.querySelector('.steering-demo');
     const pause = box.querySelector('.steering-demo-pause');
     let suspended = false;

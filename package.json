@@ -8,7 +8,8 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test:neural-field": "node --test tests/neural-field-model.test.js"
+    "test:neural-field": "node --test tests/neural-field-model.test.js",
+    "test:steering": "node --test tests/steering-timeline.test.js"
   },
   "dependencies": {
     "lucide-react": "^1.50.0",

@@ -3,18 +3,8 @@
 (() => {
   const box = document.querySelector(".steering-demo");
   if (!box) return;
-  // Schematic example only: these are not recorded benchmark/model outputs.
-  // Replace this data with approved question/response pairs in the next iteration.
-  let example = {
-    benchmark: "An Example of Multilingual Grade-School Mathematics",
-    englishQuestion: "Amina has 3 boxes of pencils, with 12 pencils in each box. How many pencils does she have in total?",
-    englishBaseline: "Amina has 36 pencils in total.",
-    question: "阿米娜有3盒铅笔，每盒有12支。她一共有多少支铅笔？",
-    baseline: "阿米娜一共有36支铅笔。",
-    steered: "Amina tiene 36 lápices en total.",
-    metrics: ["Mathematical accuracy", "Spanish output"],
-    symbols: ["=", "↑"],
-  };
+  const examples = JSON.parse(document.getElementById("steering-examples").textContent);
+  const timeline = SteeringTimeline.create(examples);
   const find = (name) => box.querySelector(".steering-demo-" + name);
   const question = find("question-text");
   const response = find("answer-text");
@@ -33,12 +23,8 @@
   const baseMask = find("base-mask");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const glyphs = Array.from("▓▒░<>/\\#¿!?");
-  // All times refer to this one pausable timeline (milliseconds).
-  const intro = {
-    field: 400, endpoints: 1100, direction: 1550, store: 2800, stored: 3900,
-    shift: 4500, shifted: 5600, dot: 5800, expand: 6500, chat: 7550,
-  };
-  let englishChars, baselineChars, targetChars, responseChars, timing;
+  let responseChars;
+  let fieldPair = '';
   let elapsed = 0;
   let previousTime = null;
   let frame = null;
@@ -49,7 +35,6 @@
   let flightEnd;
   let sceneScale = 1;
   const clamp = (x) => Math.max(0, Math.min(1, x));
-  const progress = (start, duration) => clamp((elapsed - start) / duration);
   const ease = (x) => x * x * (3 - 2 * x);
 
   function makeStateContours(node, seed, components, color) {
@@ -162,7 +147,7 @@
 
   // Compute once, then reuse exactly the same fields for every replay.
   // The multi-modal landscapes are independent of the two language-direction points.
-  makeStateContours(find("field-english"), 2027, [
+  const englishComponents = [
     { weight: .25, x: 0, y: 0, sx: 2.6, sy: 2.6, rho: -.1 },
     { weight: .13, x: -2.4, y: 1.5, sx: .75, sy: .9, rho: -.3 },
     { weight: .1, x: -.45, y: 2.2, sx: 1.0, sy: .55, rho: -.2 },
@@ -171,8 +156,8 @@
     { weight: .1, x: .7, y: .1, sx: .75, sy: .9, rho: -.4 },
     { weight: .08, x: 2.5, y: -1.5, sx: .7, sy: .8, rho: -.2 },
     { weight: .09, x: -.4, y: -2.4, sx: 1.15, sy: .55, rho: .1 },
-  ], "#919191");
-  makeStateContours(find("field-chinese"), 2028, [
+  ];
+  const shiftedComponents = [
     { weight: .3, x: 0, y: 0, sx: 2.9, sy: 2.9, rho: .08 },
     { weight: .13, x: -1.7, y: 2.1, sx: .85, sy: 1.0, rho: .5 },
     { weight: .16, x: 1.2, y: -1.6, sx: 1.1, sy: .8, rho: .5 },
@@ -184,7 +169,13 @@
     { weight: .035, x: -2.9, y: 2.5, sx: .4, sy: .4, rho: .2 },
     { weight: .03, x: 2.1, y: -3, sx: .7, sy: .45, rho: .15 },
     { weight: .025, x: 2.7, y: -.1, sx: .45, sy: .6, rho: -.2 },
-  ], "#8B1E1E");
+  ];
+  const fields = timeline.entries.map((entry, index) => {
+    const node = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const english = entry.language === "en";
+    makeStateContours(node, 2027 + index, english ? englishComponents : shiftedComponents, english ? "#919191" : "#8B1E1E");
+    return node;
+  });
 
   function characterNodes(node, count) {
     const nodes = Array.from({ length: count }, () => {
@@ -209,9 +200,10 @@
 
   function reserveResponseHeight() {
     const questionSample = question.cloneNode(false);
+    questionSample.removeAttribute("data-typing");
     questionSample.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;min-height:0;height:auto;width:" + question.clientWidth + "px";
     question.parentElement.append(questionSample);
-    const questionHeight = Math.max(...[example.englishQuestion, example.question].map(text => {
+    const questionHeight = Math.max(...examples.map(({ question: text }) => {
       questionSample.textContent = text;
       return questionSample.offsetHeight;
     }));
@@ -220,9 +212,10 @@
     // Reserve every mixed/glitched response too, not only the two complete answers.
     // Inline-block glitch glyphs can add a line; they must not resize the scene.
     const sample = response.cloneNode(false);
+    sample.removeAttribute("data-typing");
     sample.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;min-height:0;height:auto;width:" + response.clientWidth + "px";
     response.parentElement.append(sample);
-    let height = Math.max(...[example.englishBaseline, example.baseline, example.steered].map((text) => {
+    let height = Math.max(...examples.flatMap(entry => [entry.baseline, entry.steered || entry.baseline]).map((text) => {
       sample.textContent = text;
       return sample.offsetHeight;
     }));
@@ -238,14 +231,17 @@
       }
     });
     const mixed = characterNodes(sample, responseChars.length);
-    for (let front = 0; front <= mixed.length + 5; front++) {
-      mixed.forEach((span, i) => {
-        const changing = i <= front && i > front - 5;
-        span.classList.add("is-visible");
-        span.classList.toggle("is-glitch", changing);
-        span.textContent = changing ? widestGlyph : i <= front - 5 ? targetChars[i] || "" : baselineChars[i] || "";
-      });
-      height = Math.max(height, sample.offsetHeight);
+    for (const entry of timeline.entries) {
+      if (!entry.steered) continue;
+      for (let front = 0; front <= mixed.length + 5; front++) {
+        mixed.forEach((span, i) => {
+          const changing = i <= front && i > front - 5;
+          span.classList.add("is-visible");
+          span.classList.toggle("is-glitch", changing);
+          span.textContent = changing ? widestGlyph : i <= front - 5 ? entry.units.steered[i] || "" : entry.units.baseline[i] || "";
+        });
+        height = Math.max(height, sample.offsetHeight);
+      }
     }
     response.style.setProperty("--demo-response-height", height + "px");
     sample.remove();
@@ -255,88 +251,81 @@
   }
 
   function prepare() {
-    englishChars = Array.from(example.englishBaseline);
-    baselineChars = Array.from(example.baseline);
-    targetChars = Array.from(example.steered);
-    responseChars = characterNodes(response, Math.max(englishChars.length, baselineChars.length, targetChars.length));
-    const translation = (intro.shift + intro.shifted) / 2;
-    const steeringStart = intro.chat;
-    const steeringEnd = steeringStart + 2800;
-    timing = { translation, steeringStart, steeringEnd, end: steeringEnd + 6800 };
+    responseChars = characterNodes(response, Math.max(...timeline.entries.flatMap(entry => [entry.units.baseline.length, entry.units.steered.length])));
     elapsed = 0;
     previousTime = null;
     render();
     reserveResponseHeight();
   }
 
-  function phaseAt(time) {
-    if (time < timing.translation) return "english";
-    if (time < timing.steeringStart) return "chinese";
-    if (time < timing.steeringEnd) return "steering";
-    return "steered";
-  }
-
-  function stageAt(time) {
-    if (time < intro.field) return "empty";
-    if (time < intro.endpoints) return "english";
-    if (time < intro.direction) return "endpoints";
-    if (time < intro.store) return "direction";
-    if (time < intro.stored) return "store";
-    if (time < intro.shift) return "stored";
-    if (time < intro.shifted) return "shift";
-    if (time < intro.expand) return "chinese";
-    if (time < intro.chat) return "expand";
-    return "conversation";
-  }
-
-  function renderState() {
-    box.dataset.stage = stageAt(elapsed);
+  function renderState(snapshot) {
+    const { entry, previous, index, first, time } = snapshot;
+    const previousIndex = first ? index : (index + fields.length - 1) % fields.length;
+    const pair = previousIndex + ":" + index;
+    if (pair !== fieldPair) {
+      [find("field-english"), find("field-chinese")].forEach((node, i) => {
+        node.replaceChildren(...[...fields[i ? index : previousIndex].children].map(child => child.cloneNode(true)));
+      });
+      const labels = find("language").querySelectorAll("span");
+      [first ? entry : previous, entry].forEach((item, i) => {
+        labels[i].textContent = item.label;
+        labels[i].style.color = item.language === "en" ? "#111" : "#8B1E1E";
+      });
+      fieldPair = pair;
+    }
+    const progress = (start, span) => clamp((time - start) / span);
+    const english = entry.language === "en";
+    const offset = first ? 0 : 1100;
+    box.dataset.stage = snapshot.swipe < 1 && !first ? "shift" : english ? "direction" : "conversation";
     state.style.opacity = 1;
-    const points = 1;
-    const drawn = 1;
-    const stored = ease(progress(intro.store, intro.stored - intro.store));
-    direction.style.opacity = 1 - progress(intro.stored - 200, 200);
+    const points = english ? progress(offset + 400, 300) : 0;
+    const drawn = english ? progress(offset + 1000, 850) : 0;
+    const stored = ease(progress(offset + 2800, 1100));
+    direction.style.opacity = points * (1 - progress(offset + 3700, 200));
     directionLine.style.opacity = drawn;
     directionHead.style.opacity = clamp(drawn * 4 - 3);
-    directionLabels.style.opacity = points * (1 - progress(intro.store, 300));
+    directionLabels.style.opacity = points * (1 - progress(offset + 2800, 300));
     box.style.setProperty("--demo-direction", drawn);
     const scale = 1 - stored * .94;
     // Carry the direction straight to the model's lightning, with no controller stop.
     const target = flightEnd || { x: 169, y: 160 };
     direction.setAttribute("transform", "translate(" + (169 * (1 - scale) + (target.x - 169) * stored) + " " + (160 * (1 - scale) + (target.y - 160) * stored) + ") scale(" + scale + ")");
-    const swipe = ease(progress(intro.shift, intro.shifted - intro.shift));
+    const swipe = ease(snapshot.swipe);
     box.style.setProperty("--demo-swipe", swipe);
     shiftMask.setAttribute("width", swipe * 280);
     baseMask.setAttribute("x", 30 + swipe * 280);
     baseMask.setAttribute("width", (1 - swipe) * 280);
-    const expand = ease(progress(intro.expand, intro.chat - intro.expand));
+    const expand = ease(progress(2600, 650));
     find("stimulation").style.opacity = 1;
-    const dotIn = progress(intro.dot, 250);
+    const dotIn = english ? 0 : progress(1800, 250);
     dot.style.opacity = dotIn * (1 - expand);
-    ripple.style.opacity = expand > 0 && expand < 1 ? 1 - expand : 0;
+    ripple.style.opacity = !english && expand > 0 && expand < 1 ? 1 - expand : 0;
     ripple.setAttribute("r", 5 + expand * 180);
     scene.style.opacity = 1;
     scene.style.clipPath = "none";
   }
 
   function render() {
-    renderState();
-    const phase = phaseAt(elapsed);
+    const snapshot = timeline.sample(elapsed);
+    renderState(snapshot);
+    const { entry, phase } = snapshot;
+    box.dataset.language = entry.language;
     if (box.dataset.phase !== phase) {
       box.dataset.phase = phase;
-      const english = phase === "english";
-      question.textContent = english ? example.englishQuestion : example.question;
-      question.lang = english ? "en" : "zh";
-      response.lang = english ? "en" : phase === "steered" ? "es" : "zh";
-      if (phase === "english" || phase === "chinese") description.textContent = "Illustrative question: " + question.textContent + " Original response: " + (english ? example.englishBaseline : example.baseline);
-      if (phase === "steered") description.textContent = "Illustrative steered response: " + example.steered;
+      if (phase === "baseline-hold") description.textContent = "Recorded " + entry.label + " question: " + entry.question + " Answer excerpt: " + entry.baseline;
+      if (phase === "steered") description.textContent = "Recorded steered answer excerpt: " + entry.steered;
     }
-    const corruption = progress(timing.steeringStart, timing.steeringEnd - timing.steeringStart);
-    const front = corruption * (responseChars.length + 5);
+    if (question.textContent !== snapshot.question) question.textContent = snapshot.question;
+    question.lang = snapshot.questionLanguage;
+    response.lang = snapshot.answerLanguage;
+    question.dataset.typing = String(snapshot.questionTyping);
+    response.dataset.typing = String(snapshot.answerTyping);
+    const answerUnits = timeline.units(snapshot.answer);
+    const front = snapshot.corruption * (Math.max(entry.units.baseline.length, entry.units.steered.length) + 5);
     responseChars.forEach((span, i) => {
       const changing = phase === "steering" && i <= front && i > front - 5;
-      let char = (phase === "english" ? englishChars[i] : baselineChars[i]) || "";
-      if (phase === "steered" || (phase === "steering" && i <= front - 5)) char = targetChars[i] || "";
+      let char = answerUnits[i] || "";
+      if (phase === "steering") char = i <= front - 5 ? entry.units.steered[i] || "" : entry.units.baseline[i] || "";
       if (changing) char = glyphs[(i * 7 + Math.floor(elapsed / 65)) % glyphs.length];
       if (span.textContent !== char) span.textContent = char;
       span.classList.add("is-visible");
@@ -355,7 +344,6 @@
     if (paused || !inView || document.hidden || !motionAllowed) return;
     if (previousTime !== null) elapsed += Math.min(now - previousTime, 100);
     previousTime = now;
-    if (elapsed > timing.end) elapsed = 0;
     render();
     frame = requestAnimationFrame(tick);
   }
@@ -402,25 +390,7 @@
     replay();
   });
   new ResizeObserver(reserveResponseHeight).observe(sceneFrame);
-  // Reuse the same timeline/layout for approved benchmark examples, without tabs.
-  box.steeringDemo = {
-    replay,
-    setExample(next) {
-      if (!["englishQuestion", "englishBaseline", "question", "baseline", "steered"].every((key) => typeof next[key] === "string" && next[key].trim())) {
-        throw new TypeError("Each example needs English and Chinese question/answer text and a Spanish steered response.");
-      }
-      if (next.metrics && (!Array.isArray(next.metrics) || next.metrics.length !== 2 || !next.metrics.every((s) => typeof s === "string" && s.trim()))) {
-        throw new TypeError("Metrics must be two nonempty labels.");
-      }
-      if (next.symbols && (!Array.isArray(next.symbols) || next.symbols.length !== 2 || !next.symbols.every((s) => typeof s === "string"))) {
-        throw new TypeError("Symbols must be two strings.");
-      }
-      example = { ...example, englishQuestion: next.englishQuestion, englishBaseline: next.englishBaseline, question: next.question, baseline: next.baseline, steered: next.steered, benchmark: next.benchmark || example.benchmark, metrics: next.metrics || example.metrics, symbols: next.symbols || example.symbols };
-      delete box.dataset.phase;
-      prepare();
-      replay();
-    },
-  };
+  box.steeringDemo = { replay };
   box.dataset.paused = String(paused);
   prepare();
 })();
