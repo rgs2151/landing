@@ -5,7 +5,7 @@ import natureAbstract from './nature-abstract.md?raw';
 export const profile = {
   name: 'Rudramani Singha',
   photo: '/images/hero.jpg',
-  email: 'rgs2151@columbia.eu',
+  email: 'rgs2151@columbia.edu',
   github: 'https://github.com/rgs2151',
   githubLabel: 'github.com/rgs2151',
   statement: 'I build models to understand the brain.',
