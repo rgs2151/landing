@@ -189,7 +189,11 @@ function LandingPage() {
 }
 
 const root = createRoot(document.getElementById('root'));
-if (import.meta.env.DEV && /^\/prototype\/d\/?$/.test(location.pathname)) {
+if (import.meta.env.DEV && /^\/prototype\/e\/?$/.test(location.pathname)) {
+  import('./prototypes/e/PrototypeE').then(({ default: PrototypeE }) => {
+    root.render(<StrictMode><PrototypeE /></StrictMode>);
+  });
+} else if (import.meta.env.DEV && /^\/prototype\/d\/?$/.test(location.pathname)) {
   import('./prototypes/d/PrototypeD').then(({ default: PrototypeD }) => {
     root.render(<StrictMode><PrototypeD /></StrictMode>);
   });

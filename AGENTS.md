@@ -17,9 +17,12 @@ visible defects as mockup issues. Preserve A when iterating in B. Project detail
 in B open within the composition, not in modal dialogs or backdrop overlays.
 The individual project animations are finalized; reuse them without redesigning.
 
-Prototype C is frozen at commit `8a28b01`. Continue additions in prototype D.
-Reuse C's existing content, assets, motion and interactions; change D's placement
-only when explicitly requested, without modifying C. D's tool previews start at 75%
+Prototype C is frozen at commit `8a28b01`. Prototype D is frozen at `ffe4525`.
+Continue all new iterations in prototype E at `/prototype/e`, initially an exact
+copy of D. E owns its layout and scoped styles; do not edit D or change its
+rendered output through shared modules. Keep E-only changes scoped to E, and
+reuse shared content and assets without duplicating or redesigning them.
+D and E's tool previews start at 75%
 opacity and reach full opacity on hover; papers and the profile remain fully
 opaque at rest. Keep new tool placements toward the composition's outer edge.
 
