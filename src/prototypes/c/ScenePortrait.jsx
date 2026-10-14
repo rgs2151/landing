@@ -1,19 +1,27 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { profile } from '../../content/site';
 
-export default function ScenePortrait({ selected, slot, canvas, scale, viewport, reduced, close, paused, hovered, replay, transitioning }) {
+export default function ScenePortrait({ selected, slot, canvas, scale, viewport, reduced, close, open, paused, hovered, replay, transitioning }) {
   const root = useRef(null), content = useRef(null), travel = useRef(null), floating = useRef(null);
+  const [host, setHost] = useState(null);
+  useLayoutEffect(() => { setHost(canvas.current); }, [canvas]);
   useLayoutEffect(() => {
+    if (!host) return;
     const keyframes = [[0,0],[3,-1],[1,2],[-2,1],[-3,-2],[0,0]].map(([x,y]) => ({
       transform: `translate(${x}px,${y}px)`, easing: 'cubic-bezier(.45,0,.55,1)',
     }));
     floating.current = content.current.animate(keyframes, { duration: 28000, iterations: Infinity });
     floating.current.pause();
     return () => floating.current.cancel();
-  }, [replay]);
+  }, [replay, host]);
   useLayoutEffect(() => {
+    if (!host) return;
     const node = root.current;
-    const from = node.style.visibility === 'visible' ? content.current.getBoundingClientRect() : null;
+    const sceneBox = host.getBoundingClientRect();
+    // Keep the portrait in the scene's stacking order while measuring destinations in viewport space.
+    const inScene = box => ({ x: (box.x - sceneBox.x) / scale, y: (box.y - sceneBox.y) / scale, width: box.width / scale, height: box.height / scale });
+    const from = node.style.visibility === 'visible' ? inScene(content.current.getBoundingClientRect()) : null;
     let target;
     if (selected === 'about' && slot.current) {
       const box = slot.current.getBoundingClientRect();
@@ -29,6 +37,7 @@ export default function ScenePortrait({ selected, slot, canvas, scale, viewport,
       const size = title.offsetHeight * scale;
       target = { x: box.x + (title.offsetLeft + right + 20) * scale, y: box.y + title.offsetTop * scale, width: size, height: size };
     }
+    target = inScene(target);
     travel.current?.cancel();
     floating.current.pause();
     floating.current.currentTime = 0;
@@ -41,21 +50,23 @@ export default function ScenePortrait({ selected, slot, canvas, scale, viewport,
     }
     const followScroll = () => {
       if (selected !== 'about' || !slot.current) return;
-      const box = slot.current.getBoundingClientRect();
+      const box = inScene(slot.current.getBoundingClientRect());
       node.style.top = `${box.y}px`; node.style.left = `${box.x}px`;
     };
     window.addEventListener('scroll', followScroll, { passive: true });
     return () => window.removeEventListener('scroll', followScroll);
-  }, [selected, slot, canvas, scale, viewport.width, viewport.height, reduced]);
+  }, [selected, slot, canvas, scale, viewport.width, viewport.height, reduced, host]);
   useEffect(() => {
+    if (!host) return;
     if (selected || paused || hovered || reduced || transitioning) floating.current.pause();
     else floating.current.play();
-  }, [selected, paused, hovered, reduced, transitioning, replay, scale, viewport.width, viewport.height]);
+  }, [selected, paused, hovered, reduced, transitioning, replay, scale, viewport.width, viewport.height, host]);
   useEffect(() => () => travel.current?.cancel(), []);
-  return <div className="pb-traveling-portrait pc-scene-portrait" ref={root} style={{ visibility: 'hidden' }} data-location={selected === 'about' ? 'about' : selected ? 'stack' : 'home'}>
+  if (!host) return null;
+  return createPortal(<div className="pb-traveling-portrait pc-scene-portrait" ref={root} style={{ visibility: 'hidden' }} data-location={selected === 'about' ? 'about' : selected ? 'stack' : 'home'}>
     <div className="pc-portrait-content" ref={content}>
       <img src={profile.photo} alt={profile.name} />
-      {selected && selected !== 'about' && <button onClick={close} aria-label="Return to landing page" title="Return to landing page" />}
+      {selected !== 'about' && <button disabled={transitioning} onClick={event => selected ? close() : open('about', event.currentTarget)} aria-label={selected ? 'Return to landing page' : `About ${profile.name}`} title={selected ? 'Return to landing page' : 'About'} />}
     </div>
-  </div>;
+  </div>, host);
 }

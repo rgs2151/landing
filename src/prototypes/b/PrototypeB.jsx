@@ -83,10 +83,11 @@ function NatureVideo() {
   </div>;
 }
 
-function ProjectDetail({ id, headingRef, portraitSlot }) {
+function ProjectDetail({ id, headingRef, portraitSlot, portraitFirst = false }) {
   if (id === 'about') return <article className="pb-about">
+    {portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
     <h2 tabIndex={-1} ref={headingRef}>{profile.name}</h2>
-    <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />
+    {!portraitFirst && <div className="pb-about-photo-slot" ref={portraitSlot} aria-hidden="true" />}
     <p>{profile.role} <a href={profile.institutionUrl}>{profile.institution}</a>{profile.affiliation} {profile.statement}</p>
     <p>{profile.email}<br /><a href={profile.github}>{profile.githubLabel}</a></p>
   </article>;
@@ -108,7 +109,7 @@ function ProjectDetail({ id, headingRef, portraitSlot }) {
   </article>;
 }
 
-export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait }) {
+export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b', Portrait = TravelingPortrait, profileEntry = false }) {
   const [desktop, setDesktop] = useState(() => matchMedia('(min-width: 901px)').matches);
   const [selected, setSelected] = useState(selectedFromHash);
   const [hovered, setHovered] = useState(null);
@@ -207,7 +208,9 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
     <section className="pb-stage" ref={scene} data-open={Boolean(selected)} aria-label="Interactive research composition" onPointerLeave={() => setHovered(null)}>
       <div className="pb-canvas" ref={canvas} style={{ '--pb-scale': scale }} data-open={Boolean(selected)} data-about={selected === 'about'} data-transitioning={transitioning} data-active={active || ''} data-paused={paused || Boolean(selected)}>
         <div className="pb-lettering" aria-hidden={Boolean(selected)} inert={selected ? true : undefined}>
-          <h1 className="pb-title" tabIndex={-1}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></h1>
+          <h1 className="pb-title" tabIndex={-1}>{profileEntry
+            ? <button className="pc-name-button" aria-label={`About ${profile.name}`} onClick={event => { if (!transitioning) open('about', event.currentTarget); }}><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></button>
+            : <><span>{profile.name.split(' ')[0]}</span><span>{profile.name.split(' ').slice(1).join(' ')}</span></>}</h1>
         </div>
         <NaturePreviewClock active={!paused && !selected && (!diagnostic || diagnostic === 'all' || diagnostic.startsWith('nature-'))} replay={replay}>{scenePieces.map((piece,index) => {
           const matching = active === piece.project;
@@ -232,10 +235,10 @@ export default function PrototypeB({ scenePieces = pieces, motion, variant = 'b'
         })}</NaturePreviewClock>
       </div>
       {selected && <section id="pb-reading" className="pb-reading" key={selected}>
-        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} />
+        <ProjectDetail id={selected} headingRef={heading} portraitSlot={portraitSlot} portraitFirst={profileEntry} />
       </section>}
     </section>
-    <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close}
+    <Portrait selected={selected} slot={portraitSlot} origin={origin} viewport={viewport} reduced={reduced} close={close} open={open}
       canvas={canvas} scale={scale} paused={paused} hovered={hovered} replay={replay} transitioning={transitioning} />
     <footer className="pb-footer">
       {!selected && !reduced && <div className="pb-scene-controls">
