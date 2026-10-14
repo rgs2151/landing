@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "deploy": "node scripts/deploy.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test:neural-field": "node --test tests/neural-field-model.test.js",
     "test:steering": "node --test tests/steering-timeline.test.js"

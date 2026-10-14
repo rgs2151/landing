@@ -2,10 +2,14 @@
 
 Communicate professionally and concisely.
 
-Production hosting is GitHub Pages: `deploy` branch, `/ (root)`, `singha.io`.
-Editable source stays on `expansion`. `npm run deploy` builds locally and publishes
-compiled files with an ordinary push; do not put source code on `deploy` or deploy
-to `dan`. Docker is not the production hosting path. Publish only when requested.
+Production hosting is the user's server, behind Cloudflare and Caddy, not GitHub
+Pages. Editable source stays on `expansion`. The container workflow builds and
+publishes `ghcr.io/rgs2151/landing:latest` and `:expansion` on source pushes.
+The user deploys by pulling and recreating the container on their server; image
+publication alone does not update the running site. Preserve this Docker setup.
+Do not change DNS, Pages settings, or the hosting architecture unless explicitly
+requested. Existing Pages settings and the unused `deploy` branch are not evidence
+of production hosting.
 
 Before applying website or prototype feedback, read
 `.agents/skills/scoped-design-feedback/SKILL.md` and follow it.
