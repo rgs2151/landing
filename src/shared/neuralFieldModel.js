@@ -3,7 +3,7 @@ export const SIGNAL_WINDOW = 500;
 export const TRACE_LENGTH = 1000;
 export const SIGNAL_HEIGHT = 50;
 export const POINT_SCALE = 1.8;
-export const PLAYBACK_SPEED = 0.25;
+export const PLAYBACK_SPEED = 0.125;
 
 export function createNeuralFieldModel(recording) {
   const { samples, sampleRate, lagSamples: lag } = recording;
