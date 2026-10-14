@@ -25,7 +25,7 @@ try {
     await page.waitForSelector('.pylba-animation svg');
     await page.waitForTimeout(800);
     assert.equal(await page.locator('.pb-fragment').count(), 15);
-    const moved = { manifold: 'translate(105px, 295px)', signal: 'translate(835px, 485px)' };
+    const moved = { manifold: 'translate(105px, 295px)', signal: 'translate(800px, 485px)' };
     const adjusted = frozen.map(row => moved[row[0]] ? [row[0], row[1], `${moved[row[0]]} rotate(0deg) scale(1)`, row[3]] : row);
     assert.deepEqual(await page.locator('.pb-fragment:not([data-kind="tool"])').evaluateAll(placements), adjusted);
     assert.equal(await page.locator('[data-menu="research"]').textContent(), 'Research Publications');
