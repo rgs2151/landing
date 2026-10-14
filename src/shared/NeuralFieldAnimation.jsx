@@ -5,6 +5,24 @@ import { loadNeuralFieldModel, advanceFrame, traceRanges, PLAYBACK_SPEED, SIGNAL
 import './neural-field-animation.css';
 
 const ACCENT = '#8b1e1e';
+const VIEWBOXES = {
+  full: '0 50 1000 480',
+  signal: '8 220 250 165',
+  autoregressive: '312 375 375 185',
+  manifold: '740 190 270 255',
+};
+
+export function NeuralFieldSignal(props) {
+  return <NeuralFieldAnimation {...props} part="signal" />;
+}
+
+export function NeuralFieldAutoregressive(props) {
+  return <NeuralFieldAnimation {...props} part="autoregressive" />;
+}
+
+export function NeuralFieldManifold(props) {
+  return <NeuralFieldAnimation {...props} part="manifold" />;
+}
 
 function createManifold(host, model) {
   const LAG = model.lag;
@@ -99,14 +117,15 @@ export default function NeuralFieldAnimation(props) {
       .catch(() => { if (mounted) setError(true); });
     return () => { mounted = false; };
   }, [attempt]);
-  if (!model) return <div className="nf-animation nf-diagram" aria-label={error ? 'LFP recording unavailable' : 'Loading LFP recording'}>
+  if (!model) return <div className="nf-animation nf-diagram" data-part={props.part || 'full'} aria-label={error ? 'LFP recording unavailable' : 'Loading LFP recording'}>
     {error && !props.compact && <div className="nf-controls"><button title="Retry loading LFP recording" aria-label="Retry loading LFP recording"
       onClick={() => { setError(false); setAttempt(value => value + 1); }}><RotateCcw size={17} /></button></div>}
   </div>;
   return <RecordedNeuralFieldAnimation {...props} model={model} />;
 }
 
-function RecordedNeuralFieldAnimation({ compact = false, active = true, model }) {
+function RecordedNeuralFieldAnimation({ compact = false, active = true, part = 'full', model }) {
+  const full = part === 'full';
   const LAG = model.lag;
   const id = useId().replaceAll(':', '');
   const root = useRef(null);
@@ -118,7 +137,7 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
   const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
-    const manifold = createManifold(host.current, model);
+    const manifold = host.current ? createManifold(host.current, model) : null;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const initialFrame = Math.floor(model.signal.length / 2);
     let frame = initialFrame;
@@ -129,19 +148,20 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
     let playing = true;
     let motionAllowed = !reducedMotion.matches;
     function draw() {
-      waveform.current.setAttribute('d', waveformPath(model.signal, frame));
+      waveform.current?.setAttribute('d', waveformPath(model.signal, frame));
       lagPoints.current.forEach((point, j) => {
+        if (!point) return;
         const index = (frame - j * LAG + model.signal.length) % model.signal.length;
         point.setAttribute('cx', 242 - j * LAG * 224 / (SIGNAL_WINDOW - 1));
         point.setAttribute('cy', 286 - model.signal[index] * SIGNAL_HEIGHT);
       });
-      temporalPoint.current.style.visibility = frame >= 2 * LAG ? 'visible' : 'hidden';
-      if (frame >= 2 * LAG) {
+      if (temporalPoint.current) temporalPoint.current.style.visibility = frame >= 2 * LAG ? 'visible' : 'hidden';
+      if (temporalPoint.current && frame >= 2 * LAG) {
         temporalPoint.current.setAttribute('cx', 567 + model.signal[frame - LAG] * 19);
         temporalPoint.current.setAttribute('cy', 446 - model.signal[frame - 2 * LAG] * 14);
       }
       root.current.dataset.frame = String(frame);
-      manifold.draw(frame);
+      manifold?.draw(frame);
     }
     function tick(now) {
       if (last) remainder += Math.min(now - last, 100) * model.sampleRate * PLAYBACK_SPEED / 1000;
@@ -166,9 +186,9 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
     };
     const resize = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      if (width && height) { manifold.resize(width, height); draw(); }
+      if (width && height && manifold) { manifold.resize(width, height); draw(); }
     });
-    resize.observe(host.current);
+    if (host.current) resize.observe(host.current);
     const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
     intersection.observe(root.current);
     const onMotion = () => { motionAllowed = !reducedMotion.matches; sync(); };
@@ -179,25 +199,28 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
       cancelAnimationFrame(raf); resize.disconnect(); intersection.disconnect();
       reducedMotion.removeEventListener('change', onMotion);
       document.removeEventListener('visibilitychange', sync);
-      manifold.dispose(); controller.current = null;
+      manifold?.dispose(); controller.current = null;
     };
-  }, [model, LAG]);
+  }, [model, LAG, part]);
 
   useEffect(() => { controller.current?.setPlaying(active && !paused); }, [active, paused]);
 
-  return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} ref={root}>
+  return <div role="figure" className={`nf-animation${compact ? ' nf-compact' : ''}`} data-part={part} ref={root}>
     <div className="nf-diagram">
-      <svg viewBox="0 50 1000 480" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+      <svg viewBox={VIEWBOXES[part]} role="img" aria-labelledby={`${id}-title ${id}-desc`}>
         <title id={`${id}-title`}>Recorded mouse LFP and lag embedding</title>
         <desc id={`${id}-desc`}>Five seconds of recorded mouse hippocampal LFP, using the tutorial's processed samples at 500 Hz and a lag of 10 samples. The upper path shows the hidden dynamical process. The lower path reconstructs state from time delays; the trajectory plots the signal and its two lagged observations directly.</desc>
         <defs>
           <marker id={`${id}-arrow`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="context-stroke" /></marker>
         </defs>
-        <text x="18" y="185" className="nf-label">
+        {full && <text x="18" y="185" className="nf-label">
           Local field<tspan x="18" dy="24">potential<tspan dx="6" fontSize="24" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif">🐭</tspan><tspan dx="4" fontSize="24" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif">🐵</tspan></tspan>
-        </text>
+        </text>}
+        {(full || part === 'signal') && <>
         <path ref={waveform} fill="none" stroke="#292929" strokeWidth="1.7" />
         {[0, 1, 2, 3].map(j => <circle key={j} ref={el => { lagPoints.current[j] = el; }} r={j ? 3 : 4} fill={ACCENT} opacity={1 - j * 0.15} />)}
+        </>}
+        {full && <>
         <path d="M186,221 L291,160" className="nf-arrow" markerEnd={`url(#${id}-arrow)`} />
         <text x="205" y="126" textAnchor="middle" className="nf-label">Hidden<tspan x="205" dy="24">dynamic</tspan></text>
         <path d="M186,351 L291,421" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
@@ -221,6 +244,8 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
 
         <rect x="306" y="326" width="392" height="190" fill="#8b1e1e" fillOpacity=".045" stroke={ACCENT} strokeWidth="2.5" />
         <text x="502" y="355" textAnchor="middle" className="nf-label">Autoregressive notion</text>
+        </>}
+        {(full || part === 'autoregressive') && <>
         <text x="367" y="408" className="nf-equation">x(t) =</text>
         <text x="326" y="441" className="nf-equation" fontSize="32">Σ</text>
         <text x="341" y="420" fontSize="13">p</text>
@@ -237,11 +262,14 @@ function RecordedNeuralFieldAnimation({ compact = false, active = true, model })
         <text x="499" y="478" transform="rotate(-90 499 478)" className="nf-axis-text">Temporal<tspan x="499" dy="18">state space</tspan></text>
         <path d="M594,401 Q615,405 621,429" fill="none" stroke={ACCENT} strokeWidth="3" strokeDasharray="2 10" />
         <circle ref={temporalPoint} r="4" fill={ACCENT} />
+        </>}
+        {full && <>
         <path d="M713,426 L791,342" className="nf-arrow nf-red" markerEnd={`url(#${id}-arrow)`} />
         <text x="874" y="161" textAnchor="middle" className="nf-label">Formulation of manifold<tspan x="874" dy="24">properties</tspan></text>
-        <text x="874" y="392" textAnchor="middle" className="nf-caption">x(t), x(t − τ), x(t − 2τ)</text>
+        </>}
+        {(full || part === 'manifold') && <text x="874" y="392" textAnchor="middle" className="nf-caption">x(t), x(t − τ), x(t − 2τ)</text>}
       </svg>
-      <div className="nf-manifold" ref={host} aria-hidden="true" />
+      {(full || part === 'manifold') && <div className="nf-manifold" ref={host} aria-hidden="true" />}
     </div>
     {!compact && <div className="nf-controls">
       <button type="button" onClick={() => { controller.current?.allowMotion(); setPaused(value => !value); }} aria-label={paused ? 'Play neural field animation' : 'Pause neural field animation'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>

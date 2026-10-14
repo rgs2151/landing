@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, X } from 'lucide-react';
 import { profile, paper, robustSteering, neuralFieldManifold } from '../../content/site';
 import ParticleField from '../../shared/ParticleField';
-import NeuralFieldAnimation from '../../shared/NeuralFieldAnimation';
+import NeuralFieldAnimation, { NeuralFieldSignal, NeuralFieldAutoregressive, NeuralFieldManifold } from '../../shared/NeuralFieldAnimation';
 import ProjectVideo from '../../shared/ProjectVideo';
 import RobustSteeringAnimation from '../../shared/RobustSteeringAnimation';
 import './styles.css';
@@ -116,8 +116,18 @@ export default function PrototypeA() {
         </div>
         <div className="pa-manifold" onMouseEnter={() => setHovered('manifold')} onFocus={() => setHovered('manifold')}
           onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setHovered(null); }}>
+          {desktop && <div className="pa-manifold-fragments" role="group" aria-label="NeuralFieldManifold animations">
+            <button className="pa-manifold-fragment pa-manifold-signal" onClick={() => openProject('manifold')} aria-label="Open NeuralFieldManifold: signal" aria-haspopup="dialog">
+              <NeuralFieldSignal compact active={!selected} />
+            </button>
+            <button className="pa-manifold-fragment pa-manifold-autoregressive" onClick={() => openProject('manifold')} aria-label="Open NeuralFieldManifold: autoregressive state" aria-haspopup="dialog">
+              <NeuralFieldAutoregressive compact active={!selected} />
+            </button>
+            <button className="pa-manifold-fragment pa-manifold-trajectory" onClick={() => openProject('manifold')} aria-label="Open NeuralFieldManifold: manifold" aria-haspopup="dialog">
+              <NeuralFieldManifold compact active={!selected} />
+            </button>
+          </div>}
           <button className="pa-manifold-project" onClick={() => openProject('manifold')} aria-label={neuralFieldManifold.title} aria-haspopup="dialog">
-            {desktop && <NeuralFieldAnimation compact active={!selected} />}
             <span>NeuralFieldManifold<ArrowUpRight size={24} /></span>
           </button>
         </div>

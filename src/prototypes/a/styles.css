@@ -43,8 +43,13 @@
 .pa-model > span, .pa-manifold-project > span { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--pa-accent); color: #fff; padding: 12px 14px; font-size: 28px; line-height: 1.1; }
 .pa-model > span svg, .pa-manifold-project > span svg { flex-shrink: 0; }
 .pa-manifold { position: absolute; left: 718px; top: 418px; width: 400px; z-index: 4; }
-.pa-manifold-project { display: block; width: 100%; padding: 0; border: 0; text-align: left; background: #fff; transform: rotate(-7deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
+.pa-manifold-project { position: absolute; top: 220px; display: block; width: 100%; padding: 0; border: 0; text-align: left; background: #fff; transform: rotate(-7deg); transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
 .pa-manifold-project > span { font-size: 26px; }
+.pa-manifold-fragments { position: relative; height: 220px; }
+.pa-manifold-fragment { position: absolute; padding: 0; border: 0; background: #fff; transition: transform 550ms cubic-bezier(.2,.8,.2,1); }
+.pa-manifold-signal { left: 0; top: -30px; width: 205px; aspect-ratio: 250 / 165; transform: rotate(-9deg); }
+.pa-manifold-autoregressive { left: 0; top: 95px; width: 245px; aspect-ratio: 375 / 185; transform: rotate(4deg); }
+.pa-manifold-trajectory { left: 222px; top: 12px; width: 170px; aspect-ratio: 270 / 255; transform: rotate(-7deg); }
 .pa-paper-stamp { position: absolute; left: 130px; top: 477px; display: flex; align-items: baseline; gap: 12px; transform: rotate(-5deg); z-index: 4; pointer-events: none; }
 .pa-paper-stamp img { width: 118px; height: auto; filter: invert(1); }
 .pa-paper-stamp span { font-size: 30px; }
@@ -54,8 +59,11 @@
 .pa-active-biological .pa-fragment-3 { transform: translate(64px,20px) rotate(0); }
 .pa-active-biological .pa-model { transform: translate(28px,-12px) rotate(14deg) scale(.93); }
 .pa-active-artificial .pa-model { transform: translate(-35px,20px) rotate(0) scale(1.08); }
-.pa-active-manifold .pa-manifold-project { transform: translate(-20px,-18px) rotate(0) scale(1.08); }
+.pa-active-manifold .pa-manifold-project { transform: translate(-20px,10px) rotate(0); }
 .pa-active-manifold .pa-manifold { z-index: 5; }
+.pa-active-manifold .pa-manifold-signal { transform: translate(-12px,-14px) rotate(0); }
+.pa-active-manifold .pa-manifold-autoregressive { transform: translate(-24px,0) rotate(0); }
+.pa-active-manifold .pa-manifold-trajectory { transform: translate(16px,-12px) rotate(0); }
 .pa-active-artificial .pa-fragment { opacity: .65; }
 .pa-footer { position: absolute; bottom: 16px; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
 .pa-footer button { background: none; padding: 0; border: 0; text-decoration: underline; text-underline-offset: 4px; }

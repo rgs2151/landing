@@ -16,3 +16,18 @@ text.nf-red { fill: #8b1e1e; stroke: none; }
 .nf-controls button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: #8b1e1e; }
 .nf-controls button:hover { background: #f5ebeb; }
 .nf-compact { pointer-events: none; }
+
+.nf-animation[data-part="signal"],
+.nf-animation[data-part="autoregressive"],
+.nf-animation[data-part="manifold"] { background: transparent; }
+.nf-animation[data-part="signal"] { --nf-part-ratio: 250 / 165; }
+.nf-animation[data-part="autoregressive"] { --nf-part-ratio: 375 / 185; }
+.nf-animation[data-part="manifold"] { --nf-part-ratio: 270 / 255; }
+.nf-animation[data-part]:not([data-part="full"]) .nf-diagram,
+.nf-animation.nf-diagram[data-part]:not([data-part="full"]) { aspect-ratio: var(--nf-part-ratio); }
+.nf-animation[data-part="manifold"] .nf-manifold {
+  left: calc(20 / 270 * 100%);
+  top: calc(8 / 255 * 100%);
+  width: calc(230 / 270 * 100%);
+  height: calc(187 / 255 * 100%);
+}
