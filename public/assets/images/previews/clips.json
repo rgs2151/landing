@@ -1,0 +1,30 @@
+[
+  {
+    "src": "/assets/images/previews/paper-6.webp",
+    "frames": 26,
+    "fps": 15,
+    "size": 256,
+    "columns": 6
+  },
+  {
+    "src": "/assets/images/previews/paper-7.webp",
+    "frames": 32,
+    "fps": 15,
+    "size": 256,
+    "columns": 6
+  },
+  {
+    "src": "/assets/images/previews/paper-8.webp",
+    "frames": 39,
+    "fps": 15,
+    "size": 256,
+    "columns": 6
+  },
+  {
+    "src": "/assets/images/previews/paper-9.webp",
+    "frames": 28,
+    "fps": 15,
+    "size": 256,
+    "columns": 6
+  }
+]

@@ -28,15 +28,60 @@ unchanged; verifying its domain is a separate content decision.
 
 - A white continuous stage integrates the accepted transparent/white assets
   without filtering or recoloring them. Black display lettering uses the existing
-  Impact stack; body text retains the site's Garamond stack. Dark red stays the accent.
+  Impact stack for the large name; reading text and navigation use Arial, as
+  confirmed by the user. Existing reading text sizes remain. Dark red stays the accent.
 - Project figures and actual Nature footage form the composition. No new particle
   decoration, fabricated diagrams, stock imagery or rewritten project content.
 - Hover/focus fans the relevant pieces outward. Clicking holds the selection:
   the pieces gather along the edge and the page opens into an unframed reading area.
-- Project navigation stays available; URL hashes support deep links and browser
+- The only large splash lettering is Rudramani Singha, opening About. No profile
+  card, project headings or venue stamp appears on the splash. The nine fragments
+  are interleaved, not grouped by project. Research, Tool Packages and About form
+  the navigation; research expands to full titles and publication status. No
+  packages have been supplied, so that dropdown has an honest empty state.
+- On selection, the profile and navigation occupy the left rail. Artwork folds
+  into a single bottom-left return stack, not separate project-switching cards.
+  Canvas coordinates stay stable during folding. Preserve the accepted 550ms
+  slide-in reading transition.
+- Project pages order title, authors, venue/status and code links, full animation,
+  then the unchanged abstract. Abstracts use the full article width and justified
+  text. NeuralFieldManifold is accepted at NeurIPS 2026; robust steering is under
+  review, with no submitted-to-ICLR claim displayed.
+- Category navigation stays available; URL hashes support deep links and browser
   Back/Forward. Escape and the return control restore the composition and focus.
 - Mobile retains the agreed simple profile/contact view without mounting the
   desktop animations. Reduced motion suppresses scene movement; controls remain usable.
 - A scene-level pause/replay pair controls the collage. Reading views keep each
   finalized animation's own controls. Hidden/background animations are suspended.
 - All layouts and interactions must be finished. No placeholder-work exception.
+
+## Splash Performance, October 14, 2026
+
+Measured with Chromium headless, SwiftShader, 1440x900, four-second RAF samples
+after warm-up (`tests/prototype-b-performance.mjs`). These are local comparison
+results, not a guarantee for a visitor's hardware.
+
+| Experiment | RAF FPS | 95th percentile frame interval |
+| --- | ---: | ---: |
+| Four original 1080px video previews | 30.0 | 33.4ms |
+| Four 360px video previews | 30.0 | 33.4ms |
+| One 360px video playing | 57.5 | 16.8ms |
+| Cached frame-sheet previews | 60.0 | 16.8ms |
+| Everything paused | 60.0 | 16.8ms |
+
+There are no gradients in B. Lowering video resolution alone did not fix the
+measured frame cadence. The final splash instead uses four cached WebP frame
+sheets, approximately 276KB combined versus 1.25MB of original MP4s. All 26, 32,
+39 and 28 frames remain, at their original 15 FPS and independent loop lengths.
+Only preview resolution changes to 256px. One clock draws a new frame only when
+needed, without React renders per frame or four continuous video decoders.
+Decoded pixel data occupies roughly 35MiB before browser overhead; this is a bounded cache for these four short
+clips, not a recommendation to cache arbitrary long videos as frame sheets.
+
+Generate from the unchanged source MP4s with
+`node scripts/build-splash-previews.mjs` (requires ffmpeg and ffprobe).
+`NaturePreviews.jsx` is a B-only presentation adapter. Full project videos,
+finalized steering/manifold animations and prototype A are not modified.
+Hidden/offscreen playback stops, collapsed previews pause, and the existing
+scene pause/replay controls also govern the cached clips. Reduced motion paints
+one still frame. The phone view mounts none of these assets.
