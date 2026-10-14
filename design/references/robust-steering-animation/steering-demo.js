@@ -28,9 +28,7 @@
   const shiftMask = find("shift-mask");
   const dot = find("state-dot");
   const ripple = find("state-ripple");
-  const travelBolt = find("travel-bolt");
-  const metricNodes = [find("truth-label"), find("truth-arrow"), find("info-label"), find("info-arrow")];
-  const metricBoxes = [...box.querySelectorAll(".steering-demo-metric")];
+  const baseMask = find("base-mask");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const glyphs = Array.from("▓▒░<>/\\#¿!?");
   // All times refer to this one pausable timeline (milliseconds).
@@ -43,17 +41,14 @@
   let previousTime = null;
   let frame = null;
   let inView = false;
-  let paused = false;
+  let paused = reducedMotion.matches;
+  let motionAllowed = !reducedMotion.matches;
   let started = false;
-  let flightStart, flightEnd;
+  let flightEnd;
   let sceneScale = 1;
   const clamp = (x) => Math.max(0, Math.min(1, x));
   const progress = (start, duration) => clamp((elapsed - start) / duration);
   const ease = (x) => x * x * (3 - 2 * x);
-  const reveal = (node, amount, distance = 0) => {
-    node.style.opacity = amount;
-    node.style.transform = "translateY(" + ((1 - amount) * distance) + "px)";
-  };
 
   function makeStateContours(node, seed, components, color) {
     // Seeded Gaussian-mixture samples and a Gaussian KDE, not hand-drawn ellipses.
@@ -205,10 +200,9 @@
     sceneScale = parseFloat(getComputedStyle(box).getPropertyValue("--demo-chat-scale"));
     const model = find("robot").getBoundingClientRect();
     find("stimulation").style.transform = "translate(" + (model.x + model.width / 2 - bounds.x - 45 * sceneScale) + "px," + (model.y - bounds.y - 72 * sceneScale) + "px) scale(" + sceneScale + ")";
-    const from = find("stored-bolt").getBoundingClientRect();
     const to = find("bolt").getBoundingClientRect();
-    flightStart = { x: from.x + from.width / 2 - bounds.x, y: from.y + from.height / 2 - bounds.y };
-    flightEnd = { x: to.x + to.width / 2 - bounds.x, y: to.y + to.height / 2 - bounds.y };
+    flightEnd = new DOMPoint(to.x + to.width / 2, to.y + to.height / 2)
+      .matrixTransform(find("state-map").getScreenCTM().inverse());
   }
 
   function reserveResponseHeight() {
@@ -256,11 +250,6 @@
     questionChars = characterNodes(question, q.length);
     questionChars.forEach((span, i) => { span.textContent = q[i]; });
     responseChars = characterNodes(response, Math.max(baselineChars.length, targetChars.length));
-    find("benchmark").textContent = example.benchmark;
-    metricNodes[0].textContent = example.metrics[0];
-    metricNodes[2].textContent = example.metrics[1];
-    metricNodes[1].textContent = example.symbols[0];
-    metricNodes[3].textContent = example.symbols[1];
     const questionStart = intro.chat + 250;
     const questionEnd = questionStart + q.length * 55;
     const baselineStart = questionEnd + 450;
@@ -298,42 +287,32 @@
 
   function renderState() {
     box.dataset.stage = stageAt(elapsed);
-    state.style.opacity = progress(intro.field, 450);
-    const points = progress(intro.endpoints, 300);
-    const drawn = progress(intro.direction, 850);
+    state.style.opacity = 1;
+    const points = 1;
+    const drawn = 1;
     const stored = ease(progress(intro.store, intro.stored - intro.store));
-    direction.style.opacity = points * (1 - stored);
+    direction.style.opacity = 1 - progress(intro.stored - 200, 200);
     directionLine.style.opacity = drawn;
     directionHead.style.opacity = clamp(drawn * 4 - 3);
     directionLabels.style.opacity = points * (1 - progress(intro.store, 300));
     box.style.setProperty("--demo-direction", drawn);
     const scale = 1 - stored * .94;
-    // Collapse around the vector midpoint, then carry it down into the controller.
-    direction.setAttribute("transform", "translate(" + (169 * (1 - scale) - 61 * stored) + " " + (160 * (1 - scale) + 210 * stored) + ") scale(" + scale + ")");
-    const fill = progress(intro.store + 650, 450);
-    box.style.setProperty("--demo-controller-fill", "rgba(0,124,124," + fill * .12 + ")");
-    box.style.setProperty("--demo-controller-ink", fill > .5 ? "#007C7C" : "#919191");
-    box.style.setProperty("--demo-controller-bolt", "rgb(" + Math.round(255 * (1 - fill)) + "," + Math.round(255 - 131 * fill) + "," + Math.round(255 - 131 * fill) + ")");
+    // Carry the direction straight to the model's lightning, with no controller stop.
+    const target = flightEnd || { x: 169, y: 160 };
+    direction.setAttribute("transform", "translate(" + (169 * (1 - scale) + (target.x - 169) * stored) + " " + (160 * (1 - scale) + (target.y - 160) * stored) + ") scale(" + scale + ")");
     const swipe = ease(progress(intro.shift, intro.shifted - intro.shift));
     box.style.setProperty("--demo-swipe", swipe);
     shiftMask.setAttribute("width", swipe * 280);
+    baseMask.setAttribute("x", 30 + swipe * 280);
+    baseMask.setAttribute("width", (1 - swipe) * 280);
     const expand = ease(progress(intro.expand, intro.chat - intro.expand));
-    find("stimulation").style.opacity = elapsed >= intro.chat ? 1 : 0;
+    find("stimulation").style.opacity = 1;
     const dotIn = progress(intro.dot, 250);
     dot.style.opacity = dotIn * (1 - expand);
     ripple.style.opacity = expand > 0 && expand < 1 ? 1 - expand : 0;
     ripple.setAttribute("r", 5 + expand * 180);
-    scene.style.opacity = expand;
-    scene.style.clipPath = expand < 1 ? "circle(" + expand * 150 + "% at 0% 50%)" : "none";
-    // Transfer a visible copy of the stored controller to the model, not a new policy.
-    if (flightStart && flightEnd && expand > 0 && expand < 1) {
-      const x = flightStart.x + (flightEnd.x - flightStart.x) * expand;
-      const y = flightStart.y + (flightEnd.y - flightStart.y) * expand - Math.sin(Math.PI * expand) * 70;
-      travelBolt.style.transform = "translate(" + (x - 22) + "px," + (y - 28) + "px) scale(" + (.65 + (sceneScale - .65) * expand) + ")";
-      travelBolt.style.opacity = Math.min(1, expand * 8, (1 - expand) * 8);
-    } else {
-      travelBolt.style.opacity = 0;
-    }
+    scene.style.opacity = 1;
+    scene.style.clipPath = "none";
   }
 
   function render() {
@@ -359,13 +338,6 @@
       span.classList.toggle("is-visible", phase === "steering" || phase === "steered" || i < typed);
       span.classList.toggle("is-glitch", changing);
     });
-    // Each label appears before its arrow; these are qualitative schematic indicators.
-    metricBoxes.forEach((node, i) => {
-      node.style.opacity = ease(progress(timing.steeringEnd + 350 + i * 1000, 300));
-    });
-    [350, 850, 1350, 1850].forEach((offset, i) => {
-      reveal(metricNodes[i], ease(progress(timing.steeringEnd + offset, 300)), i % 2 ? 9 : 5);
-    });
   }
 
   function stopFrame() {
@@ -376,7 +348,7 @@
 
   function tick(now) {
     frame = null;
-    if (paused || !inView || document.hidden || reducedMotion.matches) return;
+    if (paused || !inView || document.hidden || !motionAllowed) return;
     if (previousTime !== null) elapsed += Math.min(now - previousTime, 100);
     previousTime = now;
     if (elapsed > timing.end) elapsed = 0;
@@ -385,7 +357,7 @@
   }
 
   function resume() {
-    if (!paused && inView && !document.hidden && !reducedMotion.matches && frame === null) {
+    if (!paused && inView && !document.hidden && motionAllowed && frame === null) {
       previousTime = null;
       frame = requestAnimationFrame(tick);
     }
@@ -393,18 +365,18 @@
 
   function replay() {
     stopFrame();
-    elapsed = reducedMotion.matches ? timing.steeringEnd + 2400 : 0;
-    paused = false;
+    elapsed = 0;
     started = true;
-    box.dataset.paused = "false";
-    pauseButton.textContent = "Pause";
-    pauseButton.setAttribute("aria-label", "Pause animation");
+    box.dataset.paused = String(paused);
+    pauseButton.textContent = paused ? "Play" : "Pause";
+    pauseButton.setAttribute("aria-label", paused ? "Play animation" : "Pause animation");
     render();
     resume();
   }
 
   pauseButton.addEventListener("click", () => {
     paused = !paused;
+    if (!paused) motionAllowed = true;
     box.dataset.paused = String(paused);
     pauseButton.textContent = paused ? "Play" : "Pause";
     pauseButton.setAttribute("aria-label", paused ? "Play animation" : "Pause animation");
@@ -421,7 +393,8 @@
     if (document.hidden) stopFrame(); else resume();
   });
   reducedMotion.addEventListener("change", () => {
-    pauseButton.hidden = reducedMotion.matches;
+    motionAllowed = !reducedMotion.matches;
+    paused = reducedMotion.matches;
     replay();
   });
   new ResizeObserver(reserveResponseHeight).observe(sceneFrame);
@@ -443,6 +416,6 @@
       replay();
     },
   };
-  pauseButton.hidden = reducedMotion.matches;
+  box.dataset.paused = String(paused);
   prepare();
 })();
