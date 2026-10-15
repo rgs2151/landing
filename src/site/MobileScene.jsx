@@ -3,6 +3,7 @@ import { ArrowLeft, Pause, Play, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react
 import { profile, paper } from '../content/site';
 import { previewManifest } from '../assets/landingPreviews';
 import NaturePreview, { NaturePreviewClock } from './NaturePreviews';
+import MobileVideo from './MobileVideo';
 
 // A separate artboard keeps the accepted desktop placements completely intact.
 const placements = {
@@ -28,7 +29,7 @@ function MobilePiece({ piece, index, paused, replay, open, title }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [posterOnly, setPosterOnly] = useState(false);
+  const [compatibleVideo, setCompatibleVideo] = useState(false);
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
       setVisible(entry.isIntersecting);
@@ -42,8 +43,8 @@ function MobilePiece({ piece, index, paused, replay, open, title }) {
   const poster = piece.clip === undefined ? previewManifest[piece.id].poster : paper.clips[piece.clip].poster;
   function checkTransparency(event) {
     const video = event.target;
-    if (video.tagName !== 'VIDEO' || !video.videoWidth) return;
-    // Some phone decoders play VP9 but discard alpha. Keep the clean poster there.
+    if (video.tagName !== 'VIDEO' || video.dataset.packed || !video.videoWidth) return;
+    // Switch only the affected phone decoder; desktop WebM playback is untouched.
     const sample = document.createElement('canvas');
     sample.width = 2; sample.height = 2;
     const ctx = sample.getContext('2d', { willReadFrequently: true });
@@ -51,13 +52,15 @@ function MobilePiece({ piece, index, paused, replay, open, title }) {
       ctx.drawImage(video, x * (video.videoWidth - 1), y * (video.videoHeight - 1), 1, 1, x, y, 1, 1);
     }
     const pixels = ctx.getImageData(0, 0, 2, 2).data;
-    if ([3, 7, 11, 15].every(index => pixels[index] === 255)) setPosterOnly(true);
+    if ([3, 7, 11, 15].every(index => pixels[index] === 255)) setCompatibleVideo(true);
   }
   return <button ref={ref} className="pm-piece" data-piece={piece.id} data-kind={piece.kind}
     data-visible={visible} style={{ left: x, top: y, width, aspectRatio: clip ? `${clip.layoutWidth} / ${clip.layoutHeight}` : '1', '--pm-angle': `${angle}deg`, '--pm-delay': `${-index * 1.7}s` }}
-    aria-label={`${title}: ${piece.id}`} onClick={event => open(piece.project, event.currentTarget)} onLoadedDataCapture={checkTransparency}>
+    aria-label={`${title}: ${piece.id}`} onClick={event => open(piece.project, event.currentTarget)} onLoadedDataCapture={checkTransparency}
+    onErrorCapture={event => { if (event.target.tagName === 'VIDEO' && !event.target.dataset.packed) setCompatibleVideo(true); }}>
     <div className="pm-piece-motion" key={replay}>
-      {loaded && !posterOnly ? piece.Component ? <piece.Component compact active={!paused && visible} />
+      {loaded ? compatibleVideo ? <MobileVideo clip={clip} active={!paused && visible} />
+        : piece.Component ? <piece.Component compact active={!paused && visible} />
         : <NaturePreview clip={piece.clip} poster={poster} /> : <img src={poster} alt="" loading="lazy" />}
     </div>
   </button>;
@@ -70,9 +73,23 @@ export default function MobileScene({ selected, open, close, scenePieces, tools,
   const reading = useRef(null);
   const savedScroll = useRef(0);
   const previous = useRef(selected);
+  const root = useRef(null);
   const [scale, setScale] = useState(1);
   const [zoom, setZoom] = useState(false);
   const hasWideFigure = selected && selected !== 'about' && !tools.some(tool => tool.id === selected && !tool.Gallery);
+  function resumeVisibleVideos() {
+    root.current?.querySelectorAll('.pm-piece[data-visible="true"] video').forEach(video => {
+      const rect = video.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < innerHeight) video.play().catch(() => {});
+    });
+  }
+  useEffect(() => {
+    if (selected || paused || reduced) return;
+    // iOS can require a user gesture even for a muted video (for example in
+    // power-saving mode). Retry from the gesture, not a later React effect.
+    document.addEventListener('pointerup', resumeVisibleVideos);
+    return () => document.removeEventListener('pointerup', resumeVisibleVideos);
+  }, [selected, paused, reduced]);
   useLayoutEffect(() => {
     if (selected) return;
     const resize = new ResizeObserver(([entry]) => setScale(entry.contentRect.width / 390));
@@ -98,7 +115,7 @@ export default function MobileScene({ selected, open, close, scenePieces, tools,
     if (!selected) savedScroll.current = window.scrollY;
     open(id, target);
   }
-  return <main className="site pm-mobile" data-selected={selected || ''} data-paused={paused || reduced} data-zoom={zoom}>
+  return <main ref={root} className="site pm-mobile" data-selected={selected || ''} data-paused={paused || reduced} data-zoom={zoom}>
     <header className="pm-header">
       <Navigation selected={selected} open={enter} hover={ignoreHover} tools={tools} labels={labels} omitAccepted touch />
     </header>
@@ -131,7 +148,7 @@ export default function MobileScene({ selected, open, close, scenePieces, tools,
     </section>}
     <footer className="pm-footer"><span>&copy; 2026 {profile.name}</span>
       {!selected && !reduced && <div className="pm-playback">
-        <button onClick={() => setPaused(value => !value)} aria-label={paused ? 'Play composition' : 'Pause composition'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
+        <button onClick={() => { if (paused) resumeVisibleVideos(); setPaused(value => !value); }} aria-label={paused ? 'Play composition' : 'Pause composition'} title={paused ? 'Play' : 'Pause'}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
         <button onClick={() => setReplay(value => value + 1)} aria-label="Replay composition" title="Replay"><RotateCcw size={17} /></button>
       </div>}
     </footer>

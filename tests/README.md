@@ -7,6 +7,7 @@ npm run test:neural-field
 npm run test:steering
 node tests/site-browser.mjs
 node tests/mobile-browser.mjs
+node tests/mobile-video-compat.mjs
 node tests/site-arrival-browser.mjs
 node tests/neuraljax-brain-browser.mjs
 node tests/steering-browser-parity.mjs
@@ -28,3 +29,9 @@ all frozen project copy/links, figure enlargement, browser history, returning to
 the same collage scroll position, playback controls, and switching to desktop.
 The desktop baseline remains unchanged. These are browser-emulated checks, not
 claims of testing on physical iOS or Android devices.
+
+The mobile checks also cover staggered inline figures and text collision at four
+widths. The compatibility test simulates a decoder that discards WebM alpha,
+then verifies all eleven H.264 fallbacks animate with transparency, preserve
+source hashes/dimensions/durations, and respect pause/replay. It requires FFprobe.
+This does not substitute for testing Brave on a physical iPhone.

@@ -1,0 +1,52 @@
+{
+  "neuraljax-cnn": {
+    "src": "/assets/projects/neuraljaxlib/videos/mobile/cnn.mp4",
+    "width": 360,
+    "height": 394,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "2eb6c1d8cb64",
+    "source": "/assets/projects/neuraljaxlib/videos/cnn.webm",
+    "sourceSha256": "d038a75cb8cb7ae83034a753a61b5037857d334d9a37d6563303d13f6be0e954",
+    "bytes": 775468
+  },
+  "neuraljax-rnn": {
+    "src": "/assets/projects/neuraljaxlib/videos/mobile/rnn.mp4",
+    "width": 360,
+    "height": 354,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "7e44279c7564",
+    "source": "/assets/projects/neuraljaxlib/videos/rnn.webm",
+    "sourceSha256": "b7ff45ecf62bbdd5268dbf00879b0650741bbbc7cf9d28a64a61e69dc57d4ebd",
+    "bytes": 2339488
+  },
+  "neuraljax-autoencoder": {
+    "src": "/assets/projects/neuraljaxlib/videos/mobile/autoencoder.mp4",
+    "width": 480,
+    "height": 466,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "327f5bf402d5",
+    "source": "/assets/projects/neuraljaxlib/videos/autoencoder.webm",
+    "sourceSha256": "b986903c5b7731eda9155d334d7dc9e4cd173795b2c7bfea8a2ea92a441e7ff5",
+    "bytes": 2140273
+  },
+  "neuraljax-gan": {
+    "src": "/assets/projects/neuraljaxlib/videos/mobile/gan.mp4",
+    "width": 360,
+    "height": 390,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "e01117f3e168",
+    "source": "/assets/projects/neuraljaxlib/videos/gan.webm",
+    "sourceSha256": "92f6e455d8a083a35ea91a43384c112982e32b83d911ca6428592328f0913fb9",
+    "bytes": 1038940
+  },
+  "neuraljax-transformer": {
+    "src": "/assets/projects/neuraljaxlib/videos/mobile/transformer.mp4",
+    "width": 360,
+    "height": 384,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "0eda687f4fd5",
+    "source": "/assets/projects/neuraljaxlib/videos/transformer.webm",
+    "sourceSha256": "1a6aca2d45e4d0299060b5f66ad77ad04fb343c944e578783947311f66ffdcc9",
+    "bytes": 3662614
+  }
+}

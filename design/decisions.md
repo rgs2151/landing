@@ -23,7 +23,11 @@ changing their internal geometry. About uses the original color photo.
 
 Offscreen previews pause; video previews load near the viewport; opening a detail
 unmounts the splash players. Phones whose decoder discards WebM transparency use
-the existing transparent poster for that preview, keeping the live detail asset.
+derived H.264 previews with RGB and alpha packed side by side. A mobile-only
+canvas player restores transparency at up to 15 frames per second; it does not
+rerun the source simulations. Posters remain visible while loading or on error.
+An explicit play tap also retries autoplay-blocked previews. Desktop WebM players
+and high-quality detail assets are unchanged.
 Reduced motion, pause/replay, browser history, and direct project links work on
 both layouts. Do not change desktop geometry to solve mobile layout issues.
 

@@ -1,0 +1,32 @@
+{
+  "signal": {
+    "src": "/assets/projects/neural-field-manifold/videos/mobile/signal.mp4",
+    "width": 300,
+    "height": 198,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "daafcba2b9d7",
+    "source": "/assets/projects/neural-field-manifold/videos/signal.webm",
+    "sourceSha256": "2e961b13e650823e57891acf38840d62ffa25f5b60cb1b55613e89deb03fa03f",
+    "bytes": 1270501
+  },
+  "autoregressive": {
+    "src": "/assets/projects/neural-field-manifold/videos/mobile/autoregressive.mp4",
+    "width": 450,
+    "height": 222,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "06ca8cdbb690",
+    "source": "/assets/projects/neural-field-manifold/videos/autoregressive.webm",
+    "sourceSha256": "20197c50c5b99867d9dd95712d74b5c2951086afdb02dac8d56e4a346fcb01e1",
+    "bytes": 163578
+  },
+  "manifold": {
+    "src": "/assets/projects/neural-field-manifold/videos/mobile/manifold.mp4",
+    "width": 480,
+    "height": 454,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "fc0d384fbc67",
+    "source": "/assets/projects/neural-field-manifold/videos/manifold.webm",
+    "sourceSha256": "a7dfd2c0903642c5222d3e57a49be810604acd9d05e2c626c9af7669a60a128e",
+    "bytes": 669149
+  }
+}

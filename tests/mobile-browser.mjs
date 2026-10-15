@@ -31,7 +31,30 @@ try {
     await page.getByRole('button', { name: 'Return to composition', exact: true }).tap();
     await page.waitForSelector('.pm-piece');
   }
+  for (const width of [320, 390, 430, 768]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(`${base}/#neuraljaxlib`);
+    await page.waitForSelector('.pb-abstract-figure .svg-asset[data-ready="true"]');
+    const figures = await page.locator('.pb-abstract-figure .svg-asset').evaluateAll(nodes => nodes.map(node => {
+      const box = node.getBoundingClientRect();
+      return { top: box.top, bottom: box.bottom, left: box.left, right: box.right };
+    }));
+    assert.equal(figures.length, 2);
+    assert(figures[1].top >= figures[0].bottom, `Inline figures stagger vertically: ${width}`);
+    const overlaps = await page.locator('.pb-illustrated-abstract').evaluate(node => {
+      const figures = [...node.querySelectorAll('.pb-abstract-figure .svg-asset')].map(n => n.getBoundingClientRect());
+      return [...node.querySelectorAll('p')].some(p => {
+        const range = document.createRange(); range.selectNodeContents(p);
+        return [...range.getClientRects()].some(text => figures.some(figure =>
+          text.left < figure.right - 1 && text.right > figure.left + 1 &&
+          text.top < figure.bottom - 1 && text.bottom > figure.top + 1));
+      });
+    });
+    assert(!overlaps, `Abstract does not intersect inline figures: ${width}`);
+    await overflow(`inline figures ${width}`);
+  }
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(base);
   for (const id of await page.locator('.pm-piece').evaluateAll(nodes => nodes.map(node => node.dataset.piece))) {
     await page.locator(`.pm-piece[data-piece="${id}"]`).tap();
     await page.waitForSelector('.pm-reading');

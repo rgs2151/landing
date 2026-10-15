@@ -1,0 +1,12 @@
+{
+  "pylba": {
+    "src": "/assets/projects/pylba/videos/mobile/pylba.mp4",
+    "width": 360,
+    "height": 360,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "38465abbeebd",
+    "source": "/assets/projects/pylba/videos/pylba.webm",
+    "sourceSha256": "a15feeb88354bd25744b857cf2bb6f6acb0a2505a1f85589436174a9d694bc1b",
+    "bytes": 36363
+  }
+}

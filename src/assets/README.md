@@ -11,6 +11,8 @@ public/assets/projects/<project>/
   videos/<fragment>.webm  # Small transparent VP9 preview
   posters/<fragment>.webp # Matching first frame
   previews.json          # Dimensions, loop, provenance and source hashes
+  videos/mobile/<fragment>.mp4 # H.264 RGB + alpha compatibility preview
+  mobile-previews.json    # Compatibility dimensions and original video hashes
 ```
 
 Projects: `neuraljaxlib`, `neural-field-manifold`, `robust-steering`, `pylba`.
@@ -39,7 +41,10 @@ prototype rendering paths remain in Git history, not in the running website.
    accepted compact framing. Add its source paths in `scripts/preview-sources.mjs`.
 2. With Vite running on port 5173, run `node scripts/export-landing-videos.mjs`.
    To update selected clips only, use `ASSETS=landscape,conversation` (manifest IDs).
-3. Run `node tests/site-browser.mjs` for functional checks, not benchmarks.
+3. Run `node scripts/export-mobile-videos.mjs` to derive phone-compatible H.264
+   copies from approved WebMs. The same `ASSETS` filter selects individual clips.
+4. Run `node tests/site-browser.mjs` and `node tests/mobile-video-compat.mjs`
+   for functional checks, not benchmarks.
 
 The exporter requires FFmpeg and the local Playwright/Sharp test tooling under
 `/tmp/landing-browser-check`. It renders the actual components at deterministic
@@ -63,3 +68,10 @@ cycle after the initial entrance. No speed or content changes are made.
 These exports trade download/storage for avoiding live simulation and DOM
 updates. They are compressed low-resolution previews, not pixel-identical SVGs.
 Do not regenerate or change approved high-quality assets without permission.
+
+On phones that cannot decode WebM alpha, `src/site/MobileVideo.jsx` plays the
+H.264 derivative, restoring the right-hand alpha plane over the left-hand RGB
+frame in a canvas. These exports retain original timing and framing, at up to
+480px width. They are used only after WebM alpha/decode failure, never on desktop.
+The mobile manifest records the exact source WebM hash; no source animation is
+rerendered or modified for this compatibility conversion.

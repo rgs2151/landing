@@ -1,0 +1,22 @@
+{
+  "landscape": {
+    "src": "/assets/projects/robust-steering/videos/mobile/landscape.mp4",
+    "width": 416,
+    "height": 452,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "ed77751d5721",
+    "source": "/assets/projects/robust-steering/videos/landscape.webm",
+    "sourceSha256": "c0d219d1ecaf44ea0bab442ee3533eb1c58da59562c6864354eec7876de4c100",
+    "bytes": 1401042
+  },
+  "conversation": {
+    "src": "/assets/projects/robust-steering/videos/mobile/conversation.mp4",
+    "width": 480,
+    "height": 314,
+    "encoding": "rgb-alpha-side-by-side",
+    "revision": "4aa4435feb51",
+    "source": "/assets/projects/robust-steering/videos/conversation.webm",
+    "sourceSha256": "a1253307682a0832e03a9c1717a7ce64471472745961df3d49822f62c8d09efa",
+    "bytes": 1761603
+  }
+}
